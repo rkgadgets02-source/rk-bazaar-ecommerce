@@ -337,5 +337,41 @@ router.delete('/address/:id', protect, async (req, res) => {
     res.json({ success: true, message: 'Address removed', addresses: user.addresses });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
+// ─────────────────────────────────────────────────
+// POST /api/auth/setup-master-admin (One-time Setup)
+// ─────────────────────────────────────────────────
+router.post('/setup-master-admin', async (req, res) => {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL || 'rkgadgets02@gmail.com';
+    
+    // Check if admin already exists
+    let admin = await User.findOne({ email: adminEmail });
+    
+    if (admin) {
+      // Ensure existing user has admin role and is verified
+      admin.role = 'admin';
+      admin.isVerified = true;
+      admin.isActive = true;
+      await admin.save();
+      return res.json({ success: true, message: 'Admin account already exists and is now verified.' });
+    }
+
+    // Create new admin
+    await User.create({
+      name: 'Master Admin',
+      email: adminEmail,
+      phone: '0000000000',
+      password: 'Admin@1234', // Temporary password
+      role: 'admin',
+      isVerified: true,
+      isActive: true
+    });
+
+    res.json({ success: true, message: 'Master Admin account created successfully! User: ' + adminEmail });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 router.get('/verify', require('../middleware/auth').verifyToken);
 module.exports = router;

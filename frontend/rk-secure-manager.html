@@ -992,6 +992,12 @@
       </button>
       <div id="login-error"></div>
       <div id="attempts-warning"></div>
+      <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: center;">
+        <p style="font-size: .65rem; color: var(--g); margin-bottom: 10px;">New Deployment? Setup the Master Admin:</p>
+        <button class="btn-sm btn-outline" style="width: 100%; justify-content: center; padding: 10px;" onclick="initAdmin()" id="init-btn">
+          <i class="fas fa-tools"></i> Initialize Master Admin
+        </button>
+      </div>
     </div>
 
     <div class="auth-card hidden" id="admin-forgot-card">
@@ -1498,6 +1504,28 @@
     let currentOrderId = null;
     let editingProductId = null;
     let editingCategoryId = null;
+
+    // ══ INITIALIZE ADMIN ══
+    async function initAdmin() {
+      const btn = document.getElementById('init-btn');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing...';
+      try {
+        const res = await fetch(`${API}/auth/setup-master-admin`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+          document.getElementById('admin-email').value = 'rkgadgets02@gmail.com';
+          document.getElementById('admin-password').value = 'Admin@1234';
+          showToast('Credentials filled! You can now login.', 'info');
+        } else {
+          showToast(data.message || 'Already initialized.', 'info');
+        }
+      } catch (e) {
+        showToast('Operation failed. Check connection.', 'error');
+      } finally {
+        btn.disabled = false; btn.innerHTML = '<i class="fas fa-tools"></i> Initialize Master Admin';
+      }
+    }
 
     // ══ INIT ══
     window.addEventListener('load', async () => {
