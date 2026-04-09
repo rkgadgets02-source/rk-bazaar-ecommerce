@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RK BAZAAR Admin Panel</title>
+  <meta name="referrer" content="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #080812;
+      --s1: #0f0f1e;
+      --s2: #16162a;
+      --s3: #1e1e36;
+      --border: rgba(255, 255, 255, .06);
+      --blue: #00d4ff;
+      --blue2: #0099cc;
+      --green: #00e676;
+      --red: #ff4444;
+      --orange: #ff6b00;
+      --w: #e8e8f0;
+      --g: #666680;
+      --r: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--w);
+      min-height: 100vh;
+    }
+
+    button {
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      border: none;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--s3);
+      border-radius: 4px;
+    }
+
+    /* ══ AUTH GATE ══ */
+    #auth-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at 50% 0%, #0a0a2a 0%, var(--bg) 70%);
+      padding: 20px;
+    }
+
+    .auth-logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: var(--w);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .auth-logo b {
+      color: var(--blue);
+    }
+
+    .auth-sub {
+      font-size: .72rem;
+      color: var(--g);
+      margin-bottom: 32px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+    }
+
+    .auth-card h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .auth-card p {
+      font-size: .72rem;
+      color: var(--g);
+      margin-bottom: 24px;
+    }
+
+    .auth-field {
+      margin-bottom: 14px;
+    }
+
+    .auth-field label {
+      display: block;
+      font-size: .6rem;
+      font-weight: 800;
+      color: var(--g);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .auth-field input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--s2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      color: var(--w);
+      font-size: .88rem;
+      outline: none;
+      transition: border .2s;
+    }
+
+    .auth-field input:focus {
+      border-color: var(--blue);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      color: #000;
+      border: none;
+      border-radius: var(--r);
+      font-size: .9rem;
+      font-weight: 800;
+      margin-top: 6px;
+      transition: opacity .2s;
+      letter-spacing: .5px;
+    }
+
+    .auth-btn:hover {
+      opacity: .9;
+    }
+
+    .auth-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    #login-error {
+      color: var(--red);
+      font-size: .75rem;
+      margin-top: 10px;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    #attempts-warning {
+      color: #ffaa00;
+      font-size: .72rem;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .auth-dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .auth-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--s3);
+    }
+
+    .auth-dot.fill {
+      background: var(--blue);
+    }
+
+    /* ══ ADMIN PANEL ══ */
+    #admin-panel {
+      display: none;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background: var(--s1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sb-brand {
+      padding: 20px 18px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sb-logo {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .sb-logo b {
+      color: var(--blue);
+    }
+
+    .sb-admin {
+      font-size: .62rem;
+      color: var(--g);
+      margin-top: 3px;
+    }
+
+    .sb-section {
+      padding: 12px 10px 4px;
+      font-size: .55rem;
+      font-weight: 800;
+      color: var(--g);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      color: var(--g);
+      font-size: .82rem;
+      font-weight: 600;
+      transition: all .2s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      border-radius: 0;
+      cursor: pointer;
+    }
+
+    .nav-item i {
+      width: 16px;
+      text-align: center;
+      font-size: .85rem;
+    }
+
+    .nav-item:hover {
+      background: var(--s2);
+      color: var(--w);
+    }
+
+    .nav-item.active {
+      background: rgba(0, 212, 255, .08);
+      color: var(--blue);
+      border-right: 2px solid var(--blue);
+    }
+
+    .sb-footer {
+      margin-top: auto;
+      padding: 12px 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .logout-btn {
+      color: var(--red) !important;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 68, 68, .08) !important;
+    }
+
+    /* Main */
+    .main {
+      margin-left: 220px;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .topbar h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 99px;
+    }
+
+    .badge-blue {
+      background: rgba(0, 212, 255, .1);
+      color: var(--blue);
+      border: 1px solid rgba(0, 212, 255, .2);
+    }
+
+    .badge-green {
+      background: rgba(0, 230, 118, .1);
+      color: var(--green);
+      border: 1px solid rgba(0, 230, 118, .2);
+    }
+
+    #session-timer {
+      font-size: .7rem;
+      color: var(--g);
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 18px;
+      position: relative;
+      overflow: hidden;
+      transition: border .2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(0, 212, 255, .2);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), transparent);
+    }
+
+    .stat-icon {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: .68rem;
+      color: var(--g);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .stat-sub {
+      font-size: .65rem;
+      color: var(--g);
+      margin-top: 4px;
+    }
+
+    /* Section */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Section header */
+    .sec-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sec-header h2 {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .sec-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: .75rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue2);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--g);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn-danger {
+      background: rgba(255, 68, 68, .1);
+      color: var(--red);
+      border: 1px solid rgba(255, 68, 68, .2);
+    }
+
+    .btn-danger:hover {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-success {
+      background: rgba(0, 230, 118, .1);
+      color: var(--green);
+      border: 1px solid rgba(0, 230, 118, .2);
+    }
+
+    .btn-success:hover {
+      background: var(--green);
+      color: #000;
+    }
+
+    /* Table */
+    .table-wrap {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .table-search {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table-search input {
+      flex: 1;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--w);
+      font-size: .8rem;
+      outline: none;
+      transition: border .2s;
+    }
+
+    .table-search input:focus {
+      border-color: var(--blue);
+    }
+
+    .table-search i {
+      color: var(--g);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--s2);
+    }
+
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: .65rem;
+      font-weight: 800;
+      color: var(--g);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 16px;
+      font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .td-name {
+      font-weight: 600;
+      color: var(--w);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .td-muted {
+      color: var(--g);
+      font-size: .75rem;
+    }
+
+    .td-price {
+      font-weight: 800;
+      color: var(--blue);
+    }
+
+    /* Status badges */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: .65rem;
+      font-weight: 800;
+    }
+
+    .status::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .s-active {
+      background: rgba(0, 230, 118, .1);
+      color: var(--green);
+    }
+
+    .s-banned {
+      background: rgba(255, 68, 68, .1);
+      color: var(--red);
+    }
+
+    .s-pending {
+      background: rgba(255, 152, 0, .1);
+      color: #ff9800;
+    }
+
+    .s-paid {
+      background: rgba(0, 230, 118, .1);
+      color: var(--green);
+    }
+
+    .s-failed {
+      background: rgba(255, 68, 68, .1);
+      color: var(--red);
+    }
+
+    .s-delivered {
+      background: rgba(0, 212, 255, .1);
+      color: var(--blue);
+    }
+
+    .s-processing {
+      background: rgba(156, 39, 176, .1);
+      color: #ce93d8;
+    }
+
+    /* Loader / Empty */
+    .loader {
+      text-align: center;
+      padding: 40px;
+      color: var(--g);
+      font-size: .85rem;
+    }
+
+    .loader i {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 8px;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      color: var(--s3);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .empty-state h3 {
+      font-size: .9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .empty-state p {
+      font-size: .75rem;
+      color: var(--g);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .modal h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .modal p {
+      font-size: .75rem;
+      color: var(--g);
+      margin-bottom: 20px;
+    }
+
+    .modal-field {
+      margin-bottom: 14px;
+    }
+
+    .modal-field label {
+      display: block;
+      font-size: .6rem;
+      font-weight: 800;
+      color: var(--g);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .modal-field input,
+    .modal-field select,
+    .modal-field textarea {
+      width: 100%;
+      padding: 10px 13px;
+      background: var(--s2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--w);
+      font-size: .83rem;
+      outline: none;
+      transition: border .2s;
+    }
+
+    .modal-field input:focus,
+    .modal-field select:focus,
+    .modal-field textarea:focus {
+      border-color: var(--blue);
+    }
+
+    .modal-field select option {
+      background: var(--s1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: .85rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: var(--s2);
+      color: var(--g);
+    }
+
+    .btn-save {
+      background: var(--blue);
+      color: #000;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: .8rem;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all .3s;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 300px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      border-color: rgba(0, 230, 118, .3);
+    }
+
+    .toast.error {
+      border-color: rgba(255, 68, 68, .3);
+    }
+
+    .toast i {
+      font-size: .9rem;
+    }
+
+    .toast.success i {
+      color: var(--green);
+    }
+
+    .toast.error i {
+      color: var(--red);
+    }
+
+    .toast.info i {
+      color: var(--blue);
+    }
+
+    /* Product image */
+    .prod-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--s2);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--g);
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover,
+    .page-btn.active {
+      background: var(--blue);
+      color: #000;
+      border-color: var(--blue);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+      }
+
+      .sidebar .sb-brand h1,
+      .sidebar .sb-admin,
+      .sidebar .nav-item span,
+      .sidebar .sb-section,
+      .sidebar .sb-logo span {
+        display: none;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 12px;
+      }
+
+      .nav-item i {
+        width: auto;
+      }
+
+      .main {
+        margin-left: 60px;
+        padding: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* OTP inputs for Admin Reset */
+    .otp-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .otp-box {
+      width: 44px;
+      height: 50px;
+      background: var(--s2);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--w);
+      outline: none;
+      transition: border .2s;
+    }
+
+    .otp-box:focus {
+      border-color: var(--blue);
+    }
+
+    .otp-info-box {
+      background: rgba(0, 212, 255, .08);
+      border: 1px solid rgba(0, 212, 255, .2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .otp-info-box i {
+      color: var(--blue);
+      font-size: 1rem;
+    }
+
+    .otp-info-box p {
+      font-size: .73rem;
+      color: var(--g);
+      line-height: 1.5;
+    }
+
+    .otp-info-box p b {
+      color: var(--w);
+    }
+
+    .auth-card.hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
+
+  <!-- ══ AUTH GATE ══ -->
+  <div id="auth-gate">
+    <div class="auth-logo">RK <b>Gadget</b></div>
+    <p class="auth-sub">ADMIN CONTROL PANEL</p>
+    <div class="auth-card" id="admin-login-card">
+      <h2>🔐 Admin Login</h2>
+      <p>Enter your credentials to access the panel</p>
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="admin-email" placeholder="rkgadgets02@gmail.com" autocomplete="off" />
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="admin-password" placeholder="Enter your password" autocomplete="off" />
+      </div>
+      <div style="text-align:right;margin:-10px 0 15px;line-height:1">
+        <a onclick="showAdminForgot()" style="font-size:.68rem;color:var(--blue);cursor:pointer;font-weight:700">Forgot
+          Password?</a>
+      </div>
+      <button class="auth-btn" id="login-btn" onclick="adminLogin()">
+        <i class="fas fa-sign-in-alt"></i> Login to Admin Panel
+      </button>
+      <div id="login-error"></div>
+      <div id="attempts-warning"></div>
+    </div>
+
+    <div class="auth-card hidden" id="admin-forgot-card">
+      <h2>🔑 Forgot Password?</h2>
+      <p>Enter your email to receive a reset code</p>
+      <div class="auth-field">
+        <label>Admin Email Address</label>
+        <input type="email" id="admin-forgot-email" placeholder="rkgadgets02@gmail.com" autocomplete="off" />
+      </div>
+      <button class="auth-btn" id="forgot-btn" onclick="doAdminForgot()">
+        <i class="fas fa-paper-plane"></i> Send Reset Code
+      </button>
+      <div style="text-align:center;margin-top:20px">
+        <a onclick="backToAdminLogin()" style="font-size:.72rem;color:var(--g);cursor:pointer">← Back to Login</a>
+      </div>
+    </div>
+
+    <div class="auth-card hidden" id="admin-reset-card">
+      <h2>🛡️ New Password</h2>
+      <p>Enter the code sent to your email</p>
+      <div class="otp-info-box">
+        <i class="fas fa-key"></i>
+        <p>Reset code sent to <b id="adminResetEmailDisplay">email</b>.</p>
+      </div>
+      <div class="otp-inputs">
+        <input class="otp-box" id="a1" maxlength="1" type="text" inputmode="numeric" oninput="adminOtpNext(this,'a2')"
+          onkeydown="adminOtpBack(event,this,'')">
+        <input class="otp-box" id="a2" maxlength="1" type="text" inputmode="numeric" oninput="adminOtpNext(this,'a3')"
+          onkeydown="adminOtpBack(event,this,'a1')">
+        <input class="otp-box" id="a3" maxlength="1" type="text" inputmode="numeric" oninput="adminOtpNext(this,'a4')"
+          onkeydown="adminOtpBack(event,this,'a2')">
+        <input class="otp-box" id="a4" maxlength="1" type="text" inputmode="numeric" oninput="adminOtpNext(this,'a5')"
+          onkeydown="adminOtpBack(event,this,'a3')">
+        <input class="otp-box" id="a5" maxlength="1" type="text" inputmode="numeric" oninput="adminOtpNext(this,'a6')"
+          onkeydown="adminOtpBack(event,this,'a4')">
+        <input class="otp-box" id="a6" maxlength="1" type="text" inputmode="numeric" oninput="adminOtpNext(this,'')"
+          onkeydown="adminOtpBack(event,this,'a5')">
+      </div>
+      <div class="auth-field">
+        <label>New Administrator Password</label>
+        <input type="password" id="admin-new-password" placeholder="Min 6 characters" autocomplete="off" />
+      </div>
+      <button class="auth-btn" id="reset-btn" onclick="doAdminReset()">
+        <i class="fas fa-save"></i> Reset Password
+      </button>
+      <div style="text-align:center;margin-top:20px">
+        <a onclick="backToAdminLogin()" style="font-size:.72rem;color:var(--g);cursor:pointer">← Back to Login</a>
+      </div>
+    </div>
+    <div class="auth-dots">
+      <div class="auth-dot fill"></div>
+      <div class="auth-dot fill"></div>
+      <div class="auth-dot"></div>
+    </div>
+  </div>
+
+  <!-- ══ ADMIN PANEL ══ -->
+  <div id="admin-panel">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sb-brand">
+        <div class="sb-logo">RK <b>BAZAAR</b></div>
+        <div class="sb-admin" id="admin-name-display">Admin Panel</div>
+      </div>
+      <div class="sb-section">Main</div>
+      <button class="nav-item active" onclick="showSection('dashboard',this)"><i
+          class="fas fa-th-large"></i><span>Dashboard</span></button>
+      <button class="nav-item" onclick="showSection('products',this)"><i
+          class="fas fa-box"></i><span>Products</span></button>
+      <button class="nav-item" onclick="showSection('categories',this)"><i
+          class="fas fa-tags"></i><span>Categories</span></button>
+      <button class="nav-item" onclick="showSection('orders',this)"><i
+          class="fas fa-shopping-bag"></i><span>Orders</span></button>
+      <button class="nav-item" onclick="showSection('express',this)"><i
+          class="fas fa-bolt" style="color:var(--orange)"></i><span>Express Orders</span></button>
+      <button class="nav-item" onclick="showSection('users',this)"><i
+          class="fas fa-users"></i><span>Users</span></button>
+      <div class="sb-section">Settings</div>
+      <button class="nav-item" onclick="showSection('settings',this)"><i
+          class="fas fa-cog"></i><span>Settings</span></button>
+      <button class="nav-item" onclick="showSection('branding',this)"><i
+          class="fas fa-paint-brush"></i><span>Branding</span></button>
+      <button class="nav-item" onclick="showSection('offers',this)"><i
+          class="fas fa-gift"></i><span>Offers</span></button>
+      <div class="sb-footer">
+        <button class="nav-item logout-btn" onclick="adminLogout()"><i
+            class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="topbar">
+        <h1 id="section-title">Dashboard</h1>
+        <div class="topbar-right">
+          <span id="session-timer"></span>
+          <span class="badge badge-green"><i class="fas fa-circle" style="font-size:.4rem"></i> Online</span>
+          <span class="badge badge-blue">Admin</span>
+        </div>
+      </div>
+
+      <!-- ── DASHBOARD ── -->
+      <div class="section active" id="section-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value" id="stat-users">—</div>
+            <div class="stat-sub">Registered accounts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Total Products</div>
+            <div class="stat-value" id="stat-products">—</div>
+            <div class="stat-sub">Active listings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value" id="stat-orders">—</div>
+            <div class="stat-sub">All time orders</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value" id="stat-revenue">—</div>
+            <div class="stat-sub">From paid orders</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(255, 107, 0, .2)">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-label" style="color:var(--orange)">Express Orders</div>
+            <div class="stat-value" id="stat-express">—</div>
+            <div class="stat-sub">High priority shipping</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div style="padding:16px 18px;border-bottom:1px solid var(--border);font-size:.85rem;font-weight:800;">
+            <i class="fas fa-clock" style="color:var(--blue);margin-right:8px"></i>Recent Orders
+          </div>
+          <div id="recent-orders-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading recent orders...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PRODUCTS ── -->
+      <div class="section" id="section-products">
+        <div class="sec-header">
+          <h2><i class="fas fa-box" style="color:var(--blue);margin-right:8px"></i>Products</h2>
+          <div class="sec-actions">
+            <button class="btn-sm btn-outline" onclick="loadProducts()"><i class="fas fa-sync"></i> Refresh</button>
+            <button class="btn-sm btn-primary" onclick="openAddProduct()"><i class="fas fa-plus"></i> Add
+              Product</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search products..." oninput="filterTable('products-body',this.value)" />
+          </div>
+          <div id="products-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading products...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CATEGORIES ── -->
+      <div class="section" id="section-categories">
+        <div class="sec-header">
+          <h2><i class="fas fa-tags" style="color:var(--blue);margin-right:8px"></i>Categories</h2>
+          <div class="sec-actions">
+            <button class="btn-sm btn-outline" onclick="loadAdminCategories()"><i class="fas fa-sync"></i> Refresh</button>
+            <button class="btn-sm btn-primary" onclick="openCategoryModal()"><i class="fas fa-plus"></i> Add Category</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div id="admin-categories-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading categories...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ORDERS ── -->
+      <div class="section" id="section-orders">
+        <div class="sec-header">
+          <h2><i class="fas fa-shopping-bag" style="color:var(--blue);margin-right:8px"></i>Normal Orders</h2>
+          <div class="sec-actions">
+            <button class="btn-sm btn-outline" onclick="loadOrders()"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search normal orders..." oninput="filterTable('orders-body',this.value)" />
+          </div>
+          <div id="orders-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading orders...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EXPRESS ORDERS ── -->
+      <div class="section" id="section-express">
+        <div class="sec-header">
+          <h2><i class="fas fa-bolt" style="color:var(--orange);margin-right:8px"></i>Express Orders</h2>
+          <div class="sec-actions">
+            <button class="btn-sm btn-outline" onclick="loadExpressOrders()"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search express orders..." oninput="filterTable('express-body',this.value)" />
+          </div>
+          <div id="express-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading express orders...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── USERS ── -->
+      <div class="section" id="section-users">
+        <div class="sec-header">
+          <h2><i class="fas fa-users" style="color:var(--blue);margin-right:8px"></i>Users</h2>
+          <div class="sec-actions">
+            <button class="btn-sm btn-outline" onclick="loadUsers()"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search users..." oninput="filterTable('users-body',this.value)" />
+          </div>
+          <div id="users-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading users...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="section" id="section-settings">
+        <div class="sec-header">
+          <h2><i class="fas fa-cog" style="color:var(--blue);margin-right:8px"></i>Settings</h2>
+        </div>
+        <div class="table-wrap" style="padding:24px">
+          <div style="margin-bottom:20px">
+            <div style="font-size:.85rem;font-weight:800;margin-bottom:14px;color:var(--blue)">🔐 Security Info</div>
+            <div style="display:grid;gap:10px">
+              <div
+                style="background:var(--s2);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-size:.8rem;font-weight:700">Session Timeout</div>
+                  <div style="font-size:.68rem;color:var(--g);margin-top:2px">Auto logout after 15 min inactivity</div>
+                </div>
+                <span class="badge badge-green">Active</span>
+              </div>
+              <div
+                style="background:var(--s2);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-size:.8rem;font-weight:700">Login Attempt Limit</div>
+                  <div style="font-size:.68rem;color:var(--g);margin-top:2px">Lockout after 5 failed attempts</div>
+                </div>
+                <span class="badge badge-green">Active</span>
+              </div>
+              <div
+                style="background:var(--s2);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-size:.8rem;font-weight:700">JWT Token Auth</div>
+                  <div style="font-size:.68rem;color:var(--g);margin-top:2px">Secure token verified on every request
+                  </div>
+                </div>
+                <span class="badge badge-green">Active</span>
+              </div>
+              <div
+                style="background:var(--s2);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div style="font-size:.8rem;font-weight:700">XSS Protection</div>
+                  <div style="font-size:.68rem;color:var(--g);margin-top:2px">All output is HTML-escaped</div>
+                </div>
+                <span class="badge badge-green">Active</span>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:20px">
+            <div style="font-size:.85rem;font-weight:800;margin-bottom:14px;color:var(--blue)">⚠️ Danger Zone</div>
+            <button class="btn-sm btn-danger" style="padding:10px 18px" onclick="adminLogout()">
+              <i class="fas fa-sign-out-alt"></i> Logout from Admin Panel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BRANDING ── -->
+      <div class="section" id="section-branding">
+        <div class="sec-header">
+          <h2><i class="fas fa-paint-brush" style="color:var(--blue);margin-right:8px"></i>Store Branding</h2>
+        </div>
+        <div class="table-wrap" style="padding:24px">
+          <div style="font-size:.85rem;font-weight:800;margin-bottom:20px;color:var(--blue)">🏪 Identity & Contact</div>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div class="modal-field">
+              <label>Store Name</label>
+              <input type="text" id="b-name" placeholder="e.g. RK BAZAAR" />
+            </div>
+            <div class="modal-field">
+              <label>Store Slogan</label>
+              <input type="text" id="b-slogan" placeholder="e.g. 3D FUTURE SHOPPING" />
+            </div>
+            <div class="modal-field">
+              <label>Contact Email</label>
+              <input type="email" id="b-email" placeholder="rkgadgets02@gmail.com" />
+            </div>
+            <div class="modal-field">
+              <label>Contact Phone</label>
+              <input type="tel" id="b-phone" placeholder="+91 82207 48235" />
+            </div>
+          </div>
+          
+          <div class="modal-field" style="margin-top:10px">
+            <label>Store Description</label>
+            <textarea id="b-desc" rows="3" placeholder="Describe your store..."></textarea>
+          </div>
+          
+          <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:20px;text-align:right">
+            <button class="btn-sm btn-primary" id="btn-save-brand" onclick="saveBranding()" style="padding:10px 24px">
+              <i class="fas fa-save"></i> Save Brand Settings
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OFFERS ── -->
+      <div class="section" id="section-offers">
+        <div class="sec-header">
+          <h2><i class="fas fa-gift" style="color:var(--orange);margin-right:8px"></i>Homepage Offers</h2>
+          <div class="sec-actions">
+            <button class="btn-sm btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Add New Offer</button>
+            <button class="btn-sm btn-outline" onclick="loadAdminOffers()"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search offers..." oninput="filterTable('offers-body',this.value)" />
+          </div>
+          <div id="offers-body">
+            <div class="loader"><i class="fas fa-spinner"></i>Loading offers...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADD/EDIT PRODUCT MODAL ── -->
+  <div class="modal-overlay" id="modal-product">
+    <div class="modal" style="max-width:500px;max-height:90vh;overflow-y:auto">
+      <h3 id="modal-product-title">Add New Product</h3>
+      <p>Fill in the product details below</p>
+      <div class="modal-field"><label>Product Name</label><input type="text" id="p-name"
+          placeholder="e.g. Pro TWS Earbuds" /></div>
+      <div class="modal-field"><label>Price (₹)</label><input type="number" id="p-price" placeholder="299" /></div>
+      <div class="modal-field"><label>MRP / Original Price (₹)</label><input type="number" id="p-mrp"
+          placeholder="599" /></div>
+      <div class="modal-field"><label>Stock Quantity</label><input type="number" id="p-stock" placeholder="100" /></div>
+      <div class="modal-field"><label>Category</label>
+        <input type="text" id="p-category" placeholder="e.g. Earbuds" list="category-list" />
+        <datalist id="category-list"></datalist>
+      </div>
+      <div class="modal-field"><label>Brand</label><input type="text" id="p-brand" placeholder="e.g. RK BAZAAR" /></div>
+      <div class="modal-field"><label>Description</label><textarea id="p-desc" rows="3"
+          placeholder="Product description..."></textarea></div>
+      <div class="modal-field">
+        <label>Product Image URLs (Up to 5, one per line)</label>
+        <textarea id="p-images" rows="4" placeholder="https://i.ibb.co/xxxx/image1.jpg&#10;https://i.ibb.co/yyyy/image2.jpg"
+          style="width:100%;padding:10px 13px;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;color:var(--w);font-size:.83rem;outline:none;"
+          oninput="previewImageUrl(this.value)"></textarea>
+        <!-- Live preview -->
+        <div id="p-img-preview" style="margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"></div>
+        <!-- Warning for wrong URL type -->
+        <div id="p-img-warning" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(255,165,0,0.12);border:1px solid orange;border-radius:8px;font-size:.72rem;color:orange;line-height:1.5">
+          ⚠️ <strong>Wrong URL format!</strong><br>
+          <code style="color:#fff;font-size:.68rem">https://ibb.co/xxx</code> is a <u>share page</u>, not a direct image.<br>
+          Use the <strong>Direct link</strong> from imgbb: <code style="color:#4fc3f7">https://i.ibb.co/xxx/name.jpg</code>
+        </div>
+        <!-- Tip -->
+        <div style="margin-top:7px;font-size:.68rem;color:var(--g)">
+          💡 Tip: Use <b>i.ibb.co</b> direct link · or <b>i.imgur.com</b> · or any direct <b>.jpg/.png/.webp</b> URL
+        </div>
+        <div id="p-existing-imgs" style="margin-top:6px;font-size:.68rem;color:var(--g)"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-product')">Cancel</button>
+        <button class="btn-save" id="btn-save-product" onclick="saveProduct()">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADD/EDIT OFFER MODAL ── -->
+  <div class="modal-overlay" id="modal-offer">
+    <div class="modal" style="max-width:500px;max-height:90vh;overflow-y:auto">
+      <h3 id="modal-offer-title">Add New Offer</h3>
+      <p>Configure homepage carousel banner slides</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="modal-field"><label>Main Title (e.g. Order Worth)</label><input type="text" id="off-title" placeholder="Order Worth" /></div>
+        <div class="modal-field"><label>Subtitle (e.g. ₹5,000)</label><input type="text" id="off-subtitle" placeholder="₹5,000" /></div>
+      </div>
+      <div class="modal-field"><label>Offer Text (e.g. 🎁 Get 1 Bag FREE)</label><textarea id="off-text" rows="2" placeholder="Get 1 Premium Bag FREE"></textarea></div>
+
+      <!-- 🖼️ BANNER IMAGE FIELD -->
+      <div class="modal-field">
+        <label>🖼️ Banner Image URL (Unsplash / ImgBB / any direct link)</label>
+        <input type="text" id="off-imageUrl"
+          placeholder="https://images.unsplash.com/... or https://i.ibb.co/..."
+          style="width:100%;padding:10px 13px;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;color:var(--w);font-size:.83rem;outline:none;"
+          oninput="previewOfferBanner(this.value)" />
+        <!-- Live banner preview -->
+        <div id="off-banner-preview" style="margin-top:10px;display:none;border-radius:12px;overflow:hidden;position:relative;height:100px;background:var(--s2)">
+          <img id="off-banner-img" src="" alt="Banner Preview" style="width:100%;height:100%;object-fit:cover;display:block">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.25));display:flex;align-items:center;padding:12px">
+            <div style="color:#fff">
+              <div style="font-size:.6rem;font-weight:800;letter-spacing:1px;opacity:.8;margin-bottom:3px">PREVIEW</div>
+              <div style="font-size:.85rem;font-weight:900" id="off-preview-title">Offer Title</div>
+              <div style="font-size:.68rem;opacity:.85" id="off-preview-sub">Subtitle</div>
+            </div>
+          </div>
+        </div>
+        <div id="off-banner-error" style="display:none;margin-top:6px;font-size:.68rem;color:#ef4444"></div>
+        <div style="margin-top:6px;font-size:.65rem;color:var(--g)">💡 No image? Leave blank — a gradient banner will be used instead. Unsplash: <b>?w=800&q=80</b> for best quality.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="modal-field"><label>Icon (FontAwesome)</label><input type="text" id="off-icon" placeholder="fa-bolt" /></div>
+        <div class="modal-field"><label>Display Order</label><input type="number" id="off-order" value="0" /></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="modal-field"><label>Badge Text</label><input type="text" id="off-badge" placeholder="FREE" /></div>
+        <div class="modal-field"><label>Badge Subtext</label><input type="text" id="off-badgesub" placeholder="BAG!" /></div>
+      </div>
+      <div class="modal-field">
+        <label>Active Status</label>
+        <select id="off-active">
+          <option value="true">Active (Visible)</option>
+          <option value="false">Inactive (Hidden)</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-offer')">Cancel</button>
+        <button class="btn-save" id="btn-save-offer" onclick="saveOffer()">Save Offer</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="modal-order">
+    <div class="modal">
+      <h3>Update Order Status</h3>
+      <p id="modal-order-id">Order #</p>
+      <div class="modal-field">
+        <label>Order Status</label>
+        <select id="order-status">
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-order')">Cancel</button>
+        <button class="btn-save" onclick="saveOrderStatus()">Update Status</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADD/EDIT CATEGORY MODAL ── -->
+  <div class="modal-overlay" id="modal-category">
+    <div class="modal" style="max-width:450px">
+      <h3 id="modal-category-title">Add Category</h3>
+      <p>Configure your storefront categories</p>
+      <div class="modal-field">
+        <label>Category Name</label>
+        <input type="text" id="cat-name" placeholder="e.g. Smart Watches" />
+      </div>
+      <div class="modal-field">
+        <label>Category Image URL</label>
+        <input type="text" id="cat-image" placeholder="https://i.ibb.co/xxxx/image.jpg" oninput="previewCategoryImageUrl(this.value)" />
+        <div id="cat-img-preview" style="margin-top:10px;display:flex;align-items:center;gap:10px"></div>
+        <div id="cat-img-warning" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(255,165,0,0.12);border:1px solid orange;border-radius:8px;font-size:.72rem;color:orange;line-height:1.5"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-category')">Cancel</button>
+        <button class="btn-save" id="btn-save-category" onclick="saveCategory()">Save Category</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api';
+    let loginAttempts = 0;
+    const MAX_ATTEMPTS = 5;
+    let lockoutUntil = null;
+    const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
+    let sessionTimerRef = null;
+    let sessionExpiry = null;
+    let currentOrderId = null;
+    let editingProductId = null;
+    let editingCategoryId = null;
+
+    // ══ INIT ══
+    window.addEventListener('load', async () => {
+      document.getElementById('admin-email').focus();
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && document.getElementById('auth-gate').style.display !== 'none') adminLogin();
+      });
+      const token = getToken();
+      if (token) {
+        const valid = await verifyToken(token);
+        if (valid) { showPanel(); loadDashboard(); startSession(); }
+        else { clearToken(); }
+      }
+    });
+
+    ['click', 'keypress', 'mousemove', 'scroll'].forEach(e =>
+      document.addEventListener(e, resetSession, { passive: true })
+    );
+
+    // ══ AUTH ══
+    async function adminLogin() {
+      const email = document.getElementById('admin-email').value.trim();
+      const password = document.getElementById('admin-password').value;
+      const errEl = document.getElementById('login-error');
+      const warnEl = document.getElementById('attempts-warning');
+      const btn = document.getElementById('login-btn');
+      errEl.textContent = '';
+
+      if (lockoutUntil && Date.now() < lockoutUntil) {
+        const sec = Math.ceil((lockoutUntil - Date.now()) / 1000);
+        errEl.textContent = `Locked out. Try again in ${sec}s.`;
+        return;
+      }
+      if (!email || !password) { errEl.textContent = 'Please enter email and password.'; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Invalid email format.'; return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+      try {
+        const res = await fetch(`${API}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          loginAttempts++;
+          const left = MAX_ATTEMPTS - loginAttempts;
+          if (loginAttempts >= MAX_ATTEMPTS) {
+            lockoutUntil = Date.now() + 5 * 60 * 1000;
+            errEl.textContent = 'Too many failed attempts. Locked for 5 minutes.';
+            warnEl.textContent = '';
+          } else {
+            errEl.textContent = data.message || 'Invalid credentials.';
+            warnEl.textContent = `${left} attempt${left !== 1 ? 's' : ''} remaining.`;
+          }
+          return;
+        }
+
+        if (data.user?.role !== 'admin') {
+          loginAttempts++;
+          errEl.textContent = 'Access denied. Admins only.';
+          return;
+        }
+
+        setToken(data.token);
+        document.getElementById('admin-name-display').textContent = data.user.name || 'Admin';
+        loginAttempts = 0; lockoutUntil = null; warnEl.textContent = '';
+        showPanel(); loadDashboard(); startSession();
+        showToast('Welcome back! ' + (data.user.name || ''), 'success');
+
+      } catch (e) {
+        errEl.textContent = 'Network error. Check your connection.';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Admin Panel';
+      }
+    }
+
+    function showAdminForgot() {
+      document.getElementById('admin-login-card').classList.add('hidden');
+      document.getElementById('admin-forgot-card').classList.remove('hidden');
+    }
+
+    function backToAdminLogin() {
+      document.getElementById('admin-forgot-card').classList.add('hidden');
+      document.getElementById('admin-reset-card').classList.add('hidden');
+      document.getElementById('admin-login-card').classList.remove('hidden');
+    }
+
+    function showAdminReset(email) {
+      document.getElementById('adminResetEmailDisplay').textContent = email;
+      ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('admin-new-password').value = '';
+      document.getElementById('admin-forgot-card').classList.add('hidden');
+      document.getElementById('admin-reset-card').classList.remove('hidden');
+      setTimeout(() => document.getElementById('a1').focus(), 300);
+    }
+
+    async function doAdminForgot() {
+      const email = document.getElementById('admin-forgot-email').value.trim();
+      if (!email) { showToast('Please enter admin email.', 'error'); return; }
+      const btn = document.getElementById('forgot-btn');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      try {
+        const res = await fetch(`${API}/auth/forgot-password`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          window._pendingAdminEmail = email;
+          showAdminReset(email);
+          showToast('Reset code sent! Check your email.', 'success');
+        } else showToast(data.message || 'Error occurred.', 'error');
+      } catch (e) { showToast('Network error.', 'error'); }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Reset Code'; }
+    }
+
+    async function doAdminReset() {
+      const otp = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'].map(id => document.getElementById(id).value).join('');
+      const pass = document.getElementById('admin-new-password').value;
+      if (otp.length < 6) { showToast('Please enter the 6-digit code.', 'error'); return; }
+      if (pass.length < 6) { showToast('Password must be at least 6 characters.', 'error'); return; }
+      const btn = document.getElementById('reset-btn');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+      try {
+        const res = await fetch(`${API}/auth/reset-password`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: window._pendingAdminEmail, otp, newPassword: pass }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Password reset! Please login.', 'success');
+          backToAdminLogin();
+        } else showToast(data.message || 'Invalid code.', 'error');
+      } catch (e) { showToast('Network error.', 'error'); }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Reset Password'; }
+    }
+
+    function adminOtpNext(el, nextId) {
+      el.value = el.value.replace(/[^0-9]/g, '');
+      if (el.value && nextId) document.getElementById(nextId).focus();
+    }
+    function adminOtpBack(e, el, prevId) { if (e.key === 'Backspace' && !el.value && prevId) document.getElementById(prevId).focus(); }
+
+    async function verifyToken(token) {
+      try {
+        const res = await fetch(`${API}/auth/verify`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const data = await res.json();
+        if (res.ok && data.success && data.user?.role === 'admin') {
+          document.getElementById('admin-name-display').textContent = data.user.name || 'Admin';
+          return true;
+        }
+        return false;
+      } catch { return false; }
+    }
+
+    function adminLogout() {
+      clearToken(); clearTimeout(sessionTimerRef); sessionExpiry = null;
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('auth-gate').style.display = 'flex';
+      document.getElementById('admin-password').value = '';
+      document.getElementById('admin-email').value = '';
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('session-timer').textContent = '';
+    }
+
+    function showPanel() {
+      document.getElementById('auth-gate').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+    }
+
+    // ══ SESSION ══
+    function startSession() {
+      sessionExpiry = Date.now() + SESSION_TIMEOUT_MS;
+      resetSession();
+    }
+    function resetSession() {
+      if (!sessionExpiry) return;
+      clearTimeout(sessionTimerRef);
+      sessionExpiry = Date.now() + SESSION_TIMEOUT_MS;
+      sessionTimerRef = setTimeout(() => {
+        alert('Session expired. Please login again.');
+        adminLogout();
+      }, SESSION_TIMEOUT_MS);
+      updateTimerDisplay();
+    }
+    function updateTimerDisplay() {
+      if (!sessionExpiry) return;
+      const rem = Math.max(0, Math.floor((sessionExpiry - Date.now()) / 1000));
+      const m = Math.floor(rem / 60).toString().padStart(2, '0');
+      const s = (rem % 60).toString().padStart(2, '0');
+      const el = document.getElementById('session-timer');
+      if (el) el.textContent = `Session: ${m}:${s}`;
+      if (rem > 0) setTimeout(updateTimerDisplay, 1000);
+    }
+
+    // ══ TOKEN ══
+    function setToken(t) { sessionStorage.setItem('blt_admin', t); }
+    function getToken() { return sessionStorage.getItem('blt_admin'); }
+    function clearToken() { sessionStorage.removeItem('blt_admin'); }
+
+    // ══ AUTH FETCH ══
+    async function af(url, opts = {}) {
+      const token = getToken();
+      if (!token) { adminLogout(); return null; }
+      try {
+        // Don't set Content-Type if body is FormData — browser handles it with boundary
+        const isFormData = opts.body instanceof FormData;
+        const res = await fetch(url, {
+          ...opts,
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+            ...opts.headers,
+          },
+        });
+        if (res.status === 401 || res.status === 403) {
+          showToast('Session expired. Please login again.', 'error');
+          adminLogout(); return null;
+        }
+        return res;
+      } catch (e) {
+        showToast('Network error. Check connection.', 'error');
+        return null;
+      }
+    }
+
+    // ══ NAVIGATION ══
+    function showSection(name, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      const sec = document.getElementById('section-' + name);
+      if (sec) sec.classList.add('active');
+      if (btn) btn.classList.add('active');
+      const titles = { dashboard: 'Dashboard', products: 'Products', orders: 'Normal Orders', express: 'Express Orders', users: 'Users', settings: 'Settings', categories: 'Categories', branding: 'Store Branding', offers: 'Homepage Offers' };
+      document.getElementById('section-title').textContent = titles[name] || name;
+      if (name === 'dashboard') loadDashboard();
+      if (name === 'products') loadProducts();
+      if (name === 'orders') loadOrders();
+      if (name === 'express') loadExpressOrders();
+      if (name === 'users') loadUsers();
+      if (name === 'categories') loadAdminCategories();
+      if (name === 'branding') loadBranding();
+      if (name === 'offers') loadAdminOffers();
+    }
+
+    // ══ OFFERS (HERO SLIDES) ══
+    let editingOfferId = null;
+
+    async function loadAdminOffers() {
+      const res = await af(`${API}/admin/slides`);
+      const body = document.getElementById('offers-body');
+      if (!res) return;
+      const data = await res.json();
+      if (!data.success || !data.data?.length) {
+        body.innerHTML = '<div class="empty-state"><i class="fas fa-gift"></i><h3>No offers found</h3><p>Click Add Offer to create one</p></div>';
+        return;
+      }
+
+      body.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Banner</th>
+              <th>Title / Description</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.data.map(off => `
+              <tr data-id="${off._id}" data-search="${esc(off.title)} ${esc(off.subtitle || '')}">
+                <td>${off.order || 0}</td>
+                <td>
+                  ${off.imageUrl
+                    ? `<div style="width:80px;height:46px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)"><img src="${esc(off.imageUrl)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=font-size:1.2rem>🖼️</span>'"></div>`
+                    : `<div style="width:80px;height:46px;border-radius:8px;background:linear-gradient(135deg,#c73200,#ff6b00);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff;letter-spacing:.5px">GRADIENT</div>`
+                  }
+                </td>
+                <td>
+                  <div style="font-weight:700">${esc(off.title)}</div>
+                  <div style="color:var(--blue);font-size:.7rem">${esc(off.subtitle || '')}</div>
+                  <div style="color:var(--g);font-size:.68rem;margin-top:2px">${esc(off.offerText || '')}</div>
+                </td>
+                <td><span class="status ${off.isActive ? 's-active' : 's-banned'}">${off.isActive ? 'Live' : 'Hidden'}</span></td>
+                <td>
+                  <div class="sec-actions">
+                    <button class="btn-sm btn-outline" onclick="openOfferModal('${off._id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn-sm btn-danger" onclick="deleteOffer('${off._id}')"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function openOfferModal(id = null) {
+      editingOfferId = id;
+      document.getElementById('modal-offer-title').textContent = id ? 'Edit Offer' : 'Add New Offer';
+      document.getElementById('off-title').value = '';
+      document.getElementById('off-subtitle').value = '';
+      document.getElementById('off-text').value = '';
+      document.getElementById('off-icon').value = 'fa-bolt';
+      document.getElementById('off-order').value = '0';
+      document.getElementById('off-badge').value = '';
+      document.getElementById('off-badgesub').value = '';
+      document.getElementById('off-active').value = 'true';
+      document.getElementById('off-imageUrl').value = '';
+      document.getElementById('off-banner-preview').style.display = 'none';
+      document.getElementById('off-banner-error').style.display = 'none';
+
+      if (id) fetchOfferData(id);
+      openModal('modal-offer');
+    }
+
+    async function fetchOfferData(id) {
+      const res = await af(`${API}/admin/slides`);
+      const data = await res.json();
+      const off = data.data.find(x => x._id === id);
+      if (off) {
+        document.getElementById('off-title').value = off.title || '';
+        document.getElementById('off-subtitle').value = off.subtitle || '';
+        document.getElementById('off-text').value = off.offerText || '';
+        document.getElementById('off-icon').value = off.icon || 'fa-bolt';
+        document.getElementById('off-order').value = off.order || 0;
+        document.getElementById('off-badge').value = off.badgeText || '';
+        document.getElementById('off-badgesub').value = off.badgeSub || '';
+        document.getElementById('off-active').value = off.isActive.toString();
+        // Load banner image if present
+        if (off.imageUrl) {
+          document.getElementById('off-imageUrl').value = off.imageUrl;
+          previewOfferBanner(off.imageUrl);
+        }
+      }
+    }
+
+    function previewOfferBanner(url) {
+      const previewBox = document.getElementById('off-banner-preview');
+      const previewImg = document.getElementById('off-banner-img');
+      const errEl = document.getElementById('off-banner-error');
+      const titleEl = document.getElementById('off-preview-title');
+      const subEl = document.getElementById('off-preview-sub');
+
+      errEl.style.display = 'none';
+      errEl.textContent = '';
+
+      // Update live preview labels from other fields
+      const t = document.getElementById('off-title').value || 'Offer Title';
+      const s = document.getElementById('off-subtitle').value || 'Subtitle';
+      if (titleEl) titleEl.textContent = t;
+      if (subEl) subEl.textContent = s;
+
+      if (!url || !url.trim()) {
+        previewBox.style.display = 'none';
+        return;
+      }
+
+      if (!url.startsWith('http')) {
+        errEl.textContent = '❌ Invalid URL — must start with http:// or https://';
+        errEl.style.display = 'block';
+        previewBox.style.display = 'none';
+        return;
+      }
+
+      previewImg.src = url;
+      previewBox.style.display = 'block';
+      previewImg.onerror = () => {
+        previewBox.style.display = 'none';
+        errEl.textContent = '❌ Cannot load image. Ensure it is a direct image URL.';
+        errEl.style.display = 'block';
+      };
+      previewImg.onload = () => {
+        errEl.style.display = 'none';
+      };
+    }
+
+    async function saveOffer() {
+      const title = document.getElementById('off-title').value.trim();
+      if (!title) { showToast('Title is required', 'error'); return; }
+
+      const imageUrl = document.getElementById('off-imageUrl').value.trim();
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        showToast('❌ Banner image URL must be a valid http/https link!', 'error');
+        return;
+      }
+
+      const body = {
+        title,
+        subtitle: document.getElementById('off-subtitle').value.trim(),
+        offerText: document.getElementById('off-text').value.trim(),
+        icon: document.getElementById('off-icon').value.trim(),
+        order: parseInt(document.getElementById('off-order').value),
+        badgeText: document.getElementById('off-badge').value.trim(),
+        badgeSub: document.getElementById('off-badgesub').value.trim(),
+        isActive: document.getElementById('off-active').value === 'true',
+        imageUrl: imageUrl || ''
+      };
+
+      const btn = document.getElementById('btn-save-offer');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+      try {
+        const url = editingOfferId ? `${API}/admin/slides/${editingOfferId}` : `${API}/admin/slides`;
+        const res = await af(url, {
+          method: editingOfferId ? 'PUT' : 'POST',
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(editingOfferId ? 'Offer updated!' : 'Offer created!', 'success');
+          closeModal('modal-offer');
+          loadAdminOffers();
+        } else showToast(data.message || 'Error occurred.', 'error');
+      } catch (e) { showToast('Network error.', 'error'); }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Offer'; }
+    }
+
+    async function deleteOffer(id) {
+      if (!confirm('Are you sure you want to delete this offer slide?')) return;
+      try {
+        const res = await af(`${API}/admin/slides/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Offer deleted.', 'success');
+          loadAdminOffers();
+        } else showToast(data.message || 'Error occurred.', 'error');
+      } catch (e) { showToast('Network error.', 'error'); }
+    }
+
+    // ══ BRANDING ══
+    async function loadBranding() {
+      const res = await af(`${API}/admin/brand`);
+      if (!res) return;
+      const data = await res.json();
+      if (data.success && data.data) {
+        document.getElementById('b-name').value = data.data.name || '';
+        document.getElementById('b-slogan').value = data.data.slogan || '';
+        document.getElementById('b-email').value = data.data.contactEmail || '';
+        document.getElementById('b-phone').value = data.data.contactPhone || '';
+        document.getElementById('b-desc').value = data.data.description || '';
+      }
+    }
+
+    async function saveBranding() {
+      const name = document.getElementById('b-name').value.trim();
+      const slogan = document.getElementById('b-slogan').value.trim();
+      const contactEmail = document.getElementById('b-email').value.trim();
+      const contactPhone = document.getElementById('b-phone').value.trim();
+      const description = document.getElementById('b-desc').value.trim();
+
+      if (!name) { showToast('Store name is required.', 'error'); return; }
+
+      const btn = document.getElementById('btn-save-brand');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+      try {
+        const res = await af(`${API}/admin/brand`, {
+          method: 'PUT',
+          body: JSON.stringify({ name, slogan, contactEmail, contactPhone, description })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Brand settings updated successfully!', 'success');
+          // Refresh after save
+          loadBranding();
+        } else {
+          showToast(data.message || 'Failed to update brand.', 'error');
+        }
+      } catch (e) {
+        showToast('Network error.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Save Brand Settings';
+      }
+    }
+
+    // ══ DASHBOARD ══
+    async function loadDashboard() {
+      const res = await af(`${API}/admin/dashboard`);
+      if (!res) return;
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('stat-users').textContent = data.data.totalUsers ?? '—';
+        document.getElementById('stat-products').textContent = data.data.totalProducts ?? '—';
+        document.getElementById('stat-orders').textContent = data.data.totalOrders ?? '—';
+        document.getElementById('stat-express').textContent = data.data.expressOrders ?? '—';
+        document.getElementById('stat-revenue').textContent = '₹' + ((data.data.revenue || 0)).toLocaleString('en-IN');
+      }
+      // Recent orders
+      const r2 = await af(`${API}/admin/orders?limit=5`);
+      const rb = document.getElementById('recent-orders-body');
+      if (!r2) { rb.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load</h3></div>'; return; }
+      const d2 = await r2.json();
+      if (!d2.success || !d2.data?.length) {
+        rb.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No orders yet</h3><p>Orders will appear here</p></div>';
+        return;
+      }
+      rb.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>
+    ${d2.data.map(o => {
+          const s = o.shippingAddress || {};
+          return `<tr>
+      <td class="td-muted">#${esc(o._id?.slice(-8)?.toUpperCase() || '—')}${o.isExpressDelivery ? ' <span class="badge" style="background:rgba(255, 69, 0, .08); color:var(--orange); font-size:0.55rem; padding:2px 6px; margin-left:4px"><i class="fas fa-bolt"></i></span>' : ''}</td>
+      <td>
+        <div class="td-name">${esc(o.user?.name || 'Guest')}</div>
+        <div class="td-muted" style="font-size:.65rem">${esc(o.user?.email || '')}</div>
+        <div class="td-muted" style="font-size:.65rem;color:var(--blue)">${esc(o.user?.phone || '')}</div>
+      </td>
+      <td>
+        <div style="font-size:.72rem;font-weight:700">${esc(s.name || '—')}</div>
+        <div style="font-size:.68rem;color:var(--g)">${esc(s.city || '')}, ${esc(s.state || '')}</div>
+      </td>
+      <td class="td-price">₹${(o.totalAmount || o.totalPrice || 0).toLocaleString('en-IN')}</td>
+      <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
+      <td class="td-muted">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
+    </tr>`}).join('')}
+  </tbody></table>`;
+    }
+
+    // ══ PRODUCTS ══
+    async function loadProducts() {
+      const body = document.getElementById('products-body');
+      body.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i>Loading products...</div>';
+      const res = await af(`${API}/admin/products`);
+      if (!res) { body.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load products</h3><p>Check your connection</p></div>'; return; }
+      const data = await res.json();
+      if (!data.success || !data.data?.length) {
+        body.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><h3>No products found</h3><p>Add your first product</p></div>';
+        return;
+      }
+
+      if (!window._adminProducts) window._adminProducts = [];
+      window._adminProducts = data.data;
+
+      body.innerHTML = `<table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th><th>Actions</th></tr></thead><tbody>
+    ${data.data.map(p => {
+        const imgSrc = p.images && p.images[0] ? p.images[0] : '';
+        return `<tr data-search="${esc(p.name)} ${esc(p.category || '')}">
+        <td>${imgSrc ? `<img src="${imgSrc}" class="prod-img" onerror="this.style.display='none'">` : '<span style="font-size:1.4rem">📦</span>'}</td>
+        <td class="td-name">${esc(p.name)}</td>
+        <td class="td-muted">${esc(p.category?.name || p.category || '—')}</td>
+        <td class="td-price">₹${(p.price || 0).toLocaleString('en-IN')}</td>
+        <td class="td-muted">${p.mrp ? '₹' + p.mrp.toLocaleString('en-IN') : '—'}</td>
+        <td><span class="${p.stock > 0 ? 'status s-active' : 'status s-banned'}">${p.stock ?? 0}</span></td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn-sm btn-outline" onclick="openEditProduct('${p._id}')"><i class="fas fa-edit"></i></button>
+          <button class="btn-sm btn-danger" onclick="deleteProduct('${p._id}')"><i class="fas fa-trash"></i></button>
+        </td>
+      </tr>`;
+      }).join('')}
+  </tbody></table>`;
+    }
+
+    // ══ CATEGORIES TAB ══
+    async function loadAdminCategories() {
+      const body = document.getElementById('admin-categories-body');
+      if (!body) return;
+      body.innerHTML = '<div style="padding:20px;text-align:center"><i class="fas fa-spinner fa-spin"></i> Loading categories...</div>';
+      const res = await af(`${API}/categories`);
+      if (!res) { body.innerHTML = '<div class="empty-state">Failed to load categories</div>'; return; }
+      const data = await res.json();
+      if (!data.success || !data.categories?.length) {
+        body.innerHTML = '<div class="empty-state">No categories found</div>'; return;
+      }
+      window._adminCategories = data.categories;
+      body.innerHTML = `<table><thead><tr><th>Name</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+        ${data.categories.map(c => `<tr>
+          <td class="td-name">${esc(c.name)}</td>
+          <td><span class="${c.isActive ? 'status s-active' : 'status s-banned'}">${c.isActive ? 'Active' : 'Hidden'}</span></td>
+          <td style="display:flex;gap:6px">
+            <button class="btn-sm btn-outline" onclick="openCategoryModal('${c._id}')"><i class="fas fa-edit"></i> Edit</button>
+            <button class="btn-sm btn-danger" onclick="deleteCategory('${c._id}')"><i class="fas fa-trash"></i> Hide</button>
+          </td>
+        </tr>`).join('')}
+      </tbody></table>`;
+    }
+
+    async function deleteCategory(id) {
+      if (!confirm('Hide this category from website?')) return;
+      const res = await af(`${API}/categories/${id}`, { method: 'DELETE' });
+      if (res && res.ok) { showToast('Category hidden!', 'success'); loadAdminCategories(); }
+      else showToast('Failed to delete category', 'error');
+    }
+
+    function openCategoryModal(id = null) {
+      editingCategoryId = id;
+      const title = document.getElementById('modal-category-title');
+      const nameInp = document.getElementById('cat-name');
+      const imgInp = document.getElementById('cat-image');
+      const preview = document.getElementById('cat-img-preview');
+      const warning = document.getElementById('cat-img-warning');
+
+      preview.innerHTML = '';
+      warning.style.display = 'none';
+
+      if (id) {
+        title.textContent = 'Edit Category';
+        const cat = window._adminCategories.find(c => c._id === id);
+        if (cat) {
+          nameInp.value = cat.name || '';
+          imgInp.value = cat.image || '';
+          if (cat.image) previewCategoryImageUrl(cat.image);
+        }
+      } else {
+        title.textContent = 'Add Category';
+        nameInp.value = '';
+        imgInp.value = '';
+      }
+      openModal('modal-category');
+    }
+
+    async function saveCategory() {
+      const nameInp = document.getElementById('cat-name');
+      const imgInp = document.getElementById('cat-image');
+      const name = nameInp.value.trim();
+      const rawImage = imgInp.value.trim();
+      const btn = document.getElementById('btn-save-category');
+
+      if (!name) { showToast('Category name is required', 'error'); return; }
+
+      // ❌ Block ibb.co share pages
+      if (/^https?:\/\/ibb\.co\//i.test(rawImage) && !/^https?:\/\/i\.ibb\.co\//i.test(rawImage)) {
+        showToast('❌ Use Direct link from imgbb (i.ibb.co/...), not the share page!', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+      // 🖼️ Compress base64 strings if the user pasted one directly
+      const image = await compressImageIfBase64(rawImage);
+      if (image && image.length > 3000000) { 
+        showToast('❌ Image is too massive! Please use a direct link instead.', 'error');
+        btn.disabled = false; btn.innerHTML = 'Save Category';
+        return;
+      }
+
+      const method = editingCategoryId ? 'PUT' : 'POST';
+      const url = editingCategoryId ? `${API}/categories/${editingCategoryId}` : `${API}/categories`;
+
+      try {
+        const res = await af(url, {
+          method,
+          body: JSON.stringify({ name, image })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(editingCategoryId ? 'Category updated!' : 'Category added!', 'success');
+          closeModal('modal-category');
+          loadAdminCategories();
+        } else {
+          showToast(data.message || 'Failed to save category', 'error');
+        }
+      } catch (err) {
+        showToast('Error saving category', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Category';
+      }
+    }
+
+    function previewCategoryImageUrl(val) {
+      const preview = document.getElementById('cat-img-preview');
+      const warning = document.getElementById('cat-img-warning');
+      const url = val.trim();
+
+      preview.innerHTML = '';
+      warning.style.display = 'none';
+
+      if (!url) return;
+
+      if (!url.startsWith('http') && !url.startsWith('data:image/')) {
+        warning.innerHTML = `⚠️ <strong>Invalid URL!</strong> Must start with http:// or https://`;
+        warning.style.display = 'block';
+        return;
+      }
+
+      if (/^https?:\/\/ibb\.co\//i.test(url) && !/^https?:\/\/i\.ibb\.co\//i.test(url)) {
+        warning.innerHTML = `⚠️ <strong>Wrong ImgBB link!</strong> Use <b>Direct Link</b> (i.ibb.co/...)`;
+        warning.style.display = 'block';
+        return;
+      }
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:8px;border:2px solid var(--blue)';
+      img.onload = () => {
+        img.style.border = '2px solid #22c55e';
+        preview.innerHTML = '';
+        preview.appendChild(img);
+      };
+      img.onerror = () => {
+        preview.innerHTML = `<span style="font-size:.65rem;color:#ef4444">❌ Load failed</span>`;
+      };
+      preview.appendChild(img);
+    }
+
+    function openEditProduct(id) {
+      const p = window._adminProducts.find(x => x._id === id);
+      if (!p) return;
+      editProduct(p._id, p.name, p.price, p.mrp || '', p.stock, p.category?.name || p.category || '', p.brand || '', p.description || '', p.images || []);
+    }
+
+    function previewImgs(input) {
+      const preview = document.getElementById('p-img-preview');
+      preview.innerHTML = '';
+      Array.from(input.files).slice(0, 5).forEach(file => {
+        const url = URL.createObjectURL(file);
+        preview.innerHTML += `<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:8px;border:2px solid var(--blue)" alt="preview">`;
+      });
+    }
+
+    function previewImageUrl(val) {
+      const preview = document.getElementById('p-img-preview');
+      const warning = document.getElementById('p-img-warning');
+      const urls = val.split(/\r?\n/).map(u => u.trim()).filter(Boolean);
+
+      preview.innerHTML = '';
+      warning.style.display = 'none';
+
+      if (!urls.length) return;
+      if (urls.length > 5) {
+        warning.innerHTML = `⚠️ <strong>Maximum 5 images allowed!</strong>`;
+        warning.style.display = 'block';
+        return;
+      }
+
+      let hasWarning = false;
+      urls.forEach(url => {
+        if (!url.startsWith('http') && !url.startsWith('data:image/')) {
+          hasWarning = true;
+          warning.innerHTML = `⚠️ <strong>Invalid Image Address!</strong> All links must start with http:// or data:image/`;
+        } else if (/^https?:\/\/ibb\.co\//i.test(url) && !/^https?:\/\/i\.ibb\.co\//i.test(url)) {
+          hasWarning = true;
+          warning.innerHTML = `⚠️ <strong>Wrong ImgBB format!</strong> Use Direct link (i.ibb.co/...) not the share page!`;
+        } else {
+          // Show live preview
+          const img = document.createElement('img');
+          img.src = url;
+          img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:8px;border:2px solid var(--blue);transition:.2s';
+          img.onload = () => { img.style.border = '2px solid #22c55e'; };
+          img.onerror = () => { img.style.border = '2px solid #ef4444'; };
+          preview.appendChild(img);
+        }
+      });
+      if (hasWarning) warning.style.display = 'block';
+    }
+
+    function openAddProduct() {
+      editingProductId = null;
+      updateCategoryDatalist();
+      document.getElementById('modal-product-title').textContent = 'Add New Product';
+      ['p-name', 'p-price', 'p-mrp', 'p-stock', 'p-category', 'p-brand', 'p-desc'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('p-images').value = '';
+      document.getElementById('p-img-preview').innerHTML = '';
+      document.getElementById('p-existing-imgs').textContent = '';
+      openModal('modal-product');
+    }
+
+    function updateCategoryDatalist() {
+      const dl = document.getElementById('category-list');
+      if (!dl || !window._adminCategories) return;
+      dl.innerHTML = window._adminCategories.map(c => `<option value="${esc(c.name)}">`).join('');
+    }
+
+    // Store existing images for the product being edited
+    let _editingImages = [];
+
+    function editProduct(id, name, price, mrp, stock, category, brand, desc, images) {
+      editingProductId = id;
+      _editingImages = images || [];
+      updateCategoryDatalist();
+      document.getElementById('modal-product-title').textContent = 'Edit Product';
+      document.getElementById('p-name').value = name;
+      document.getElementById('p-price').value = price;
+      document.getElementById('p-mrp').value = mrp;
+      document.getElementById('p-stock').value = stock;
+      document.getElementById('p-category').value = category;
+      document.getElementById('p-brand').value = brand;
+      document.getElementById('p-desc').value = desc;
+      // Pre-fill image URLs separated by new lines
+      document.getElementById('p-images').value = (images && images.length) ? images.join('\n') : '';
+      document.getElementById('p-img-preview').innerHTML = '';
+      // Show existing images preview
+      const existEl = document.getElementById('p-existing-imgs');
+      if (images && images.length) {
+        existEl.innerHTML = `<span style="font-weight:700;color:var(--blue)">Current images:</span> ` +
+          images.map(img => `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;margin:2px;vertical-align:middle" onerror="this.style.display='none'">`).join('');
+      } else {
+        existEl.textContent = 'No images yet. Enter URLs below.';
+      }
+      openModal('modal-product');
+    }
+
+    // Shrink base64 images so they don't break the server limits (500 Error)
+    async function compressImageIfBase64(url) {
+      if (!url || !url.startsWith('data:image/')) return url;
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let { width: w, height: h } = img;
+          const MAX = 800; // max width/height
+          if (w > h && w > MAX) { h *= MAX / w; w = MAX; }
+          else if (h > w && h > MAX) { w *= MAX / h; h = MAX; }
+          
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          // Compress drastically down to ~40kb
+          resolve(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.onerror = () => resolve(url);
+        img.src = url;
+      });
+    }
+
+    async function saveProduct() {
+      const name = document.getElementById('p-name').value.trim();
+      const price = parseFloat(document.getElementById('p-price').value);
+      const mrp = parseFloat(document.getElementById('p-mrp').value) || null;
+      const stock = parseInt(document.getElementById('p-stock').value) || 0;
+      const category = document.getElementById('p-category').value.trim();
+      const brand = document.getElementById('p-brand').value.trim();
+      const description = document.getElementById('p-desc').value.trim();
+      if (!name || !price) { showToast('Name and price are required!', 'error'); return; }
+
+      // Build images array
+      const rawVal = document.getElementById('p-images').value;
+      const parsedUrls = rawVal.split(/\r?\n/).map(u => u.trim()).filter(Boolean);
+      
+      let hasError = false;
+      parsedUrls.forEach(url => {
+        if (/^https?:\/\/ibb\.co\//i.test(url) && !/^https?:\/\/i\.ibb\.co\//i.test(url)) {
+          showToast('❌ Use Direct link from imgbb (i.ibb.co/...), not the share page!', 'error');
+          hasError = true;
+        } else if (!url.startsWith('http') && !url.startsWith('data:image/')) {
+          showToast('❌ Invalid Image Address! Must start with http:// or data:image/', 'error');
+          hasError = true;
+        }
+      });
+      if (hasError) return;
+
+      if (parsedUrls.length > 5) {
+        showToast('❌ Maximum 5 images allowed!', 'error');
+        return;
+      }
+
+      let images = _editingImages || [];
+      if (parsedUrls.length > 0) {
+        const compressedList = await Promise.all(parsedUrls.map(compressImageIfBase64));
+        if (compressedList.some(c => c.length > 3000000)) {
+          showToast('❌ An image is too massive! Please upload to imgbb.', 'error');
+          return;
+        }
+        images = compressedList;
+      } else if (!editingProductId) {
+        images = [];
+      }
+
+      const saveBtn = document.getElementById('btn-save-product');
+      saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
+
+      const url = editingProductId ? `${API}/admin/products/${editingProductId}` : `${API}/admin/products`;
+      const method = editingProductId ? 'PUT' : 'POST';
+      const res = await af(url, {
+        method,
+        body: JSON.stringify({
+          name, price, mrp, stock, category, brand, description, images
+        })
+      });
+      saveBtn.disabled = false; saveBtn.textContent = 'Save Product';
+      if (res && res.ok) {
+        showToast(editingProductId ? 'Product updated!' : 'Product added!', 'success');
+        closeModal('modal-product');
+        loadProducts();
+      } else {
+        const err = res ? await res.json().catch(() => ({})) : {};
+        showToast(err.message || 'Failed to save product.', 'error');
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Delete this product? This cannot be undone.')) return;
+      const res = await af(`${API}/admin/products/${id}`, { method: 'DELETE' });
+      if (res && res.ok) { showToast('Product deleted.', 'success'); loadProducts(); }
+      else showToast('Failed to delete product.', 'error');
+    }
+
+    // ══ ORDERS ══
+    async function loadOrders() {
+      const body = document.getElementById('orders-body');
+      body.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i>Loading orders...</div>';
+      const res = await af(`${API}/admin/orders`);
+      if (!res) { body.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load orders</h3></div>'; return; }
+      const data = await res.json();
+      const normalOrders = data.success ? data.data.filter(o => !o.isExpressDelivery) : [];
+      if (!data.success || !normalOrders.length) {
+        body.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No orders yet</h3><p>Normal orders will appear here when customers buy</p></div>';
+        return;
+      }
+      body.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+    ${normalOrders.map(o => {
+          const s = o.shippingAddress || {};
+          const searchStr = `${esc(o._id)} ${esc(o.user?.name || '')} ${esc(o.user?.email || '')} ${esc(o.user?.phone || '')} ${esc(s.name || '')} ${esc(s.city || '')} ${esc(s.state || '')} ${esc(s.pincode || '')} ${o.isExpressDelivery ? 'express' : ''}`.toLowerCase();
+          return `<tr data-search="${searchStr}">
+      <td class="td-muted">#${esc(o._id?.slice(-8)?.toUpperCase() || '—')}${o.isExpressDelivery ? ' <span class="badge" style="background:rgba(255, 69, 0, .1); color:var(--o); font-size:0.6rem; margin-left:4px"><i class="fas fa-bolt"></i> Express</span>' : ''}</td>
+      <td>
+        <div class="td-name">${esc(o.user?.name || 'Guest')}</div>
+        <div class="td-muted">${esc(o.user?.email || '')}</div>
+        <div class="td-muted" style="color:var(--blue);font-weight:600">${esc(o.user?.phone || '')}</div>
+      </td>
+      <td style="max-width:250px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--w)">${esc(s.name || '—')}</div>
+        <div style="font-size:.72rem;color:var(--blue);margin-bottom:2px">📞 ${esc(s.phone || '—')}</div>
+        <div style="font-size:.7rem;line-height:1.4;color:var(--g)">
+          ${esc(s.street || '')}<br>
+          ${esc(s.city || '')}, ${esc(s.state || '')} - ${esc(s.pincode || '')}
+        </div>
+      </td>
+      <td class="td-price">₹${(o.totalAmount || o.totalPrice || 0).toLocaleString('en-IN')}</td>
+      <td><span class="status ${o.paymentStatus === 'paid' ? 's-paid' : 's-failed'}">${esc(o.paymentStatus || 'pending')}</span></td>
+      <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
+      <td class="td-muted">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
+      <td><button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button></td>
+    </tr>`}).join('')}
+  </tbody></table>`;
+    }
+
+    async function loadExpressOrders() {
+      const body = document.getElementById('express-body');
+      body.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i>Loading express orders...</div>';
+      const res = await af(`${API}/admin/orders`);
+      if (!res) { body.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load express orders</h3></div>'; return; }
+      const data = await res.json();
+      const expressOrders = data.success ? data.data.filter(o => o.isExpressDelivery) : [];
+      if (!data.success || !expressOrders.length) {
+        body.innerHTML = '<div class="empty-state"><i class="fas fa-bolt" style="color:var(--orange)"></i><h3>No express orders yet</h3><p>Express orders will appear here</p></div>';
+        return;
+      }
+      body.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+    ${expressOrders.map(o => {
+          const s = o.shippingAddress || {};
+          const searchStr = `${esc(o._id)} ${esc(o.user?.name || '')} ${esc(o.user?.email || '')} ${esc(o.user?.phone || '')} ${esc(s.name || '')} ${esc(s.city || '')} ${esc(s.state || '')} ${esc(s.pincode || '')} express`.toLowerCase();
+          return `<tr data-search="${searchStr}">
+      <td class="td-muted">#${esc(o._id?.slice(-8)?.toUpperCase() || '—')} <span class="badge" style="background:rgba(255, 107, 0, .1); color:var(--orange); font-size:0.6rem; margin-left:4px"><i class="fas fa-bolt"></i> Express</span></td>
+      <td>
+        <div class="td-name">${esc(o.user?.name || 'Guest')}</div>
+        <div class="td-muted">${esc(o.user?.email || '')}</div>
+        <div class="td-muted" style="color:var(--blue);font-weight:600">${esc(o.user?.phone || '')}</div>
+      </td>
+      <td style="max-width:250px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--w)">${esc(s.name || '—')}</div>
+        <div style="font-size:.72rem;color:var(--blue);margin-bottom:2px">📞 ${esc(s.phone || '—')}</div>
+        <div style="font-size:.7rem;line-height:1.4;color:var(--g)">
+          ${esc(s.street || '')}<br>
+          ${esc(s.city || '')}, ${esc(s.state || '')} - ${esc(s.pincode || '')}
+        </div>
+      </td>
+      <td class="td-price">₹${(o.totalAmount || o.totalPrice || 0).toLocaleString('en-IN')}</td>
+      <td><span class="status ${o.paymentStatus === 'paid' ? 's-paid' : 's-failed'}">${esc(o.paymentStatus || 'pending')}</span></td>
+      <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
+      <td class="td-muted">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
+      <td><button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button></td>
+    </tr>`}).join('')}
+  </tbody></table>`;
+    }
+
+    function openUpdateOrder(id, currentStatus) {
+      currentOrderId = id;
+      document.getElementById('modal-order-id').textContent = 'Order #' + id.slice(-8).toUpperCase();
+      document.getElementById('order-status').value = currentStatus;
+      openModal('modal-order');
+    }
+
+    async function saveOrderStatus() {
+      const status = document.getElementById('order-status').value;
+      const res = await af(`${API}/admin/orders/${currentOrderId}/status`, {
+        method: 'PUT', body: JSON.stringify({ status }),
+      });
+      if (res && res.ok) {
+        showToast('Order status updated!', 'success');
+        closeModal('modal-order');
+        loadOrders();
+      } else showToast('Failed to update order.', 'error');
+    }
+
+    // ══ USERS ══
+    async function loadUsers() {
+      const body = document.getElementById('users-body');
+      body.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i>Loading users...</div>';
+      const res = await af(`${API}/admin/users`);
+      if (!res) { body.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load users</h3></div>'; return; }
+      const data = await res.json();
+      if (!data.success || !data.data?.length) {
+        body.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><h3>No users yet</h3><p>Users will appear here after registration</p></div>';
+        return;
+      }
+      body.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody>
+    ${data.data.map(u => `<tr data-search="${esc(u.name || '')} ${esc(u.email)} ${esc(u.phone || '')}">
+      <td class="td-name">${esc(u.name || '—')}</td>
+      <td class="td-muted">${esc(u.email)}</td>
+      <td class="td-muted">${esc(u.phone || '—')}</td>
+      <td><span class="status ${u.isActive !== false ? 's-active' : 's-banned'}">${u.isActive !== false ? 'Active' : 'Banned'}</span></td>
+      <td class="td-muted">${new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
+      <td>
+        <button class="btn-sm ${u.isActive !== false ? 'btn-danger' : 'btn-success'}" onclick="toggleUser('${u._id}',${u.isActive !== false})">
+          ${u.isActive !== false ? '<i class="fas fa-ban"></i> Ban' : '<i class="fas fa-check"></i> Activate'}
+        </button>
+      </td>
+    </tr>`).join('')}
+  </tbody></table>`;
+    }
+
+    async function toggleUser(id, isActive) {
+      const action = isActive ? 'ban' : 'activate';
+      if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+      const res = await af(`${API}/admin/users/${id}/status`, {
+        method: 'PUT', body: JSON.stringify({ isActive: !isActive }),
+      });
+      if (res && res.ok) { showToast(`User ${action}ned!`, 'success'); loadUsers(); }
+      else showToast('Failed to update user.', 'error');
+    }
+
+    // ══ SEARCH/FILTER TABLE ══
+    function filterTable(bodyId, query) {
+      const q = query.toLowerCase();
+      const rows = document.querySelectorAll(`#${bodyId} tr[data-search]`);
+      rows.forEach(row => {
+        const match = row.getAttribute('data-search').toLowerCase().includes(q);
+        row.style.display = match ? '' : 'none';
+      });
+    }
+
+    // ══ MODAL ══
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    document.addEventListener('click', e => {
+      if (e.target.classList.contains('modal-overlay')) closeModal(e.target.id);
+    });
+
+    // ══ TOAST ══
+    let toastTimer;
+    function showToast(msg, type = 'info') {
+      clearTimeout(toastTimer);
+      const t = document.getElementById('toast');
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+      t.className = `toast ${type}`;
+      t.querySelector('i').className = `fas ${icons[type] || icons.info}`;
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ══ SECURITY: XSS escape ══
+    function esc(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    // ─── SECURITY: ANTI-TAMPER ───
+    // Disable Right-Click
+    // Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, etc.)
+  </script>
+</body>
+
+</html>
