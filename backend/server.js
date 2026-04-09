@@ -240,18 +240,27 @@ app.use('/uploads', (req, res, next) => {
 }));
 
 // ─── DATABASE ─────────────────────────────────────────────────
-const mongoOptions = {
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-};
-
-let isConnected = false;
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 async function connectDB() {
-  if (isConnected && mongoose.connection.readyState === 1) return;
-  await mongoose.connect(process.env.MONGODB_URI, mongoOptions);
-  isConnected = true;
-  console.log('✅ MongoDB connected');
+  if (cached.conn) {
+    return cached.conn;
+  }
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI, {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    }).then((mongoose) => {
+      console.log('✅ MongoDB connected');
+      return mongoose;
+    });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
 
 app.use('/api', async (req, res, next) => {
