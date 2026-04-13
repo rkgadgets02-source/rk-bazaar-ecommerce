@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Order, Cart } = require('../models/index');
+const { Order, Cart, Coupon } = require('../models/index');
 const { protect, adminOnly } = require('../middleware/auth');
 
 // POST /api/orders — create order
@@ -10,26 +10,39 @@ router.post('/', protect, async (req, res) => {
       return res.status(401).json({ success: false, message: 'User not authenticated' });
     }
 
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice, isExpressDelivery } = req.body;
+    const { 
+      orderItems, shippingAddress, paymentMethod, itemsPrice, 
+      shippingPrice, taxPrice, totalPrice, isExpressDelivery, couponCode 
+    } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
       return res.status(400).json({ success: false, message: 'No order items in cart' });
     }
 
-    // Ensure cart exists
-    let cart = await Cart.findOne({ user: req.user._id });
-    if (!cart) {
-      try {
-        cart = await Cart.create({ user: req.user._id, items: [] });
-      } catch (err) {
-        if (err.code === 11000) {
-          cart = await Cart.findOne({ user: req.user._id });
-        } else {
-          console.error("🔥 CART ERROR:", err);
-          return res.status(400).json({ success: false, message: 'Could not initialize cart: ' + err.message });
-        }
+    // ─── Coupon Validation ───
+    let discountAmount = 0;
+    let validCoupon = null;
+
+    if (couponCode) {
+      validCoupon = await Coupon.findOne({ 
+        code: couponCode.toUpperCase(), 
+        isActive: true, 
+        isUsed: false 
+      });
+
+      if (!validCoupon) {
+        return res.status(400).json({ success: false, message: 'Invalid or expired coupon code' });
       }
+      
+      // Calculate 20% discount on itemsPrice
+      discountAmount = Math.round(Number(itemsPrice) * (validCoupon.discountPercent / 100));
     }
+
+    // Verify totalPrice matches (optional but good for security)
+    const expectedTotal = Number(itemsPrice) + (Number(shippingPrice) || 0) + (Number(taxPrice) || 0) - discountAmount;
+    
+    // In a real production app, we would recalculate itemsPrice from DB product prices here
+    // For this implementation, we trust the itemsPrice sent but verify the discount math.
 
     const orderData = {
       user: req.user._id,
@@ -39,11 +52,21 @@ router.post('/', protect, async (req, res) => {
       itemsPrice: Number(itemsPrice),
       shippingPrice: Number(shippingPrice) || 0,
       taxPrice: Number(taxPrice) || 0,
-      totalPrice: Number(totalPrice),
+      discountAmount,
+      totalPrice: expectedTotal, // Use calculated total
       isExpressDelivery: Boolean(isExpressDelivery),
+      couponCode: validCoupon ? validCoupon.code : undefined,
     };
 
     const order = await Order.create(orderData);
+
+    // If coupon was used, mark it as consumed
+    if (validCoupon) {
+      validCoupon.isUsed = true;
+      validCoupon.usedBy = req.user._id;
+      validCoupon.usedAt = Date.now();
+      await validCoupon.save();
+    }
 
     if (paymentMethod === 'cod') {
       await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
@@ -53,7 +76,6 @@ router.post('/', protect, async (req, res) => {
 
   } catch (err) {
     console.error("🔥 CREATE ORDER ERROR:", err);
-    // Return 400 with specific message to help the admin debug
     res.status(400).json({ success: false, message: 'ORDER_FAILED: ' + err.message });
   }
 });

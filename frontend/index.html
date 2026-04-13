@@ -3808,7 +3808,21 @@
                 <div class="rd" id="rd-cod"></div>
               </div>
             </div>
+            </div>
           </div>
+
+          <!-- Coupon Code Section -->
+          <div class="sc">
+            <h3><i class="fas fa-ticket-alt"></i> Have a Coupon?</h3>
+            <div style="display:flex; gap:10px;">
+              <div class="fg" style="flex:1; margin-bottom:0">
+                <input type="text" id="co-input" placeholder="Enter coupon code" style="text-transform:uppercase">
+              </div>
+              <button class="btn-sm btn-primary" style="padding:0 20px; border-radius:10px" onclick="applyCoupon()" id="btn-apply-coupon">Apply</button>
+            </div>
+            <div id="co-msg" style="font-size:.7rem; margin-top:8px; display:none"></div>
+          </div>
+
           <div class="sc" id="cosum"></div>
           <button class="pbtn" onclick="placeOrder()"><i class="fas fa-lock"></i> Place Order Securely</button>
           <div style="height:12px"></div>
@@ -4336,6 +4350,7 @@
       wish: new Set(safeJSON('btW', [])),
       filter: 'All', prev: 'home', payM: 'razorpay', curP: null,
       pendingEmail: '', isGuest: false,
+      coupon: null,
     };
 
     async function req(p, m = 'GET', b = null) {
@@ -5085,8 +5100,13 @@
       const standardDel = tot >= 500 ? 0 : 49;
       const expressCharge = S.isExpressDelivery ? 50 : 0;
       const del = standardDel + expressCharge;
-      const tax = 0;
-      const grand = (tot + del).toFixed(0);
+      
+      let discount = 0;
+      if (S.coupon) {
+        discount = Math.round(tot * (S.coupon.discountPercent / 100));
+      }
+
+      const grand = (tot + del - discount).toFixed(0);
 
       let delHtml = '';
       if (expressCharge > 0) {
@@ -5095,7 +5115,48 @@
         delHtml = del === 0 ? 'FREE' : '₹' + del;
       }
 
-      document.getElementById('cosum').innerHTML = `<h3><i class="fas fa-receipt"></i> Order Summary</h3><div class="sr"><span>Subtotal</span><strong>₹${tot.toFixed(0)}</strong></div><div class="sr"><span>Delivery</span><strong>${delHtml}</strong></div><div class="sdiv"></div><div class="stot"><span>Grand Total</span><strong>₹${grand}</strong></div>`;
+      let summaryHtml = `
+        <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+        <div class="sr"><span>Subtotal</span><strong>₹${tot.toFixed(0)}</strong></div>
+      `;
+
+      if (discount > 0) {
+        summaryHtml += `<div class="sr" style="color:var(--green)"><span>Discount (${S.coupon.code})</span><strong>-₹${discount}</strong></div>`;
+      }
+
+      summaryHtml += `
+        <div class="sr"><span>Delivery</span><strong>${delHtml}</strong></div>
+        <div class="sdiv"></div>
+        <div class="stot"><span>Grand Total</span><strong>₹${grand}</strong></div>
+      `;
+
+      document.getElementById('cosum').innerHTML = summaryHtml;
+    }
+
+    async function applyCoupon() {
+      const code = document.getElementById('co-input').value.trim();
+      const msg = document.getElementById('co-msg');
+      const btn = document.getElementById('btn-apply-coupon');
+      
+      if (!code) { toast('Please enter a coupon code'); return; }
+      
+      btn.disabled = true; btn.textContent = '...';
+      const res = await req('/coupons/validate', 'POST', { code });
+      btn.disabled = false; btn.textContent = 'Apply';
+      
+      msg.style.display = 'block';
+      if (res.success) {
+        S.coupon = res.data;
+        msg.style.color = 'var(--green)';
+        msg.innerHTML = `✅ Applied! ${res.data.discountPercent}% OFF`;
+        updateCheckoutTotal();
+        toast('Coupon applied! 🎫');
+      } else {
+        S.coupon = null;
+        msg.style.color = '#ef4444';
+        msg.innerHTML = `❌ ${res.message}`;
+        updateCheckoutTotal();
+      }
     }
 
     function selPay(m, el) { S.payM = m; document.querySelectorAll('.popt').forEach(o => o.classList.remove('on')); el.classList.add('on'); document.querySelectorAll('[id^="rd-"]').forEach(d => d.classList.remove('on')); document.getElementById('rd-' + m).classList.add('on') }
@@ -5108,7 +5169,7 @@
       const del = standardDel + expressCharge;
       const tax = 0;
       const orderItems = Object.keys(S.cart).map(id => ({ product: id, name: S.cart[id].name, image: S.cart[id].img, price: S.cart[id].price, quantity: S.cart[id].qty }));
-      const od = { orderItems, shippingAddress: { name, phone, street, city, state, pincode: pin }, paymentMethod: S.payM, itemsPrice: tot, shippingPrice: del, taxPrice: tax, totalPrice: tot + del, isExpressDelivery: S.isExpressDelivery };
+      const od = { orderItems, shippingAddress: { name, phone, street, city, state, pincode: pin }, paymentMethod: S.payM, itemsPrice: tot, shippingPrice: del, taxPrice: tax, totalPrice: tot + del, isExpressDelivery: S.isExpressDelivery, couponCode: S.coupon ? S.coupon.code : null };
       if (S.token) {
         const res = await req('/orders', 'POST', od);
         if (res.success) {

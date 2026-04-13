@@ -99,6 +99,8 @@ const orderSchema = new mongoose.Schema({
   trackingId: { type: String, default: '' },
   notes: { type: String, default: '' },
   isExpressDelivery: { type: Boolean, default: false },
+  couponCode: { type: String, uppercase: true },
+  discountAmount: { type: Number, default: 0 },
 }, { timestamps: true });
 
 // Auto-generate high-performance order numbers
@@ -151,6 +153,16 @@ const heroSlideSchema = new mongoose.Schema({
   order: { type: Number, default: 0 },
 }, { timestamps: true });
 
+// ─── Coupon ───────────────────────────────────────────────────
+const couponSchema = new mongoose.Schema({
+  code: { type: String, required: true, unique: true, uppercase: true, trim: true },
+  discountPercent: { type: Number, default: 20 },
+  isActive: { type: Boolean, default: true },
+  isUsed: { type: Boolean, default: false },
+  usedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  usedAt: { type: Date },
+}, { timestamps: true });
+
 module.exports = {
   Category: mongoose.models.Category || mongoose.model('Category', categorySchema),
   Order: mongoose.models.Order || mongoose.model('Order', orderSchema),
@@ -160,4 +172,5 @@ module.exports = {
   Wishlist: mongoose.models.Wishlist || mongoose.model('Wishlist', wishlistSchema),
   Brand: mongoose.models.Brand || mongoose.model('Brand', brandSchema),
   HeroSlide: mongoose.models.HeroSlide || mongoose.model('HeroSlide', heroSlideSchema),
+  Coupon: mongoose.models.Coupon || mongoose.model('Coupon', couponSchema),
 };

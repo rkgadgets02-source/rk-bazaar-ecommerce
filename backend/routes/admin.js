@@ -337,4 +337,60 @@ router.put('/brand', async (req, res) => {
   }
 });
 
-module.exports = router;
+// ─── COUPONS ──────────────────────────────────────────────────
+const { Coupon } = require('../models/index');
+
+router.get('/coupons', async (req, res) => {
+  try {
+    const coupons = await Coupon.find().populate('usedBy', 'name email').sort({ createdAt: -1 });
+    res.json({ success: true, data: coupons });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error fetching coupons' });
+  }
+});
+
+router.post('/coupons', async (req, res) => {
+  try {
+    let { codes, discountPercent } = req.body;
+    if (!codes || !Array.isArray(codes)) {
+      return res.status(400).json({ success: false, message: 'Codes array is required' });
+    }
+
+    const created = [];
+    const skipped = [];
+
+    for (const code of codes) {
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode) continue;
+
+      try {
+        const coupon = await Coupon.create({ code: cleanCode, discountPercent: discountPercent || 20 });
+        created.push(coupon);
+      } catch (e) {
+        skipped.push(cleanCode);
+      }
+    }
+
+    res.status(201).json({ 
+      success: true, 
+      message: `${created.length} coupons added. ${skipped.length} skipped (duplicate).`,
+      data: created,
+      skipped
+    });
+  } catch (err) {
+    console.error('Coupon creation error:', err.message);
+    res.status(400).json({ success: false, message: 'Error creating coupons' });
+  }
+});
+
+router.delete('/coupons/:id', async (req, res) => {
+  try {
+    const coupon = await Coupon.findByIdAndDelete(req.params.id);
+    if (!coupon) return res.status(404).json({ success: false, message: 'Coupon not found.' });
+    res.json({ success: true, message: 'Coupon deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error deleting coupon' });
+  }
+});
+
+module.exports = router;
