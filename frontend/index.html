@@ -29,7 +29,7 @@
       --glow: 0 0 40px rgba(255, 69, 0, .2);
       --r: 20px;
       --safe-x: 18px;
-      --status-bar: 34px; 
+      --status-bar: 50px; 
       --header-h: calc(var(--nav) + var(--status-bar));
     }
 
@@ -506,9 +506,9 @@
     }
 
     .tlogo::after {
-      content: 'V4';
+      content: 'V5-FIX';
       font-size: 0.5rem;
-      background: var(--o);
+      background: #00ffff;
       color: #000;
       padding: 2px 4px;
       border-radius: 4px;
@@ -739,7 +739,8 @@
     }
 
     .pw {
-      padding-top: calc(var(--header-h) + 24px);
+      padding-top: calc(var(--header-h) + 40px);
+      border-top: 2px solid #00ffff; /* DEBUG LINE */
       padding-bottom: calc(var(--bot) + 24px + env(safe-area-inset-bottom, 0px));
       padding-left: var(--safe-x);
       padding-right: var(--safe-x);
@@ -751,8 +752,12 @@
       overflow-x: hidden;
     }
 
+    .policy-wrap {
+      margin-top: 30px;
+    }
+
     .sbar {
-      margin: 12px 0 24px;
+      margin: 20px 0 24px;
       display: flex;
       align-items: center;
       height: 52px;
