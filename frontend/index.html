@@ -7,7 +7,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>RK BAZAAR — Premium Electronics Store</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
@@ -34,11 +34,12 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif !important;
     }
 
     body {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif !important;
       background: var(--bg);
       color: var(--w);
       min-height: 100vh;
@@ -68,14 +69,18 @@
     }
 
     button {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
       cursor: pointer;
-      border: none
+      border: none;
+    }
+
+    input, textarea, select {
+      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
     }
 
     img {
       display: block;
-      max-width: 100%
+      max-width: 100%;
     }
 
     /* ── LOADER ── */
@@ -108,13 +113,14 @@
     }
 
     .llogo {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
       font-weight: 900;
-      letter-spacing: 5px
+      letter-spacing: 4px;
+      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .llogo b {
-      color: var(--o)
+      color: var(--o);
     }
 
     /* ══════════════════════════════════════════
@@ -473,25 +479,27 @@
       position: fixed;
       top: 0;
       width: 100%;
-      height: var(--nav);
       z-index: 300;
       padding: env(safe-area-inset-top, 0px) 14px 0;
       height: calc(var(--nav) + env(safe-area-inset-top, 0px));
-      gap: 10px;
+      gap: 12px;
       background: var(--bg);
-      backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--bdr)
+      backdrop-filter: blur(30px);
+      border-bottom: 1px solid var(--bdr);
+      display: flex;
+      align-items: center;
     }
 
     .tlogo {
       font-weight: 900;
-      font-size: 1.2rem;
-      letter-spacing: 2px;
-      flex-shrink: 0
+      font-size: 1.15rem;
+      letter-spacing: 1.5px;
+      flex-shrink: 0;
+      color: var(--w);
     }
 
     .tlogo b {
-      color: var(--o)
+      color: var(--o);
     }
 
     .tloc {
@@ -499,47 +507,52 @@
       min-width: 0;
       display: flex;
       align-items: center;
-      gap: 5px
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 10px;
+      border-radius: 20px;
+      max-width: 180px;
     }
 
     .tloc i {
       color: var(--o);
-      font-size: .68rem;
-      flex-shrink: 0
+      font-size: .6rem;
+      flex-shrink: 0;
     }
 
     .tloc span {
-      font-size: .66rem;
+      font-size: .6rem;
       color: var(--g);
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis
+      text-overflow: ellipsis;
+      font-weight: 500;
     }
 
     .tacts {
       display: flex;
-      gap: 7px;
-      flex-shrink: 0
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .ic {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
       background: var(--s2);
       border: 1px solid var(--bdr);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: .8rem;
+      font-size: .85rem;
       color: var(--g);
-      transition: all .2s
+      transition: all .2s;
     }
 
     .ic:hover {
       background: var(--o);
       color: #fff;
-      border-color: var(--o)
+      border-color: var(--o);
     }
 
     .snav {
@@ -616,22 +629,23 @@
     }
 
     .bn i {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: var(--g);
-      transition: all .25s
+      transition: all .25s;
     }
 
     .bn span {
-      font-size: .5rem;
+      font-size: .58rem;
       font-weight: 700;
       color: var(--g);
       text-transform: uppercase;
-      letter-spacing: .8px
+      letter-spacing: .5px;
+      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .bn.active i,
     .bn.active span {
-      color: var(--o)
+      color: var(--o);
     }
 
     .bn.active::before {
@@ -643,7 +657,7 @@
       width: 28px;
       height: 2px;
       background: var(--o);
-      border-radius: 0 0 4px 4px
+      border-radius: 0 0 4px 4px;
     }
 
     .cpill {
@@ -710,33 +724,29 @@
     }
 
     .sbar {
-      margin: 12px 14px 18px;
+      margin: 10px 14px 16px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(15px);
-      border-radius: 16px;
-      padding: 13px 18px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 10px;
+      background: #151515;
+      border-radius: 10px;
+      padding: 10px 16px;
+      border: 1px solid var(--bdr);
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .sbar:hover,
     .sbar:focus-within {
-      border-color: rgba(255, 69, 0, 0.4);
-      background: rgba(255, 255, 255, 0.06);
-      box-shadow: 0 0 20px rgba(255, 69, 0, 0.15);
-      transform: translateY(-1px);
+      border-color: var(--o);
+      background: #1a1a1a;
     }
 
     .sbar i {
-      color: var(--o);
-      font-size: .95rem;
+      color: var(--g);
+      font-size: .9rem;
       flex-shrink: 0;
-      opacity: 0.9;
     }
 
     .sbar input {
@@ -744,13 +754,14 @@
       border: none;
       outline: none;
       font-family: 'Outfit', sans-serif;
-      font-size: .82rem;
+      font-size: .85rem;
       color: var(--w);
-      background: transparent
+      background: transparent;
+      padding-top: 2px;
     }
 
     .sbar input::placeholder {
-      color: var(--g)
+      color: #666;
     }
 
     .hero {
@@ -769,14 +780,14 @@
     }
 
     .hero-carousel {
-      width: 100%;
-      height: 180px;
-      margin-top: 14px;
+      width: calc(100% - 28px);
+      height: 160px;
+      margin: 8px 14px 14px;
       position: relative;
       overflow: hidden;
-      border-radius: 20px;
+      border-radius: 16px;
       background: linear-gradient(135deg, #c73200, #ff6b00);
-      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.3);
+      box-shadow: 0 6px 20px rgba(255, 107, 0, 0.25);
     }
 
     .hero-slide {
@@ -1124,35 +1135,42 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 14px;
-      margin-bottom: 11px
+      margin-bottom: 12px;
+      margin-top: 4px;
     }
 
     .sh h2 {
-      font-size: .86rem;
-      font-weight: 800
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--w);
     }
 
     .sh a {
-      font-size: .66rem;
+      font-size: .7rem;
       color: var(--o);
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 3px
+      gap: 4px;
+      background: rgba(255, 69, 0, 0.05);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 69, 0, 0.1);
     }
 
     .cstrip {
       display: flex;
-      gap: 10px;
+      gap: 14px;
       overflow-x: auto;
-      padding: 0 14px 4px;
+      padding: 4px 14px 8px;
       scrollbar-width: none;
-      margin-bottom: 18px
+      margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .cstrip::-webkit-scrollbar {
-      display: none
+      display: none;
     }
 
     .csi {
@@ -1160,60 +1178,50 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       cursor: pointer;
-      width: 72px;
-      transition: transform 0.3s ease;
-    }
-
-    .csi:active {
-      transform: scale(0.95);
+      width: 68px;
     }
 
     .csi-img {
-      width: 72px;
-      height: 72px;
-      border-radius: 22px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-      backdrop-filter: blur(5px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--bdr);
+      background: #111;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 14px;
+      padding: 10px;
     }
 
     .csi:hover .csi-img {
       border-color: var(--o);
-      background: rgba(255, 69, 0, 0.08);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-      transform: translateY(-4px);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 69, 0, 0.1);
     }
 
     .csi-img img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
-      transition: transform 0.3s ease;
-    }
-
-    .csi:hover .csi-img img {
-      transform: scale(1.15);
     }
 
     .csi span {
-      font-size: .62rem;
-      font-weight: 800;
-      color: var(--g);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      transition: color 0.3s ease;
+      font-size: .6rem;
+      font-weight: 700;
+      color: #aaa;
+      text-transform: capitalize;
+      letter-spacing: 0px;
       text-align: center;
       line-height: 1.3;
-      width: 100%;
+      width: 68px;
+      max-width: 68px;
+      word-break: break-word;
+      white-space: normal;
+      overflow-wrap: break-word;
     }
 
     .flash-bar {
@@ -1299,20 +1307,21 @@
 
     .pcs {
       flex-shrink: 0;
-      width: 148px;
-      background: var(--s1);
-      border-radius: var(--r);
+      width: 155px;
+      background: #111;
+      border-radius: 12px;
       border: 1px solid var(--bdr);
       overflow: hidden;
       position: relative;
-      transition: all .25s;
-      cursor: pointer
+      transition: all .2s;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .pcs:hover {
-      border-color: rgba(255, 69, 0, .35);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, .5)
+      border-color: var(--o);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     }
 
     .pcs-img {
@@ -1504,19 +1513,20 @@
     }
 
     .pgc {
-      background: var(--s1);
-      border-radius: var(--r);
+      background: #111;
+      border-radius: 12px;
       border: 1px solid var(--bdr);
       overflow: hidden;
       cursor: pointer;
-      transition: all .25s;
-      position: relative
+      transition: all .2s;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .pgc:hover {
-      border-color: rgba(255, 69, 0, .35);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, .5)
+      border-color: var(--o);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     }
 
     .pgc-img {
@@ -3370,68 +3380,76 @@
       padding: 14px;
       line-height: 1.7;
       color: var(--g);
+      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
     }
 
     .policy-section {
       background: var(--s1);
       border: 1px solid var(--bdr);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-      animation: fadeUp 0.4s ease both;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
     }
 
     .policy-section h2 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--o);
+      font-size: 1rem !important;
+      font-weight: 700 !important;
+      color: var(--o) !important;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .policy-section h2 i {
-      font-size: 1rem;
-      opacity: 0.8;
+      font-size: 0.9rem;
+      opacity: 0.85;
     }
 
     .policy-section p {
-      font-size: 0.82rem;
-      margin-bottom: 12px;
+      font-size: 0.84rem !important;
+      margin-bottom: 10px;
+      color: #aaa !important;
+      line-height: 1.65 !important;
+      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .policy-section ul {
-      padding-left: 18px;
-      margin-bottom: 12px;
+      padding-left: 16px;
+      margin-bottom: 10px;
     }
 
     .policy-section li {
-      font-size: 0.8rem;
+      font-size: 0.82rem !important;
       margin-bottom: 6px;
       list-style-type: disc;
+      color: #aaa !important;
+      line-height: 1.55;
+      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .policy-header {
       text-align: center;
-      padding: 30px 20px;
+      padding: 24px 16px;
       background: linear-gradient(135deg, var(--s1), var(--s2));
-      border-radius: 20px;
-      margin-bottom: 20px;
+      border-radius: 16px;
+      margin-bottom: 16px;
       border: 1px solid var(--bdr);
     }
 
     .policy-header h1 {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: var(--w);
+      font-size: 1.4rem !important;
+      font-weight: 800 !important;
+      color: var(--w) !important;
       margin-bottom: 8px;
+      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .policy-header p {
-      font-size: 0.75rem;
-      color: var(--o);
-      font-weight: 700;
+      font-size: 0.72rem !important;
+      color: var(--o) !important;
+      font-weight: 700 !important;
       text-transform: uppercase;
       letter-spacing: 1px;
     }

@@ -146,6 +146,8 @@ const heroSlideSchema = new mongoose.Schema({
   subtitle: { type: String },
   offerText: { type: String },
   imageUrl: { type: String, default: '' },
+  link: { type: String, default: '' },
+  placement: { type: String, enum: ['hero', 'inline', 'both'], default: 'hero' },
   icon: { type: String, default: 'fa-bolt' },
   badgeText: { type: String },
   badgeSub: { type: String },

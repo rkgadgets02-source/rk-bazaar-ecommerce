@@ -268,31 +268,31 @@ router.get('/slides', async (req, res) => {
 
 router.post('/slides', async (req, res) => {
   try {
-    const { title, subtitle, offerText, icon, badgeText, badgeSub, isActive, order } = req.body;
-    const slide = await HeroSlide.create({ title, subtitle, offerText, icon, badgeText, badgeSub, isActive, order });
-    res.status(201).json({ success: true, data: slide, message: 'Slide created successfully.' });
+    const { title, subtitle, offerText, imageUrl, link, placement, icon, badgeText, badgeSub, isActive, order } = req.body;
+    const slide = await HeroSlide.create({ title, subtitle, offerText, imageUrl, link, placement, icon, badgeText, badgeSub, isActive, order });
+    res.status(201).json({ success: true, data: slide, message: 'Banner created successfully.' });
   } catch (err) {
-    res.status(400).json({ success: false, message: 'Error creating slide' });
+    res.status(400).json({ success: false, message: 'Error creating banner' });
   }
 });
 
 router.put('/slides/:id', async (req, res) => {
   try {
     const slide = await HeroSlide.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!slide) return res.status(404).json({ success: false, message: 'Slide not found.' });
-    res.json({ success: true, data: slide, message: 'Slide updated successfully.' });
+    if (!slide) return res.status(404).json({ success: false, message: 'Banner not found.' });
+    res.json({ success: true, data: slide, message: 'Banner updated successfully.' });
   } catch (err) {
-    res.status(400).json({ success: false, message: 'Error updating slide' });
+    res.status(400).json({ success: false, message: 'Error updating banner' });
   }
 });
 
 router.delete('/slides/:id', async (req, res) => {
   try {
     const slide = await HeroSlide.findByIdAndDelete(req.params.id);
-    if (!slide) return res.status(404).json({ success: false, message: 'Slide not found.' });
-    res.json({ success: true, message: 'Slide deleted successfully.' });
+    if (!slide) return res.status(404).json({ success: false, message: 'Banner not found.' });
+    res.json({ success: true, message: 'Banner deleted successfully.' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error deleting slide' });
+    res.status(500).json({ success: false, message: 'Error deleting banner' });
   }
 });
 

@@ -1081,7 +1081,7 @@
       <button class="nav-item" onclick="showSection('branding',this)"><i
           class="fas fa-paint-brush"></i><span>Branding</span></button>
       <button class="nav-item" onclick="showSection('offers',this)"><i
-          class="fas fa-gift"></i><span>Offers</span></button>
+          class="fas fa-image"></i><span>Banners</span></button>
       <button class="nav-item" onclick="showSection('coupons',this)"><i
           class="fas fa-ticket-alt"></i><span>Coupons</span></button>
       <div class="sb-footer">
@@ -1335,9 +1335,9 @@
       <!-- ── OFFERS ── -->
       <div class="section" id="section-offers">
         <div class="sec-header">
-          <h2><i class="fas fa-gift" style="color:var(--orange);margin-right:8px"></i>Homepage Offers</h2>
+          <h2><i class="fas fa-image" style="color:var(--blue);margin-right:8px"></i>Dynamic Banners</h2>
           <div class="sec-actions">
-            <button class="btn-sm btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Add New Offer</button>
+            <button class="btn-sm btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Add New Banner</button>
             <button class="btn-sm btn-outline" onclick="loadAdminOffers()"><i class="fas fa-sync"></i> Refresh</button>
           </div>
         </div>
@@ -1444,57 +1444,62 @@
     </div>
   </div>
 
-  <!-- ── ADD/EDIT OFFER MODAL ── -->
+  <!-- ── ADD/EDIT BANNER MODAL ── -->
   <div class="modal-overlay" id="modal-offer">
     <div class="modal" style="max-width:500px;max-height:90vh;overflow-y:auto">
-      <h3 id="modal-offer-title">Add New Offer</h3>
-      <p>Configure homepage carousel banner slides</p>
+      <h3 id="modal-offer-title">Add New Banner</h3>
+      <p>Configure homepage carousel and inline banners</p>
+      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="modal-field"><label>Main Title (e.g. Order Worth)</label><input type="text" id="off-title" placeholder="Order Worth" /></div>
-        <div class="modal-field"><label>Subtitle (e.g. ₹5,000)</label><input type="text" id="off-subtitle" placeholder="₹5,000" /></div>
+        <div class="modal-field"><label>Banner Title</label><input type="text" id="off-title" placeholder="e.g. Summer Sale" /></div>
+        <div class="modal-field"><label>Subtitle/Value</label><input type="text" id="off-subtitle" placeholder="e.g. Up to 50% OFF" /></div>
       </div>
-      <div class="modal-field"><label>Offer Text (e.g. 🎁 Get 1 Bag FREE)</label><textarea id="off-text" rows="2" placeholder="Get 1 Premium Bag FREE"></textarea></div>
+      
+      <div class="modal-field"><label>Offer/Description Text</label><textarea id="off-text" rows="2" placeholder="e.g. Best deals on premium electronics"></textarea></div>
 
-      <!-- 🖼️ BANNER IMAGE FIELD -->
       <div class="modal-field">
-        <label>🖼️ Banner Image URL (Unsplash / ImgBB / any direct link)</label>
-        <input type="text" id="off-imageUrl"
-          placeholder="https://images.unsplash.com/... or https://i.ibb.co/..."
-          style="width:100%;padding:10px 13px;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;color:var(--w);font-size:.83rem;outline:none;"
-          oninput="previewOfferBanner(this.value)" />
-        <!-- Live banner preview -->
+        <label>Banner Image URL</label>
+        <input type="text" id="off-imageUrl" placeholder="https://i.ibb.co/..." oninput="previewOfferBanner(this.value)" />
         <div id="off-banner-preview" style="margin-top:10px;display:none;border-radius:12px;overflow:hidden;position:relative;height:100px;background:var(--s2)">
           <img id="off-banner-img" src="" alt="Banner Preview" style="width:100%;height:100%;object-fit:cover;display:block">
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.25));display:flex;align-items:center;padding:12px">
-            <div style="color:#fff">
-              <div style="font-size:.6rem;font-weight:800;letter-spacing:1px;opacity:.8;margin-bottom:3px">PREVIEW</div>
-              <div style="font-size:.85rem;font-weight:900" id="off-preview-title">Offer Title</div>
-              <div style="font-size:.68rem;opacity:.85" id="off-preview-sub">Subtitle</div>
-            </div>
-          </div>
         </div>
-        <div id="off-banner-error" style="display:none;margin-top:6px;font-size:.68rem;color:#ef4444"></div>
-        <div style="margin-top:6px;font-size:.65rem;color:var(--g)">💡 No image? Leave blank — a gradient banner will be used instead. Unsplash: <b>?w=800&q=80</b> for best quality.</div>
+      </div>
+
+      <div class="modal-field">
+        <label>Redirect Link (Product/Category URL)</label>
+        <input type="text" id="off-link" placeholder="e.g. #page-product?id=... or categorical link" />
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="modal-field">
+          <label>Placement</label>
+          <select id="off-placement">
+            <option value="hero">Top Carousel (Hero)</option>
+            <option value="inline">Inline (Between Products)</option>
+            <option value="both">Both Carousel & Inline</option>
+          </select>
+        </div>
+        <div class="modal-field"><label>Display Order</label><input type="number" id="off-order" value="0" /></div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="modal-field"><label>Icon (FontAwesome)</label><input type="text" id="off-icon" placeholder="fa-bolt" /></div>
-        <div class="modal-field"><label>Display Order</label><input type="number" id="off-order" value="0" /></div>
+        <div class="modal-field"><label>Active Status</label>
+          <select id="off-active">
+            <option value="true">Active (Visible)</option>
+            <option value="false">Inactive (Hidden)</option>
+          </select>
+        </div>
       </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="modal-field"><label>Badge Text</label><input type="text" id="off-badge" placeholder="FREE" /></div>
-        <div class="modal-field"><label>Badge Subtext</label><input type="text" id="off-badgesub" placeholder="BAG!" /></div>
+        <div class="modal-field"><label>Badge Text</label><input type="text" id="off-badge" placeholder="NEW" /></div>
+        <div class="modal-field"><label>Badge Subtext</label><input type="text" id="off-badgesub" placeholder="SALE" /></div>
       </div>
-      <div class="modal-field">
-        <label>Active Status</label>
-        <select id="off-active">
-          <option value="true">Active (Visible)</option>
-          <option value="false">Inactive (Hidden)</option>
-        </select>
-      </div>
+
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal('modal-offer')">Cancel</button>
-        <button class="btn-save" id="btn-save-offer" onclick="saveOffer()">Save Offer</button>
+        <button class="btn-save" id="btn-save-offer" onclick="saveOffer()">Save Banner</button>
       </div>
     </div>
   </div>
@@ -1834,7 +1839,7 @@
       if (!res) return;
       const data = await res.json();
       if (!data.success || !data.data?.length) {
-        body.innerHTML = '<div class="empty-state"><i class="fas fa-gift"></i><h3>No offers found</h3><p>Click Add Offer to create one</p></div>';
+        body.innerHTML = '<div class="empty-state"><i class="fas fa-image"></i><h3>No banners found</h3><p>Click Add Banner to create one</p></div>';
         return;
       }
 
@@ -1844,25 +1849,31 @@
             <tr>
               <th>Order</th>
               <th>Banner</th>
-              <th>Title / Description</th>
+              <th>Details</th>
+              <th>Placement</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             ${data.data.map(off => `
-              <tr data-id="${off._id}" data-search="${esc(off.title)} ${esc(off.subtitle || '')}">
+              <tr data-id="${off._id}" data-search="${esc(off.title)} ${esc(off.subtitle || '')} ${esc(off.placement || '')}">
                 <td>${off.order || 0}</td>
                 <td>
                   ${off.imageUrl
-                    ? `<div style="width:80px;height:46px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)"><img src="${esc(off.imageUrl)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=font-size:1.2rem>🖼️</span>'"></div>`
-                    : `<div style="width:80px;height:46px;border-radius:8px;background:linear-gradient(135deg,#c73200,#ff6b00);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff;letter-spacing:.5px">GRADIENT</div>`
+                    ? `<div style="width:100px;height:50px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)"><img src="${esc(off.imageUrl)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=font-size:1.2rem>🖼️</span>'"></div>`
+                    : `<div style="width:100px;height:50px;border-radius:8px;background:linear-gradient(135deg,#c73200,#ff6b00);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff;letter-spacing:.5px">GRADIENT</div>`
                   }
                 </td>
                 <td>
                   <div style="font-weight:700">${esc(off.title)}</div>
                   <div style="color:var(--blue);font-size:.7rem">${esc(off.subtitle || '')}</div>
-                  <div style="color:var(--g);font-size:.68rem;margin-top:2px">${esc(off.offerText || '')}</div>
+                  ${off.link ? `<div style="color:var(--green);font-size:.62rem;margin-top:2px"><i class="fas fa-link"></i> ${esc(off.link)}</div>` : ''}
+                </td>
+                <td>
+                  <span class="badge ${off.placement === 'hero' ? 'badge-blue' : (off.placement === 'inline' ? 'badge-green' : 'badge-orange')}" style="font-size:.6rem">
+                    ${off.placement === 'hero' ? 'Top Carousel' : (off.placement === 'inline' ? 'Inline' : 'Both')}
+                  </span>
                 </td>
                 <td><span class="status ${off.isActive ? 's-active' : 's-banned'}">${off.isActive ? 'Live' : 'Hidden'}</span></td>
                 <td>
@@ -1880,10 +1891,12 @@
 
     function openOfferModal(id = null) {
       editingOfferId = id;
-      document.getElementById('modal-offer-title').textContent = id ? 'Edit Offer' : 'Add New Offer';
+      document.getElementById('modal-offer-title').textContent = id ? 'Edit Banner' : 'Add New Banner';
       document.getElementById('off-title').value = '';
       document.getElementById('off-subtitle').value = '';
       document.getElementById('off-text').value = '';
+      document.getElementById('off-link').value = '';
+      document.getElementById('off-placement').value = 'hero';
       document.getElementById('off-icon').value = 'fa-bolt';
       document.getElementById('off-order').value = '0';
       document.getElementById('off-badge').value = '';
@@ -1891,7 +1904,6 @@
       document.getElementById('off-active').value = 'true';
       document.getElementById('off-imageUrl').value = '';
       document.getElementById('off-banner-preview').style.display = 'none';
-      document.getElementById('off-banner-error').style.display = 'none';
 
       if (id) fetchOfferData(id);
       openModal('modal-offer');
@@ -1905,12 +1917,13 @@
         document.getElementById('off-title').value = off.title || '';
         document.getElementById('off-subtitle').value = off.subtitle || '';
         document.getElementById('off-text').value = off.offerText || '';
+        document.getElementById('off-link').value = off.link || '';
+        document.getElementById('off-placement').value = off.placement || 'hero';
         document.getElementById('off-icon').value = off.icon || 'fa-bolt';
         document.getElementById('off-order').value = off.order || 0;
         document.getElementById('off-badge').value = off.badgeText || '';
         document.getElementById('off-badgesub').value = off.badgeSub || '';
         document.getElementById('off-active').value = off.isActive.toString();
-        // Load banner image if present
         if (off.imageUrl) {
           document.getElementById('off-imageUrl').value = off.imageUrl;
           previewOfferBanner(off.imageUrl);
@@ -1962,22 +1975,18 @@
       const title = document.getElementById('off-title').value.trim();
       if (!title) { showToast('Title is required', 'error'); return; }
 
-      const imageUrl = document.getElementById('off-imageUrl').value.trim();
-      if (imageUrl && !imageUrl.startsWith('http')) {
-        showToast('❌ Banner image URL must be a valid http/https link!', 'error');
-        return;
-      }
-
       const body = {
         title,
         subtitle: document.getElementById('off-subtitle').value.trim(),
         offerText: document.getElementById('off-text').value.trim(),
+        link: document.getElementById('off-link').value.trim(),
+        placement: document.getElementById('off-placement').value,
         icon: document.getElementById('off-icon').value.trim(),
         order: parseInt(document.getElementById('off-order').value),
         badgeText: document.getElementById('off-badge').value.trim(),
         badgeSub: document.getElementById('off-badgesub').value.trim(),
         isActive: document.getElementById('off-active').value === 'true',
-        imageUrl: imageUrl || ''
+        imageUrl: document.getElementById('off-imageUrl').value.trim()
       };
 
       const btn = document.getElementById('btn-save-offer');
@@ -1991,12 +2000,12 @@
         });
         const data = await res.json();
         if (data.success) {
-          showToast(editingOfferId ? 'Offer updated!' : 'Offer created!', 'success');
+          showToast(editingOfferId ? 'Banner updated!' : 'Banner created!', 'success');
           closeModal('modal-offer');
           loadAdminOffers();
         } else showToast(data.message || 'Error occurred.', 'error');
       } catch (e) { showToast('Network error.', 'error'); }
-      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Offer'; }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Banner'; }
     }
 
     async function deleteOffer(id) {
