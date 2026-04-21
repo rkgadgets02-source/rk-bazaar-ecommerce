@@ -59,6 +59,8 @@ app.use(helmet({
         "https://fonts.googleapis.com",
         "https://cdnjs.cloudflare.com",
         "https://cdn.jsdelivr.net",
+        "https://use.fontawesome.com",
+        "https://ka-p.fontawesome.com"
       ],
       styleSrcElem: [
         "'self'",
@@ -66,6 +68,8 @@ app.use(helmet({
         "https://fonts.googleapis.com",
         "https://cdnjs.cloudflare.com",
         "https://cdn.jsdelivr.net",
+        "https://use.fontawesome.com",
+        "https://ka-p.fontawesome.com"
       ],
       fontSrc: [
         "'self'",
@@ -73,6 +77,8 @@ app.use(helmet({
         "https://fonts.gstatic.com",
         "https://cdnjs.cloudflare.com",
         "https://cdn.jsdelivr.net",
+        "https://use.fontawesome.com",
+        "https://ka-p.fontawesome.com"
       ],
       imgSrc: [
         "'self'",
@@ -84,12 +90,14 @@ app.use(helmet({
       ],
       connectSrc: [
         "'self'",
+        "https:",
         "https://api.razorpay.com",
         "https://checkout.razorpay.com",
         "https://lumberjack.razorpay.com",
         "https://ajax.googleapis.com",
         "https://images.unsplash.com",
         "https://i.ibb.co",
+        "https://ka-p.fontawesome.com",
         "ws://localhost:5000",
         "http://localhost:5000",
       ],

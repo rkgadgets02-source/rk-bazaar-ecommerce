@@ -7,9 +7,9 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>RK BAZAAR — Premium Electronics Store</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
   <style>
     :root {
@@ -20,35 +20,41 @@
       --s2: #181818;
       --s3: #222;
       --w: #fff;
-      --g: #888;
-      --bdr: rgba(255, 255, 255, .07);
+      --g: #818181;
+      --bdr: rgba(255, 255, 255, .08);
       --green: #00E676;
       --red: #FF3D3D;
-      --nav: 58px;
-      --bot: calc(64px + env(safe-area-inset-bottom, 0px));
+      --nav: 64px;
+      --bot: 72px;
       --glow: 0 0 40px rgba(255, 69, 0, .2);
-      --r: 16px
+      --r: 20px;
+      --safe-x: 18px;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif !important;
+      -webkit-tap-highlight-color: transparent
     }
 
     body {
-      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif !important;
+      font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--w);
       min-height: 100vh;
       overflow-x: hidden;
       overscroll-behavior: none;
-      /* Prevents rubber-band effect */
       user-select: none;
-      /* Prevents accidental text selection */
       -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     ::-webkit-scrollbar {
@@ -69,18 +75,14 @@
     }
 
     button {
-      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
+      font-family: 'Outfit', sans-serif;
       cursor: pointer;
-      border: none;
-    }
-
-    input, textarea, select {
-      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
+      border: none
     }
 
     img {
       display: block;
-      max-width: 100%;
+      max-width: 100%
     }
 
     /* ── LOADER ── */
@@ -113,14 +115,13 @@
     }
 
     .llogo {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 900;
-      letter-spacing: 4px;
-      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
+      letter-spacing: 5px
     }
 
     .llogo b {
-      color: var(--o);
+      color: var(--o)
     }
 
     /* ══════════════════════════════════════════
@@ -478,16 +479,17 @@
     .topbar {
       position: fixed;
       top: 0;
+      left: 0;
       width: 100%;
-      z-index: 300;
-      padding: env(safe-area-inset-top, 0px) 14px 0;
+      z-index: 1000;
+      padding: env(safe-area-inset-top, 0px) var(--safe-x) 0;
       height: calc(var(--nav) + env(safe-area-inset-top, 0px));
-      gap: 12px;
-      background: var(--bg);
-      backdrop-filter: blur(30px);
+      background: rgba(8, 8, 8, 0.98);
+      backdrop-filter: blur(25px);
       border-bottom: 1px solid var(--bdr);
       display: flex;
       align-items: center;
+      justify-content: space-between;
     }
 
     .tlogo {
@@ -496,6 +498,19 @@
       letter-spacing: 1.5px;
       flex-shrink: 0;
       color: var(--w);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tlogo::after {
+      content: 'V2';
+      font-size: 0.5rem;
+      background: var(--o);
+      color: #000;
+      padding: 2px 4px;
+      border-radius: 4px;
+      vertical-align: middle;
     }
 
     .tlogo b {
@@ -570,28 +585,29 @@
     }
 
     .bk {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: var(--s2);
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--s1);
       border: 1px solid var(--bdr);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: .8rem;
+      font-size: 1.1rem;
       color: var(--w);
-      transition: all .2s
+      transition: all 0.2s
     }
 
-    .bk:hover {
+    .bk:active {
+      transform: scale(0.92);
       background: var(--o);
-      border-color: var(--o)
     }
 
     .snav h2 {
-      font-size: .92rem;
+      font-size: 1rem;
       font-weight: 700;
       flex: 1;
+      margin-left: 12px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap
@@ -606,14 +622,16 @@
     .botnav {
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
-      height: calc(var(--bot) + env(safe-area-inset-bottom, 0px));
+      height: var(--bot);
       padding-bottom: env(safe-area-inset-bottom, 0px);
-      background: rgba(8, 8, 8, .97);
-      backdrop-filter: blur(24px);
+      background: rgba(8, 8, 8, 0.96);
+      backdrop-filter: blur(25px);
       display: flex;
       border-top: 1px solid var(--bdr);
-      z-index: 300
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .bn {
@@ -629,23 +647,22 @@
     }
 
     .bn i {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: var(--g);
-      transition: all .25s;
+      transition: all .25s
     }
 
     .bn span {
-      font-size: .58rem;
+      font-size: .5rem;
       font-weight: 700;
       color: var(--g);
       text-transform: uppercase;
-      letter-spacing: .5px;
-      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
+      letter-spacing: .8px
     }
 
     .bn.active i,
     .bn.active span {
-      color: var(--o);
+      color: var(--o)
     }
 
     .bn.active::before {
@@ -657,7 +674,7 @@
       width: 28px;
       height: 2px;
       background: var(--o);
-      border-radius: 0 0 4px 4px;
+      border-radius: 0 0 4px 4px
     }
 
     .cpill {
@@ -718,35 +735,44 @@
     }
 
     .pw {
-      padding-top: calc(var(--nav) + 10px + env(safe-area-inset-top, 0px));
-      padding-bottom: calc(var(--bot) + 12px + env(safe-area-inset-bottom, 0px));
-      min-height: 100vh
+      margin-top: 0;
+      padding-top: var(--nav);
+      padding-bottom: calc(var(--bot) + 24px + env(safe-area-inset-bottom, 0px));
+      padding-left: var(--safe-x);
+      padding-right: var(--safe-x);
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      overflow-x: hidden;
     }
 
     .sbar {
-      margin: 10px 14px 16px;
+      margin: 8px 0 16px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: #151515;
-      border-radius: 10px;
-      padding: 10px 16px;
+      height: 52px;
+      background: #111;
+      border-radius: 12px;
+      padding: 0 18px;
       border: 1px solid var(--bdr);
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 100%;
+      box-sizing: border-box;
+      overflow: visible;
     }
 
-    .sbar:hover,
-    .sbar:focus-within {
+    .sbar:active {
+      transform: scale(0.98);
       border-color: var(--o);
-      background: #1a1a1a;
     }
 
-    .sbar i {
-      color: var(--g);
-      font-size: .9rem;
+    .sbar svg {
+      color: var(--o);
       flex-shrink: 0;
+      margin-right: 12px;
     }
 
     .sbar input {
@@ -754,10 +780,10 @@
       border: none;
       outline: none;
       font-family: 'Outfit', sans-serif;
-      font-size: .85rem;
+      font-size: 0.95rem;
       color: var(--w);
       background: transparent;
-      padding-top: 2px;
+      height: 100%;
     }
 
     .sbar input::placeholder {
@@ -780,14 +806,14 @@
     }
 
     .hero-carousel {
-      width: calc(100% - 28px);
-      height: 160px;
-      margin: 8px 14px 14px;
+      width: 100%;
+      height: 180px;
+      margin-top: 14px;
       position: relative;
       overflow: hidden;
-      border-radius: 16px;
+      border-radius: 20px;
       background: linear-gradient(135deg, #c73200, #ff6b00);
-      box-shadow: 0 6px 20px rgba(255, 107, 0, 0.25);
+      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.3);
     }
 
     .hero-slide {
@@ -1134,43 +1160,42 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 14px;
-      margin-bottom: 12px;
-      margin-top: 4px;
+      margin-bottom: 16px;
+      margin-top: 24px;
     }
 
     .sh h2 {
-      font-size: .95rem;
+      font-size: clamp(1rem, 4.5vw, 1.25rem);
       font-weight: 700;
       color: var(--w);
+      letter-spacing: -0.2px;
     }
 
     .sh a {
-      font-size: .7rem;
+      font-size: 0.8rem;
       color: var(--o);
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(255, 69, 0, 0.05);
-      padding: 4px 10px;
+      gap: 6px;
+      background: rgba(255, 69, 0, 0.1);
+      padding: 8px 16px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 69, 0, 0.1);
     }
 
     .cstrip {
       display: flex;
-      gap: 14px;
+      gap: 16px;
       overflow-x: auto;
-      padding: 4px 14px 8px;
+      padding-bottom: 8px;
       scrollbar-width: none;
-      margin-bottom: 16px;
+      margin-bottom: 28px;
       -webkit-overflow-scrolling: touch;
     }
 
     .cstrip::-webkit-scrollbar {
-      display: none;
+      display: none
     }
 
     .csi {
@@ -1178,29 +1203,29 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
       cursor: pointer;
-      width: 68px;
+      width: 76px;
     }
 
     .csi-img {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
       overflow: hidden;
-      border: 1px solid var(--bdr);
+      border: 1.5px solid var(--bdr);
       background: #111;
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px;
+      padding: 14px;
     }
 
-    .csi:hover .csi-img {
+    .csi:active .csi-img {
       border-color: var(--o);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 69, 0, 0.1);
+      transform: scale(0.9);
+      background: rgba(255, 69, 0, 0.05);
     }
 
     .csi-img img {
@@ -1210,18 +1235,16 @@
     }
 
     .csi span {
-      font-size: .6rem;
-      font-weight: 700;
-      color: #aaa;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #bbb;
       text-transform: capitalize;
-      letter-spacing: 0px;
       text-align: center;
-      line-height: 1.3;
-      width: 68px;
-      max-width: 68px;
-      word-break: break-word;
-      white-space: normal;
-      overflow-wrap: break-word;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
     }
 
     .flash-bar {
@@ -1307,21 +1330,24 @@
 
     .pcs {
       flex-shrink: 0;
-      width: 155px;
+      width: clamp(145px, 44vw, 175px);
       background: #111;
-      border-radius: 12px;
+      border-radius: 20px;
       border: 1px solid var(--bdr);
       overflow: hidden;
       position: relative;
-      transition: all .2s;
+      margin-bottom: 12px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
-    .pcs:hover {
-      border-color: var(--o);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    .pcs:active {
+      transform: scale(0.96);
+      background: #151515;
+    }
+
+    .pcs:last-child {
+      margin-right: 0;
     }
 
     .pcs-img {
@@ -1436,7 +1462,15 @@
     .pgrid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px
+      gap: 20px;
+      padding: 4px 0;
+    }
+
+    @media(min-width: 480px) {
+      .pgrid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 24px;
+      }
     }
 
     @media(min-width:600px) {
@@ -3380,76 +3414,68 @@
       padding: 14px;
       line-height: 1.7;
       color: var(--g);
-      font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
     }
 
     .policy-section {
       background: var(--s1);
       border: 1px solid var(--bdr);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s ease both;
     }
 
     .policy-section h2 {
-      font-size: 1rem !important;
-      font-weight: 700 !important;
-      color: var(--o) !important;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--o);
       margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
+      gap: 10px;
     }
 
     .policy-section h2 i {
-      font-size: 0.9rem;
-      opacity: 0.85;
+      font-size: 1rem;
+      opacity: 0.8;
     }
 
     .policy-section p {
-      font-size: 0.84rem !important;
-      margin-bottom: 10px;
-      color: #aaa !important;
-      line-height: 1.65 !important;
-      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
     }
 
     .policy-section ul {
-      padding-left: 16px;
-      margin-bottom: 10px;
+      padding-left: 18px;
+      margin-bottom: 12px;
     }
 
     .policy-section li {
-      font-size: 0.82rem !important;
+      font-size: 0.8rem;
       margin-bottom: 6px;
       list-style-type: disc;
-      color: #aaa !important;
-      line-height: 1.55;
-      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .policy-header {
       text-align: center;
-      padding: 24px 16px;
+      padding: 30px 20px;
       background: linear-gradient(135deg, var(--s1), var(--s2));
-      border-radius: 16px;
-      margin-bottom: 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
       border: 1px solid var(--bdr);
     }
 
     .policy-header h1 {
-      font-size: 1.4rem !important;
-      font-weight: 800 !important;
-      color: var(--w) !important;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--w);
       margin-bottom: 8px;
-      font-family: 'Nunito', 'Inter', -apple-system, Arial, sans-serif !important;
     }
 
     .policy-header p {
-      font-size: 0.72rem !important;
-      color: var(--o) !important;
-      font-weight: 700 !important;
+      font-size: 0.75rem;
+      color: var(--o);
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -3630,13 +3656,26 @@
 ══════════════════════════════════════════ -->
   <div id="store-screen">
     <nav class="botnav">
-      <div class="bn active" id="bn-home" onclick="go('home',this)"><i class="fas fa-home"></i><span>Home</span></div>
-      <div class="bn" id="bn-categories" onclick="go('categories',this)"><i
-          class="fas fa-th-large"></i><span>Shop</span></div>
-      <div class="bn" id="bn-cart" onclick="go('cart',this)"><i class="fas fa-shopping-bag"></i><span>Cart</span></div>
-      <div class="bn" id="bn-wishlist" onclick="go('wishlist',this)"><i class="fas fa-heart"></i><span>Saved</span>
+      <div class="bn active" id="bn-home" onclick="go('home',this)">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
       </div>
-      <div class="bn" id="bn-account" onclick="go('account',this)"><i class="fas fa-user"></i><span>Me</span></div>
+      <div class="bn" id="bn-categories" onclick="go('categories',this)">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Shop</span>
+      </div>
+      <div class="bn" id="bn-cart" onclick="go('cart',this)">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span>Cart</span>
+      </div>
+      <div class="bn" id="bn-wishlist" onclick="go('wishlist',this)">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span>Saved</span>
+      </div>
+      <div class="bn" id="bn-account" onclick="go('account',this)">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Me</span>
+      </div>
     </nav>
 
     <div class="cpill" id="cpill">
@@ -3653,18 +3692,22 @@
         <div class="tloc"><i class="fas fa-map-marker-alt"></i><span>Virudhunagar, TN · Tirumangalam, Madurai</span>
         </div>
         <div class="tacts">
-          <button class="ic" onclick="window.location='tel:+918220748235'"><i class="fas fa-phone"></i></button>
-          <button class="ic" style="color:#25D366" onclick="window.open('https://wa.me/918220748235')"><i
-              class="fab fa-whatsapp"></i></button>
-          <button class="ic" onclick="go('account',document.getElementById('bn-account'))"><i
-              class="fas fa-user"></i></button>
+          <button class="ic" onclick="window.location='tel:+918220748235'">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.25-2.25a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </button>
+          <button class="ic" style="color:#25D366" onclick="window.open('https://wa.me/918220748235')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .003 5.415.005 12.054c0 2.123.554 4.197 1.61 6.006L0 24l6.135-1.61a11.815 11.815 0 005.91 1.586h.005c6.638 0 12.05-5.415 12.052-12.054a11.75 11.75 0 00-3.535-8.513"></path></svg>
+          </button>
+          <button class="ic" onclick="go('account',document.getElementById('bn-account'))">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </button>
         </div>
       </div>
       <div class="pw">
         <div class="sbar" onclick="go('search',document.getElementById('bn-search'))">
-          <i class="fas fa-search"></i>
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" placeholder="Search earbuds, chargers, watches..." readonly>
-          <i class="fas fa-sliders-h" style="color:var(--o)"></i>
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--o)" stroke-width="2" fill="none"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
         </div>
         <!-- Dynamic Hero Slider -->
         <div class="hero-carousel" id="heroCarousel">
@@ -3697,7 +3740,7 @@
               class="fas fa-chevron-right"></i></a>
         </div>
         <div class="ps" id="trendRow"></div>
-        <div class="sh" style="margin-top:20px">
+        <div class="sh">
           <h2>Top Picks For You</h2>
         </div>
         <div class="ps" id="featRow"></div>
@@ -3712,7 +3755,7 @@
         <h2>All Categories</h2>
       </nav>
       <div class="pw">
-        <div class="pgrid" style="padding:14px" id="catFull"></div>
+        <div class="pgrid" id="catFull"></div>
       </div>
     </div>
 
@@ -3730,7 +3773,7 @@
               oninput="doSearch()"></div>
           <div class="chips" id="fchips"></div>
         </div>
-        <div class="pgrid" style="padding:0 14px" id="sgrid"></div>
+        <div class="pgrid" id="sgrid"></div>
         <div class="empty" id="sempty" style="display:none"><i class="fas fa-search"></i>
           <h3>No Results Found</h3>
           <p>Try a different keyword</p>
@@ -5272,48 +5315,64 @@
       <div class="mb">
         <div class="ms">My Orders</div>
         <div class="mr" onclick="go('orders',null);loadOrds()">
-          <div class="mi"><i class="fas fa-shopping-bag"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          </div>
           <span class="ml">All Orders</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
       </div>
 
       <div class="mb">
         <div class="ms">Support</div>
         <div class="mr" onclick="go('contact',null)">
-          <div class="mi"><i class="fas fa-phone"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l2.25-2.25a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
           <span class="ml">Call Us</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
         <div class="mr" onclick="go('contact',null)">
-          <div class="mi"><i class="fab fa-whatsapp"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .003 5.415.005 12.054c0 2.123.554 4.197 1.61 6.006L0 24l6.135-1.61a11.815 11.815 0 005.91 1.586h.005c6.638 0 12.05-5.415 12.052-12.054a11.75 11.75 0 00-3.535-8.513"></path></svg>
+          </div>
           <span class="ml">WhatsApp Support</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
         <div class="mr" onclick="go('contact',null)">
-          <div class="mi"><i class="fas fa-info-circle"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          </div>
           <span class="ml">Help Center</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
         <div class="mr" onclick="go('refund',null)">
-          <div class="mi"><i class="fas fa-undo"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 2v6h6"></path><path d="M3 13a9 9 0 1 0 3-7.7L3 8"></path></svg>
+          </div>
           <span class="ml">Return & Refund Policy</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
         <div class="mr" onclick="go('privacy',null)">
-          <div class="mi"><i class="fas fa-shield-alt"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
           <span class="ml">Privacy Policy</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
         <div class="mr" onclick="go('tos',null)">
-          <div class="mi"><i class="fas fa-file-contract"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
           <span class="ml">Terms of Service</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
         <div class="mr" onclick="go('overview',null)">
-          <div class="mi"><i class="fas fa-building"></i></div>
+          <div class="mi" style="background:rgba(255,255,255,0.05);border:1px solid var(--bdr)">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="2"></line></svg>
+          </div>
           <span class="ml">About RK BAZAAR</span>
-          <i class="fas fa-chevron-right ma"></i>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:auto"><path d="M9 18l6-6-6-6"></path></svg>
         </div>
       </div>
 
