@@ -29,6 +29,7 @@
       --glow: 0 0 40px rgba(255, 69, 0, .2);
       --r: 20px;
       --safe-x: 18px;
+      --header-h: calc(var(--nav) + env(safe-area-inset-top, 0px));
     }
 
     html {
@@ -564,14 +565,15 @@
       position: fixed;
       top: 0;
       width: 100%;
-      height: var(--nav);
-      z-index: 300;
-      padding: env(safe-area-inset-top, 0px) 14px 0;
-      height: calc(var(--nav) + env(safe-area-inset-top, 0px));
+      z-index: 1100;
+      padding: env(safe-area-inset-top, 0px) 16px 0;
+      height: var(--header-h);
       gap: 12px;
-      background: rgba(8, 8, 8, .95);
-      backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--bdr)
+      background: rgba(8, 8, 8, .96);
+      backdrop-filter: blur(25px);
+      border-bottom: 1px solid var(--bdr);
+      display: flex;
+      align-items: center;
     }
 
     .bk {
@@ -725,8 +727,7 @@
     }
 
     .pw {
-      margin-top: 0;
-      padding-top: var(--nav);
+      padding-top: calc(var(--header-h) + 12px);
       padding-bottom: calc(var(--bot) + 24px + env(safe-area-inset-bottom, 0px));
       padding-left: var(--safe-x);
       padding-right: var(--safe-x);
@@ -739,7 +740,7 @@
     }
 
     .sbar {
-      margin: 8px 0 16px;
+      margin: 4px 0 20px;
       display: flex;
       align-items: center;
       height: 52px;
