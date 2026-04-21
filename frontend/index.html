@@ -29,7 +29,8 @@
       --glow: 0 0 40px rgba(255, 69, 0, .2);
       --r: 20px;
       --safe-x: 18px;
-      --header-h: calc(var(--nav) + env(safe-area-inset-top, 0px));
+      --status-bar: 28px; 
+      --header-h: calc(var(--nav) + var(--status-bar));
     }
 
     html {
@@ -483,8 +484,8 @@
       left: 0;
       width: 100%;
       z-index: 1000;
-      padding: env(safe-area-inset-top, 0px) var(--safe-x) 0;
-      height: calc(var(--nav) + env(safe-area-inset-top, 0px));
+      height: var(--header-h);
+      padding-top: var(--status-bar);
       background: rgba(8, 8, 8, 0.98);
       backdrop-filter: blur(25px);
       border-bottom: 1px solid var(--bdr);
@@ -566,7 +567,7 @@
       top: 0;
       width: 100%;
       z-index: 1100;
-      padding: env(safe-area-inset-top, 0px) 16px 0;
+      padding: var(--status-bar) 16px 0;
       height: var(--header-h);
       gap: 12px;
       background: rgba(8, 8, 8, .96);
@@ -727,7 +728,7 @@
     }
 
     .pw {
-      padding-top: calc(var(--header-h) + 12px);
+      padding-top: calc(var(--header-h) + 20px);
       padding-bottom: calc(var(--bot) + 24px + env(safe-area-inset-bottom, 0px));
       padding-left: var(--safe-x);
       padding-right: var(--safe-x);
@@ -740,7 +741,7 @@
     }
 
     .sbar {
-      margin: 4px 0 20px;
+      margin: 10px 0 20px;
       display: flex;
       align-items: center;
       height: 52px;
