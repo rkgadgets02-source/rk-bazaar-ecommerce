@@ -1652,12 +1652,11 @@
 
     .chips {
       display: flex;
-      gap: 7px;
+      gap: 10px;
       overflow-x: auto;
       scrollbar-width: none;
       padding-bottom: 2px;
-      margin-bottom: 14px;
-      justify-content: center;
+      margin-bottom: 20px;
     }
 
     .chips::-webkit-scrollbar {
@@ -3791,16 +3790,16 @@
             class="fas fa-arrow-left"></i></button>
         <h2>Search Products</h2>
       </nav>
-      <div class="pw">
+      <div class="pw" style="padding-left:16px !important; padding-right:16px !important; width:100%; box-sizing:border-box;">
         <div
-          style="padding:14px 14px 0; position:sticky; top:var(--nav); z-index:290; background:var(--bg); border-bottom:1px solid var(--bdr); margin-bottom:14px;">
-          <div class="sbar" style="border-color:var(--o);margin:0 0 14px"><i class="fas fa-search"
+          style="position:sticky; top:var(--nav); z-index:290; background:var(--bg); border-bottom:1px solid var(--bdr); margin-bottom:14px; padding-top:16px;">
+          <div class="sbar" style="border-color:var(--o); margin:0 0 12px; width:100%"><i class="fas fa-search"
               style="color:var(--o)"></i><input type="text" placeholder="Search products..." id="si"
               oninput="doSearch()"></div>
-          <div class="chips" id="fchips"></div>
+          <div class="chips" id="fchips" style="margin-bottom:20px"></div>
         </div>
         <div class="pgrid" id="sgrid"></div>
-        <div class="empty" id="sempty" style="display:none"><i class="fas fa-search"></i>
+        <div class="empty" id="sempty" style="display:none; height:60vh; flex-direction:column; justify-content:center; gap:10px;"><i class="fas fa-search"></i>
           <h3>No Results Found</h3>
           <p>Try a different keyword</p>
         </div>
