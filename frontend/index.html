@@ -1656,7 +1656,8 @@
       overflow-x: auto;
       scrollbar-width: none;
       padding-bottom: 2px;
-      margin-bottom: 14px
+      margin-bottom: 14px;
+      justify-content: center;
     }
 
     .chips::-webkit-scrollbar {
@@ -1674,7 +1675,8 @@
       color: var(--g);
       cursor: pointer;
       transition: all .2s;
-      font-family: 'Outfit', sans-serif
+      font-family: 'Outfit', sans-serif;
+      text-transform: capitalize;
     }
 
     .chip.on {
@@ -2460,8 +2462,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 60px 20px;
-      text-align: center
+      justify-content: center;
+      padding: 100px 20px;
+      text-align: center;
+      min-height: 300px;
     }
 
     .empty i {
@@ -4885,7 +4889,7 @@
     }
     function renderTrend() { document.getElementById('trendRow').innerHTML = S.products.slice(0, 8).map(pcsCard).join('') }
     function renderFeat() { const l = S.products.filter(p => p.isFeatured); document.getElementById('featRow').innerHTML = (l.length ? l : S.products.slice(4, 10)).map(pcsCard).join('') }
-    function renderCatFull() { document.getElementById('catFull').innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img" style="height:118px"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140/181818/FF4500?text=📦'"></div><div class="pgc-body"><h4 style="-webkit-line-clamp:1">${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse →</span></div></div>`).join('') }
+    function renderCatFull() { document.getElementById('catFull').innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140/181818/FF4500?text=📦'"></div><div class="pgc-body"><h4>${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse →</span></div></div>`).join('') }
     function filterCat(id) { S.filter = id; go('search', document.getElementById('bn-search')); document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); document.querySelector(`.chip[data-cat="${id}"]`)?.classList.add('on'); doSearch() }
     function renderChips() { document.getElementById('fchips').innerHTML = `<button class="chip on" data-cat="All" onclick="setF('All',this)">All</button>` + S.categories.map(c => `<button class="chip" data-cat="${c._id || c.name}" onclick="setF('${c._id || c.name}',this)">${c.name}</button>`).join('') }
     function setF(f, btn) { S.filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); if (btn) btn.classList.add('on'); doSearch() }
