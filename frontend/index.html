@@ -337,6 +337,7 @@
       margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 1.5px;
+      text-align: center;
     }
 
     .auth-box .fg input {
@@ -350,6 +351,7 @@
       outline: none;
       background: rgba(255, 255, 255, 0.03);
       transition: all .3s;
+      text-align: center;
     }
 
     .auth-box .fg input:focus {
@@ -599,11 +601,17 @@
     .snav h2 {
       font-size: 1rem;
       font-weight: 700;
-      flex: 1;
-      margin-left: 12px;
+      text-align: center;
+      margin: 0;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap
+      white-space: nowrap;
+      position: absolute;
+      left: 0;
+      right: 0;
+      padding: 0 60px;
+      z-index: 1;
+      pointer-events: none;
     }
 
     .snr {
@@ -1427,7 +1435,8 @@
     }
 
     .pcs-body {
-      padding: 18px 10px 12px
+      padding: 18px 10px 12px;
+      text-align: center;
     }
 
     .pcs-body h4 {
@@ -1582,7 +1591,8 @@
     }
 
     .pgc-body {
-      padding: 16px 10px 12px
+      padding: 16px 10px 12px;
+      text-align: center;
     }
 
     .pgc-body h4 {
@@ -1595,7 +1605,8 @@
       -webkit-line-clamp: 2;
       line-clamp: 2;
       -webkit-box-orient: vertical;
-      overflow: hidden
+      overflow: hidden;
+      text-transform: capitalize;
     }
 
     .pgc-stars {
@@ -5298,13 +5309,13 @@
       </div>
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-        <div class="pcard" onclick="go('wishlist',document.getElementById('bn-wishlist'))" style="cursor:pointer;justify-content:center;flex-direction:column;gap:5px;padding:20px;border:1px solid var(--o);margin:0;text-align:center">
-          <i class="fas fa-heart" style="color:var(--o);font-size:1.1rem"></i>
-          <div style="font-size:.75rem;font-weight:800;color:var(--w)">${S.wish.size} SAVED</div>
+        <div class="pcard" onclick="go('wishlist',document.getElementById('bn-wishlist'))" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px 16px;border:1px solid var(--o);margin:0;text-align:center">
+          <i class="fas fa-heart" style="color:var(--o);font-size:1.3rem"></i>
+          <div style="font-size:.78rem;font-weight:800;color:var(--w);letter-spacing:0.5px">${S.wish.size} SAVED</div>
         </div>
-        <div class="pcard" onclick="go('cart',document.getElementById('bn-cart'))" style="cursor:pointer;justify-content:center;flex-direction:column;gap:5px;padding:20px;border:1px solid var(--green);margin:0;text-align:center">
-          <i class="fas fa-shopping-bag" style="color:var(--green);font-size:1.1rem"></i>
-          <div style="font-size:.75rem;font-weight:800;color:var(--w)">${cartCnt()} IN CART</div>
+        <div class="pcard" onclick="go('cart',document.getElementById('bn-cart'))" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px 16px;border:1px solid var(--green);margin:0;text-align:center">
+          <i class="fas fa-shopping-bag" style="color:var(--green);font-size:1.3rem"></i>
+          <div style="font-size:.78rem;font-weight:800;color:var(--w);letter-spacing:0.5px">${cartCnt()} IN CART</div>
         </div>
       </div>
 
