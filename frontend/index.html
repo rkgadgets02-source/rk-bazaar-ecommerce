@@ -133,15 +133,16 @@
       position: fixed;
       inset: 0;
       z-index: 8000;
-      background: #050505;
+      background: transparent;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       overflow-y: auto;
-      padding: calc(40px + env(safe-area-inset-top, 0px)) 20px;
+      padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px;
       font-family: 'Outfit', 'Inter', sans-serif;
       perspective: 1200px;
+      overflow-x: hidden;
     }
 
     /* ── BRAND 3D PROFILE (Replaces Model Viewer) ── */
@@ -229,21 +230,42 @@
       border-radius: 50%;
     }
 
+    /* ── AUTH BACKGROUND — full-screen cover, no black cutoff ── */
     .auth-bg {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0)), url('rk_bazaar_login_bg.png') center/cover no-repeat;
-  filter: brightness(0.7) contrast(1.1);
-  transform: scale(1.02);
-  z-index: 1;
-}
-.auth-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent, var(--bg) 100%);
-  pointer-events: none;
-}
+      position: fixed;
+      inset: 0;
+      background: url('rk_bazaar_login_bg.png') center center / cover no-repeat;
+      z-index: 1;
+      will-change: transform;
+    }
+
+    /* Dark overlay for text readability */
+    .auth-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.52);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Smooth gradient fade at the bottom — blends into body bg */
+    .auth-bg::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 45%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(8, 8, 8, 0.6) 50%,
+        #080808 100%
+      );
+      z-index: 3;
+      pointer-events: none;
+    }
 
     .auth-logo {
       z-index: 10;
@@ -488,7 +510,43 @@
       cursor: pointer
     }
 
+    /* ── AUTH SCREEN RESPONSIVE ── */
+    @media (max-width: 480px) {
+      #auth-screen {
+        justify-content: flex-start;
+        padding-top: calc(24px + env(safe-area-inset-top, 0px));
+      }
+      .auth-box {
+        width: 95%;
+        padding: 24px 18px;
+        border-radius: 20px;
+      }
+      .brand-3d-logo {
+        width: 160px;
+        height: 160px;
+      }
+      #brand-3d-container {
+        height: 36vh;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .auth-box {
+        max-width: 420px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      #auth-screen {
+        justify-content: center;
+      }
+      .auth-box {
+        max-width: 440px;
+      }
+    }
+
     /* ── STORE (hidden until logged in) ── */
+
     #store-screen {
       display: none
     }
