@@ -39,6 +39,8 @@
       min-height: 100vh;
       margin: 0;
       padding: 0;
+      overflow-x: hidden;
+      overscroll-behavior: none;
     }
 
     * {
@@ -74,7 +76,13 @@
     }
 
     .page {
-      display: none
+      display: none;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: visible;
+      overscroll-behavior: none;
+      box-sizing: border-box;
     }
 
     .page.active {
@@ -150,6 +158,8 @@
       font-family: 'Outfit', 'Inter', sans-serif;
       perspective: 1200px;
       overflow-x: hidden;
+      overflow-y: visible;
+      overscroll-behavior: none;
     }
 
     /* ── BRAND 3D PROFILE (Replaces Model Viewer) ── */
@@ -568,7 +578,13 @@
     /* ── STORE (hidden until logged in) ── */
 
     #store-screen {
-      display: none
+      display: none;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: visible;
+      overscroll-behavior: none;
+      position: relative;
     }
 
     /* ── TOPBAR ── */
@@ -3344,6 +3360,9 @@
         border-right: 1px solid var(--bdr);
         background: var(--bg);
         box-shadow: 0 0 50px rgba(0, 0, 0, .6);
+        overflow-x: hidden;
+        overflow-y: visible;
+        overscroll-behavior: none;
       }
 
       .page.active {
