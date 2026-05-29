@@ -74,11 +74,19 @@
     }
 
     .page {
-      display: none
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
     }
 
     .page.active {
-      display: block
+      display: block;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: none;
     }
 
     button {
