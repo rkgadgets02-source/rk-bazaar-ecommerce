@@ -164,12 +164,14 @@ app.use('/api/admin', adminLimiter);
 const allowedOrigins = [
   'http://localhost:5000',
   'http://localhost:3000',
+  'http://127.0.0.1:5000',
+  'http://127.0.0.1:3000',
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // 1. Always allow same-origin requests (no origin header)
+    // 1. Always allow same-origin or no-origin requests (server-to-server, file://, etc.)
     if (!origin) return callback(null, true);
 
     // 2. Allow if in allowedOrigins
@@ -178,12 +180,19 @@ app.use(cors({
     // 3. Allow Vercel preview/production domains automatically
     if (origin.endsWith('.vercel.app')) return callback(null, true);
 
-    // 4. Allow any origin in development
+    // 4. Allow any localhost/127.0.0.1 port in development
     if (process.env.NODE_ENV !== 'production') return callback(null, true);
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return callback(null, true);
 
-    callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+    // 5. Allow any additional origins from CLIENT_URL env var (comma-separated)
+    const extraOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
+    if (extraOrigins.includes(origin)) return callback(null, true);
+
+    const corsErr = new Error(`CORS policy: Origin ${origin} not allowed`);
+    corsErr.isCorsError = true;
+    callback(corsErr);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
   maxAge: 86400, // cache preflight for 24h
@@ -382,8 +391,8 @@ app.use((err, req, res, next) => {
   // Log full error internally
   console.error(`❌ Error [${req.method} ${req.path}]:`, err.message);
 
-  // CORS errors
-  if (err.message && err.message.includes('CORS')) {
+  // CORS errors — only catch actual CORS errors, not errors that happen to mention CORS in their message
+  if (err.isCorsError || (err.message && err.message.startsWith('CORS policy:'))) {
     return res.status(403).json({ success: false, message: 'CORS: Origin not allowed' });
   }
 

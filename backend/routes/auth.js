@@ -257,46 +257,58 @@ router.put('/change-password', protect, async (req, res) => {
 // POST /api/auth/forgot-password
 // ─────────────────────────────────────────────────
 router.post('/forgot-password', async (req, res) => {
+  console.log('Forgot password request body:', req.body);
   try {
     const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ success: false, message: 'Email not found' });
+    if (!user) return res.status(404).json({ success: false, message: 'No account found with this email' });
 
     const otp = generateOTP();
     user.otp = otp;
     user.otpExpire = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    const transporter = getTransporter();
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM || `"RK BAZAAR" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: `${otp} is your RK BAZAAR password reset code`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #eee">
-          <div style="background:linear-gradient(135deg,#FF4500,#FF6B00);padding:30px 24px;text-align:center">
-            <h1 style="color:#fff;margin:0;font-size:24px;letter-spacing:3px">RK BAZAAR</h1>
-            <p style="color:rgba(255,255,255,.85);margin:8px 0 0;font-size:13px">Password Recovery</p>
-          </div>
-          <div style="padding:32px 24px">
-            <h2 style="color:#1a1a1a;margin:0 0 8px;font-size:20px">Reset Your Password</h2>
-            <p style="color:#666;font-size:14px;margin:0 0 24px">Hi ${user.name}, use the OTP below to reset your password. This code will expire in 10 minutes.</p>
-            <div style="background:#f8f8f8;border:2px dashed #FF4500;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
-              <p style="color:#888;font-size:12px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Your Reset Code</p>
-              <h1 style="color:#FF4500;font-size:42px;letter-spacing:10px;margin:0;font-family:monospace">${otp}</h1>
+    try {
+      const transporter = getTransporter();
+      await transporter.sendMail({
+        from: process.env.EMAIL_FROM || `"RK BAZAAR" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: `${otp} is your RK BAZAAR password reset code`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #eee">
+            <div style="background:linear-gradient(135deg,#FF4500,#FF6B00);padding:30px 24px;text-align:center">
+              <h1 style="color:#fff;margin:0;font-size:24px;letter-spacing:3px">RK BAZAAR</h1>
+              <p style="color:rgba(255,255,255,.85);margin:8px 0 0;font-size:13px">Password Recovery</p>
             </div>
-            <p style="color:#999;font-size:12px;margin:0">If you didn't request this, please ignore this email and your password will remain unchanged.</p>
+            <div style="padding:32px 24px">
+              <h2 style="color:#1a1a1a;margin:0 0 8px;font-size:20px">Reset Your Password</h2>
+              <p style="color:#666;font-size:14px;margin:0 0 24px">Hi ${user.name}, use the OTP below to reset your password. This code will expire in 10 minutes.</p>
+              <div style="background:#f8f8f8;border:2px dashed #FF4500;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
+                <p style="color:#888;font-size:12px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Your Reset Code</p>
+                <h1 style="color:#FF4500;font-size:42px;letter-spacing:10px;margin:0;font-family:monospace">${otp}</h1>
+              </div>
+              <p style="color:#999;font-size:12px;margin:0">If you didn't request this, please ignore this email and your password will remain unchanged.</p>
+            </div>
+            <div style="background:#f8f8f8;padding:16px 24px;text-align:center">
+              <p style="color:#bbb;font-size:11px;margin:0">© 2024 RK BAZAAR · Virudhunagar, Tamil Nadu</p>
+            </div>
           </div>
-          <div style="background:#f8f8f8;padding:16px 24px;text-align:center">
-            <p style="color:#bbb;font-size:11px;margin:0">© 2024 RK BAZAAR · Virudhunagar, Tamil Nadu</p>
-          </div>
-        </div>
-      `,
-    });
+        `,
+      });
+    } catch (emailErr) {
+      console.error('❌ Failed to send reset email:', emailErr.message);
+      return res.status(500).json({ success: false, message: 'Failed to send reset email. Please check your email address or try again later.' });
+    }
 
     res.json({ success: true, message: 'Password reset OTP sent to ' + email });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
 });
+
 
 // ─────────────────────────────────────────────────
 // POST /api/auth/reset-password
