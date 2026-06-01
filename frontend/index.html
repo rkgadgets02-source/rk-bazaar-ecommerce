@@ -4495,7 +4495,9 @@
   </div><!-- end store-screen -->
 
   <script>
-    const API = '/api';
+    const API = (location.protocol === 'file:' || !location.hostname)
+      ? 'http://localhost:5000/api'
+      : '/api';
 
     const PIMG = [
       'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', // Tech Overview
