@@ -169,36 +169,59 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
-app.use(cors({
-  origin: (origin, callback) => {
-    console.log(`[CORS Check] Origin: "${origin}"`);
-    // 1. Always allow same-origin or no-origin requests (server-to-server, file://, etc.)
-    if (!origin || origin === 'null') return callback(null, true);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log(`[CORS Check] Origin: "${origin}", Host: "${req.headers.host}"`);
 
-    // 2. Allow if in allowedOrigins
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+  // 1. Always allow same-origin or no-origin requests (server-to-server, file://, etc.)
+  if (!origin || origin === 'null') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    return next();
+  }
 
-    // 3. Allow Vercel preview/production domains automatically
-    if (origin.endsWith('.vercel.app')) return callback(null, true);
+  // 2. Parse host from origin to check same-origin
+  let isAllowed = false;
+  try {
+    const originHost = new URL(origin).host;
+    const reqHost = req.headers.host;
+    if (originHost === reqHost) {
+      isAllowed = true;
+    }
+  } catch (e) {}
 
-    // 4. Allow any localhost/127.0.0.1 port in development
-    if (process.env.NODE_ENV !== 'production') return callback(null, true);
-    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return callback(null, true);
+  // 3. Allow if in allowedOrigins
+  if (!isAllowed && allowedOrigins.includes(origin)) isAllowed = true;
 
-    // 5. Allow any additional origins from CLIENT_URL env var (comma-separated)
+  // 4. Allow Vercel preview/production domains automatically
+  if (!isAllowed && origin.endsWith('.vercel.app')) isAllowed = true;
+
+  // 5. Allow any localhost/127.0.0.1 port in development or production
+  if (!isAllowed && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) isAllowed = true;
+
+  // 6. Allow any additional origins from ALLOWED_ORIGINS env var
+  if (!isAllowed) {
     const extraOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
-    if (extraOrigins.includes(origin)) return callback(null, true);
+    if (extraOrigins.includes(origin)) isAllowed = true;
+  }
 
+  if (isAllowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Max-Age', '86400');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+  } else {
     const corsErr = new Error(`CORS policy: Origin ${origin} not allowed`);
     corsErr.isCorsError = true;
-    callback(corsErr);
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: true,
-  maxAge: 86400, // cache preflight for 24h
-}));
-app.options('*', cors());
+    next(corsErr);
+  }
+});
 
 // 5. Body Parser with size limits
 app.use(express.json({ limit: '15mb' })); // increased to permit base64 image strings
