@@ -834,9 +834,22 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
             <div class="pd-desc-amz">
               <h3>About this item</h3>
               <ul>
-                ${(p.description || '').split(/[•·\n]/).filter(Boolean).map(line => `<li>${line.trim()}</li>`).join('')}
+                ${(p.aboutList && p.aboutList.length) 
+                  ? p.aboutList.map(line => `<li>${line.trim()}</li>`).join('')
+                  : (p.description || '').split(/[•·\n]/).filter(Boolean).map(line => `<li>${line.trim()}</li>`).join('')
+                }
               </ul>
             </div>
+
+            ${(p.specifications && p.specifications.length) ? `
+              <hr class="pd-hr">
+              <div class="pd-desc-amz">
+                <h3>Technical Details</h3>
+                <table class="pd-specs-table">
+                  ${p.specifications.map(s => `<tr><td class="pd-s-key">${s.key}</td><td class="pd-s-val">${s.value}</td></tr>`).join('')}
+                </table>
+              </div>
+            ` : ''}
           </div>
 
           <!-- Right: Buy Box -->

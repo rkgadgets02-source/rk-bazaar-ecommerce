@@ -1442,6 +1442,15 @@
       <div class="modal-field"><label>Description</label><textarea id="p-desc" rows="3"
           placeholder="Product description..."></textarea></div>
       <div class="modal-field">
+        <label>Specifications (Key: Value, one per line)</label>
+        <textarea id="p-specs" rows="3" placeholder="Color: Black&#10;Material: Silicone&#10;Compatible with: AirPods Pro"></textarea>
+      </div>
+      <div class="modal-field">
+        <label>About this item (Bullet points, one per line)</label>
+        <textarea id="p-about" rows="4" placeholder="Military Grade Protection&#10;Wireless Charging Compatible&#10;Anti-Fingerprint Coating"></textarea>
+      </div>
+
+      <div class="modal-field">
         <label>Product Image URLs (Up to 5, one per line)</label>
         <textarea id="p-images" rows="4" placeholder="https://i.ibb.co/xxxx/image1.jpg&#10;https://i.ibb.co/yyyy/image2.jpg"
           style="width:100%;padding:10px 13px;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;color:var(--w);font-size:.83rem;outline:none;"
@@ -2395,6 +2404,13 @@
       document.getElementById('p-category').value = category;
       document.getElementById('p-brand').value = brand;
       document.getElementById('p-desc').value = desc;
+      
+      // Pre-fill new fields
+      const specs = p.specifications || [];
+      document.getElementById('p-specs').value = specs.map(s => `${s.key}: ${s.value}`).join('\n');
+      const about = p.aboutList || [];
+      document.getElementById('p-about').value = about.join('\n');
+
       // Pre-fill image URLs separated by new lines
       document.getElementById('p-images').value = (images && images.length) ? images.join('\n') : '';
       document.getElementById('p-img-preview').innerHTML = '';
@@ -2478,12 +2494,25 @@
       const saveBtn = document.getElementById('btn-save-product');
       saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
 
+      // Parse Specifications
+      const rawSpecs = document.getElementById('p-specs').value.trim();
+      const specifications = rawSpecs.split(/\r?\n/).filter(Boolean).map(row => {
+        const parts = row.split(':');
+        return { 
+          key: (parts[0] || '').trim(), 
+          value: (parts.slice(1).join(':') || '').trim() 
+        };
+      }).filter(s => s.key && s.value);
+
+      // Parse About Bullet Points
+      const aboutList = document.getElementById('p-about').value.trim().split(/\r?\n/).filter(Boolean);
+
       const url = editingProductId ? `${API}/admin/products/${editingProductId}` : `${API}/admin/products`;
       const method = editingProductId ? 'PUT' : 'POST';
       const res = await af(url, {
         method,
         body: JSON.stringify({
-          name, price, mrp, stock, category, brand, description, images
+          name, price, mrp, stock, category, brand, description, images, specifications, aboutList
         })
       });
       saveBtn.disabled = false; saveBtn.textContent = 'Save Product';
