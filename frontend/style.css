@@ -3524,6 +3524,41 @@ img {
     top: 76px !important;
   }
 
+  .pd-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr 300px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 992px) {
+    .pd-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .pd-left-col {
+      order: 1;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .pd-thumbs {
+      flex-direction: row;
+      margin-top: 10px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+    .thumb-item {
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0;
+    }
+    .pd-center-col { order: 2; }
+    .pd-right-col { 
+      order: 3;
+      position: static !important;
+    }
+  }
+
   .pd-desktop-grid {
     display: grid;
     grid-template-columns: 40% 1fr 340px;
