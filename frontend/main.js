@@ -609,8 +609,12 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
         targetEl.value = sourceEl.value;
       }
       go('search', document.getElementById('bn-search'));
-      // Minor delay to ensure page is active before searching
-      setTimeout(() => doSearch(), 50);
+      // Sync from target to source in case of mobile -> search page navigation
+      if (sourceEl && targetEl && sourceId === 'si') {
+         const dhSi = document.getElementById('dh-si');
+         if(dhSi) dhSi.value = targetEl.value;
+      }
+      doSearch();
     }
 
     function sanitize(str) {
@@ -634,19 +638,40 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
     function doSearch() {
       const si = document.getElementById('si');
       if (!si) return;
+      
       const rawQ = si.value || '';
       const q = sanitize(rawQ).toLowerCase().trim();
+      
+      // Update other search inputs to stay in sync
+      const dhSi = document.getElementById('dh-si');
+      if (dhSi && dhSi.value !== rawQ) dhSi.value = rawQ;
+
       let l = S.products;
-      if (S.filter !== 'All') l = l.filter(p => (p.category?.name === S.filter || p.category?._id === S.filter || p.category === S.filter));
-      if (q) l = l.filter(p => 
-        p.name.toLowerCase().includes(q) || 
-        (p.description || '').toLowerCase().includes(q) ||
-        (p.category?.name || '').toLowerCase().includes(q) ||
-        (p.brand || '').toLowerCase().includes(q)
-      );
+      if (S.filter !== 'All') {
+        l = l.filter(p => {
+          const catId = p.category?._id || p.category;
+          return catId === S.filter || (p.category?.name === S.filter);
+        });
+      }
+
+      if (q) {
+        l = l.filter(p => 
+          p.name.toLowerCase().includes(q) || 
+          (p.description || '').toLowerCase().includes(q) ||
+          (p.category?.name || '').toLowerCase().includes(q) ||
+          (p.brand || '').toLowerCase().includes(q) ||
+          (p.tags || []).some(t => t.toLowerCase().includes(q))
+        );
+      }
+
       const g = document.getElementById('sgrid'), e = document.getElementById('sempty');
-      if (!l.length) { if(g) g.innerHTML = ''; if(e) e.style.display = 'flex'; } 
-      else { if(e) e.style.display = 'none'; if(g) g.innerHTML = l.map(pgcCard).join(''); }
+      if (!l.length) { 
+        if(g) g.innerHTML = ''; 
+        if(e) e.style.display = 'flex'; 
+      } else { 
+        if(e) e.style.display = 'none'; 
+        if(g) g.innerHTML = l.map(pgcCard).join(''); 
+      }
     }
 
 
