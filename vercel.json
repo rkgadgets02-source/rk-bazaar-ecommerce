@@ -7,7 +7,8 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/server.js" },
-    { "source": "/(.*)", "destination": "/frontend/$1" }
+    { "source": "/api/(.*)", "destination": "backend/server.js" },
+    { "source": "/rk-secure-manager.html", "destination": "frontend/rk-secure-manager.html" },
+    { "source": "/(.*)", "destination": "frontend/$1" }
   ]
 }
