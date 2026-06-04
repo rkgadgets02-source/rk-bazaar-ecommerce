@@ -4435,4 +4435,142 @@ html {
   color: #111;
 }
 
+/* ── AMAZON STYLE PRODUCT DETAIL ── */
+.pd-layout {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 280px;
+  gap: 20px;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1100px) {
+  .pd-layout { grid-template-columns: 60px 1.2fr 1fr; }
+  .pd-buy-box-area { grid-column: span 3; order: 10; width: 100% !important; max-width: none !important; }
+}
+
+@media (max-width: 800px) {
+  .pd-layout { display: flex; flex-direction: column; padding: 12px; }
+  .pd-thumbs-v { display: none !important; }
+}
+
+/* Thumbnails (Vertical) */
+.pd-thumbs-v {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pd-thumb-v {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  cursor: pointer;
+  background: #fff;
+  padding: 2px;
+}
+
+.pd-thumb-v.on { border: 2px solid #e77600; box-shadow: 0 0 5px rgba(231,118,0,0.3); }
+.pd-thumb-v img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Image Area */
+.pd-img-area { position: sticky; top: 100px; height: fit-content; }
+.pd-carousel.amz { background: #fff; border-radius: 8px; border: 1px solid #eee; min-height: 400px; display: flex; align-items: center; }
+.pd-carousel.amz .pd-slide img { max-height: 450px; }
+.pd-badge-sale.amz { background: #cc0c39; padding: 8px 12px; border-radius: 2px; font-weight: 800; color: #fff; }
+
+/* Info Area */
+.pd-info-area { color: #fff; }
+.pd-brand-link { color: #007185; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-bottom: 4px; }
+.pd-name-amz { font-size: 1.5rem; font-weight: 500; line-height: 1.3; margin-bottom: 8px; }
+.pd-rating-amz { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 12px; }
+.pd-rev-count { color: #007185; }
+.pd-stars i { font-size: 0.75rem; color: #ffa41c; }
+
+.pd-hr { border: none; border-top: 1px solid #333; margin: 16px 0; }
+
+.pd-price-row { display: flex; align-items: flex-start; gap: 4px; }
+.pd-dsc-amz { color: #cc0c39; font-size: 1.7rem; font-weight: 300; margin-right: 8px; }
+.pd-curr { font-size: 0.8rem; margin-top: 6px; }
+.pd-p-amz { font-size: 1.8rem; font-weight: 500; }
+.pd-mrp-amz { font-size: 0.75rem; color: #888; margin: 4px 0; }
+.pd-mrp-amz span { text-decoration: line-through; }
+.pd-tax-hint { font-size: 0.9rem; margin-top: 4px; }
+.pd-emi-hint { font-size: 0.85rem; margin-top: 8px; }
+
+/* Offer Cards */
+.pd-offers-label { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.pd-offers-label i { color: #cc0c39; }
+.pd-offers-grid { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.pd-offer-card { 
+  flex: 0 0 140px; 
+  border: 1px solid #444; 
+  padding: 12px; 
+  border-radius: 8px; 
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pd-offer-card b { font-size: 0.8rem; }
+.pd-offer-card p { font-size: 0.75rem; color: #aaa; line-height: 1.3; }
+.pd-offer-card a { font-size: 0.75rem; color: #007185; text-decoration: none; font-weight: 600; margin-top: auto; }
+
+/* Trust Strip */
+.pd-trust-strip { display: flex; gap: 16px; margin: 16px 0; }
+.pd-trust-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; width: 80px; }
+.pd-trust-item i { font-size: 1.2rem; color: #ccc; }
+.pd-trust-item span { font-size: 0.65rem; color: #888; font-weight: 600; }
+
+/* Description */
+.pd-desc-amz h3 { font-size: 1.1rem; margin-bottom: 12px; }
+.pd-desc-amz ul { padding-left: 20px; color: #ccc; }
+.pd-desc-amz li { font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+
+/* Buy Box */
+.pd-buy-box-area { position: sticky; top: 100px; height: fit-content; }
+.pd-buy-box { 
+  background: #111; 
+  border: 1px solid #333; 
+  border-radius: 8px; 
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pd-bb-price { font-size: 1.5rem; font-weight: 500; }
+.pd-bb-delivery { font-size: 0.85rem; color: #ccc; line-height: 1.4; }
+.pd-bb-delivery b { color: #fff; }
+.pd-timer { color: #007600; font-weight: 700; }
+.pd-bb-stock { font-size: 1.1rem; font-weight: 600; }
+.pd-bb-stock.in { color: #007600; }
+.pd-bb-stock.out { color: #cc0c39; }
+
+.pd-bb-qty { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+.pd-bb-qty select { background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 2px 8px; }
+
+.pd-amz-btn { 
+  width: 100%; 
+  padding: 10px; 
+  border-radius: 20px; 
+  font-weight: 600; 
+  font-size: 0.85rem; 
+  border: none;
+  cursor: pointer;
+}
+.pd-amz-btn.yellow { background: #ffd814; color: #0f1111; }
+.pd-amz-btn.yellow:hover { background: #f7ca00; }
+.pd-amz-btn.orange { background: #ffa41c; color: #0f1111; }
+.pd-amz-btn.orange:hover { background: #fa8900; }
+
+.pd-bb-meta { font-size: 0.75rem; color: #888; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid #333; padding-bottom: 12px; }
+.pd-bb-meta b { color: #ccc; }
+
+.pd-wl-btn { background: none; border: 1px solid #444; border-radius: 4px; width: 100%; padding: 8px; color: #aaa; font-size: 0.8rem; text-align: left; transition: all 0.2s; }
+.pd-wl-btn:hover { background: #222; }
+.pd-wl-btn.on { color: #cc0c39; border-color: #cc0c39; }
+
 

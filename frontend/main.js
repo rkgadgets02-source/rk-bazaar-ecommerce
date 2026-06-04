@@ -731,7 +731,6 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
     let pdQty = 1, pdImgIdx = 0, pdAllImgs = [];
 
     async function openProd(id) {
-      // Save where we came from
       S.prev = document.querySelector('.page.active')?.id.replace('page-', '') || 'home';
       go('pd', null);
       document.getElementById('pdtitle').textContent = 'Loading...';
@@ -739,7 +738,6 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
       document.getElementById('pdcontent').innerHTML = `<div style="padding:60px 0;text-align:center"><div class="lring" style="margin:auto"></div></div>`;
       pdQty = 1; pdImgIdx = 0;
 
-      // Try to fetch full product from API
       let p = S.products.find(x => x._id === id) || null;
       if (p && p._id && !p._id.startsWith('p')) {
         const r = await req('/products/' + id);
@@ -749,8 +747,6 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
       S.curP = p;
       document.getElementById('pdtitle').textContent = p.name;
 
-      // Build image list
-      // Build image list — ensure they are ALL valid
       const raw = p.images || [];
       pdAllImgs = raw.filter(isValidImgUrl);
       if (!pdAllImgs.length) {
@@ -760,95 +756,119 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
 
       const dsc = disc(p);
       const inWish = S.wish.has(p._id);
-
-      // ── Image carousel HTML
-      const slidesHtml = pdAllImgs.map((img, i) => `<div class="pd-slide"><img src="${img}" alt="${p.name} image ${i + 1}" onerror="this.src='https://via.placeholder.com/260/181818/FF4500?text=%F0%9F%93%A6'"></div>`).join('');
-      const thumbsHtml = pdAllImgs.length > 1 ? `<div class="pd-thumbs" id="pdThumbs">${pdAllImgs.map((img, i) => `<div class="pd-thumb${i === 0 ? ' on' : ''}" onclick="pdGoSlide(${i})"><img src="${img}" alt=""></div>`).join('')}</div>` : '';
-      const dotsHtml = pdAllImgs.length > 1 ? `<div class="pd-dots" id="pdDots">${pdAllImgs.map((_, i) => `<div class="pd-dot${i === 0 ? ' on' : ''}"></div>`).join('')}</div>` : ''
-      const prevBtn = pdAllImgs.length > 1 ? `<button class="pd-carousel-btn prev" onclick="pdGoSlide(pdImgIdx-1)"><i class="fas fa-chevron-left"></i></button><button class="pd-carousel-btn next" onclick="pdGoSlide(pdImgIdx+1)"><i class="fas fa-chevron-right"></i></button>` : '';
-
-      // ── Specs
+      const slidesHtml = pdAllImgs.map((img, i) => `<div class="pd-slide"><img src="${img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/350/111/FF4500'"></div>`).join('');
+      const thumbsHtml = pdAllImgs.length > 1 ? `<div class="pd-thumbs-v" id="pdThumbs">${pdAllImgs.map((img, i) => `<div class="pd-thumb-v${i === 0 ? ' on' : ''}" onmouseover="pdGoSlide(${i})"><img src="${img}" alt=""></div>`).join('')}</div>` : '';
+      
       const specs = p.specifications || [];
-      // Always add standard rows
-      const stdSpecs = [
-        ['Brand', p.brand || 'Generic'],
-        ['SKU', p.sku || '—'],
-        ['Category', p.category?.name || '—'],
-        ['Unit', p.unit || '1 pcs'],
-        ['Stock', p.stock > 0 ? `${p.stock} units` : 'Out of Stock'],
-      ];
-      const allSpecs = [...stdSpecs, ...specs.map(s => [s.key, s.value])];
-      const specsHtml = `<table class="pd-specs">${allSpecs.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>`;
-
-      // ── Reviews
-      const revs = (p.reviews || []).slice().reverse();
-      const revHtml = revs.length
-        ? `<div class="pd-rev">${revs.map(r => `<div class="pd-rcard"><div class="pd-rhead"><span class="pd-rname">${r.name}</span><span class="pd-rdate">${new Date(r.createdAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span></div><div class="pd-rstars">${stars(r.rating)}</div><div class="pd-rtext">${r.comment}</div></div>`).join('')}</div>`
-        : `<div class="pd-no-rev"><i class="fas fa-comment-slash" style="font-size:2rem;margin-bottom:10px;display:block;color:var(--s3)"></i>No reviews yet.<br>Be the first to review!</div>`;
-
-      // ── Review Form
-      const reviewFormHtml = S.user
-        ? `<div class="pd-review-form" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--bdr)">
-            <h4 style="margin-bottom:10px;font-size:1rem;">Write a Review</h4>
-            <div id="pd-rev-res" style="display:none;margin-bottom:10px;font-size:.8rem;padding:8px;border-radius:6px"></div>
-            <div style="display:flex;gap:8px;margin-bottom:15px;font-size:1.2rem" id="pd-star-select">
-              <i class="far fa-star pd-star-sel" data-val="1" onclick="pdSetStar(1)" style="cursor:pointer;color:var(--o)"></i>
-              <i class="far fa-star pd-star-sel" data-val="2" onclick="pdSetStar(2)" style="cursor:pointer;color:var(--o)"></i>
-              <i class="far fa-star pd-star-sel" data-val="3" onclick="pdSetStar(3)" style="cursor:pointer;color:var(--o)"></i>
-              <i class="far fa-star pd-star-sel" data-val="4" onclick="pdSetStar(4)" style="cursor:pointer;color:var(--o)"></i>
-              <i class="far fa-star pd-star-sel" data-val="5" onclick="pdSetStar(5)" style="cursor:pointer;color:var(--o)"></i>
-            </div>
-            <textarea id="pd-rev-comment" placeholder="What do you think about this product?" rows="3" style="width:100%;background:var(--s2);color:var(--w);border:1px solid var(--bdr);padding:12px;border-radius:10px;margin-bottom:15px;outline:none"></textarea>
-            <button onclick="pdSubmitReview('${p._id}')" class="pd-by" id="pd-rev-btn" style="width:100%;padding:10px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-weight:700">Submit Review</button>
-           </div>`
-        : `<div class="pd-review-login" style="margin-top:20px;padding:20px;text-align:center;background:var(--s1);border-radius:10px">
-             <p style="font-size:.9rem">Please <a onclick="showAuthScreen()" style="color:var(--blue);cursor:pointer;font-weight:700;text-decoration:underline">Login</a> to write a review.</p>
-           </div>`;
-
-      const tags = (p.tags || []).map(t => `<span class="pd-tag">${t}</span>`).join('');
+      const specsHtml = `<table class="pd-specs">${specs.map(s => `<tr><td>${s.key}</td><td>${s.value}</td></tr>`).join('')}</table>`;
 
       document.getElementById('pdcontent').innerHTML = `
-    <div class="pd-desktop-grid">
-      <div class="pd-col-img">
-        <div class="pd-carousel" id="pdCarousel">
-          ${dsc ? `<div class="pd-badge-sale">${dsc}% OFF</div>` : ''}
-          <button class="pd-wl-float${inWish ? ' on' : ''}" id="pdwl" onclick="togWish('${p._id}');this.classList.toggle('on',S.wish.has('${p._id}'))"><i class="fas fa-heart"></i></button>
-          <button class="pd-share-float" onclick="shareProd('${p._id}', '${p.name.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i></button>
-          ${prevBtn}
-          <div class="pd-slides" id="pdSlides">${slidesHtml}</div>
-          ${dotsHtml}
-        </div>
-        ${thumbsHtml}
-      </div>
+        <div class="pd-layout">
+          <!-- Left: Vertical Thumbs -->
+          ${thumbsHtml}
 
-      <div class="pd-col-info">
-        <div class="pd-info">
-          <div class="pd-brand">${p.brand || 'Generic'}</div>
-          <div class="pd-name">${p.name}</div>
-          <div class="pd-sr"><span class="s">${stars(p.rating || 0)}</span><span>${(p.rating || 0).toFixed(1)} (${p.numReviews || 0} reviews)</span></div>
-          <div class="pd-pr">
-            <span class="p">₹${p.price.toLocaleString('en-IN')}</span>
-            ${p.mrp && p.mrp > p.price ? `<span class="m">₹${p.mrp.toLocaleString('en-IN')}</span>` : ''}${dsc ? `<span class="d">${dsc}% OFF</span>` : ''}
+          <!-- Middle Left: Carousel -->
+          <div class="pd-img-area">
+            <div class="pd-carousel amz" id="pdCarousel">
+              ${dsc ? `<div class="pd-badge-sale amz">-${dsc}%</div>` : ''}
+              <button class="pd-share-float" onclick="shareProd('${p._id}', '${p.name.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i></button>
+              <div class="pd-slides" id="pdSlides">${slidesHtml}</div>
+            </div>
           </div>
-          ${p.mrp && p.mrp > p.price ? `<div class="pd-save">💰 You save ₹${(p.mrp - p.price).toLocaleString('en-IN')}</div>` : ''}
-          <div class="pd-st ${p.stock > 0 ? 'y' : 'n'}">${p.stock > 0 ? `<i class="fas fa-check-circle"></i> In Stock (${p.stock} available)` : '<i class="fas fa-times-circle"></i> Out of Stock'}</div>
-          ${tags ? `<div class="pd-meta">${tags}</div>` : ''}
+
+          <!-- Middle Right: Core Info -->
+          <div class="pd-info-area">
+            <div class="pd-brand-link">Visit the ${p.brand || 'Generic'} Store</div>
+            <h1 class="pd-name-amz">${p.name}</h1>
+            <div class="pd-rating-amz">
+              <span>${p.rating || 0}</span>
+              <div class="pd-stars">${stars(p.rating || 0)}</div>
+              <span class="pd-rev-count">${p.numReviews || 0} ratings</span>
+            </div>
+            
+            <hr class="pd-hr">
+
+            <div class="pd-price-row">
+               ${dsc ? `<span class="pd-dsc-amz">-${dsc}%</span>` : ''}
+               <span class="pd-curr">₹</span>
+               <span class="pd-p-amz">${p.price.toLocaleString('en-IN')}</span>
+            </div>
+            ${p.mrp && p.mrp > p.price ? `<div class="pd-mrp-amz">M.R.P.: <span>₹${p.mrp.toLocaleString('en-IN')}</span></div>` : ''}
+            <div class="pd-tax-hint">Inclusive of all taxes</div>
+            <div class="pd-emi-hint"><b>EMI</b> starts at ₹${Math.ceil(p.price/12)}. No Cost EMI available</div>
+
+            <hr class="pd-hr">
+
+            <!-- Amazon Style Offers -->
+            <div class="pd-offers-label"><i class="fas fa-percentage"></i> Offers</div>
+            <div class="pd-offers-grid">
+              <div class="pd-offer-card">
+                <b>Bank Offer</b>
+                <p>Upto ₹2,000 discount on select Credit Cards</p>
+                <a href="#">2 offers ></a>
+              </div>
+              <div class="pd-offer-card">
+                <b>No Cost EMI</b>
+                <p>Upto ₹1,500 EMI interest savings on select Credit Cards</p>
+                <a href="#">1 offer ></a>
+              </div>
+              <div class="pd-offer-card">
+                <b>Cashback</b>
+                <p>Get ₹50 cashback as Amazon Pay Balance</p>
+                <a href="#">1 offer ></a>
+              </div>
+            </div>
+
+            <hr class="pd-hr">
+
+            <!-- Trust Icons -->
+            <div class="pd-trust-strip">
+              <div class="pd-trust-item"><i class="fas fa-undo"></i><span>7 days Replacement</span></div>
+              <div class="pd-trust-item"><i class="fas fa-truck"></i><span>Free Delivery</span></div>
+              <div class="pd-trust-item"><i class="fas fa-shield-alt"></i><span>1 Year Warranty</span></div>
+              <div class="pd-trust-item"><i class="fas fa-wallet"></i><span>Pay on Delivery</span></div>
+            </div>
+
+            <hr class="pd-hr">
+            
+            <div class="pd-desc-amz">
+              <h3>About this item</h3>
+              <ul>
+                ${(p.description || '').split(/[•·\n]/).filter(Boolean).map(line => `<li>${line.trim()}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right: Buy Box -->
+          <div class="pd-buy-box-area">
+            <div class="pd-buy-box">
+               <div class="pd-bb-price">₹${p.price.toLocaleString('en-IN')}</div>
+               <div class="pd-bb-delivery">FREE delivery <b>Tomorrow</b>. Order within <span class="pd-timer">2 hrs 40 mins</span></div>
+               <div class="pd-bb-stock ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? 'In Stock' : 'Out of Stock'}</div>
+               
+               <div class="pd-bb-qty">
+                 <label>Qty:</label>
+                 <select id="pdQtySel" onchange="pdQty=parseInt(this.value)">
+                   ${[1,2,3,4,5].map(v => `<option value="${v}">${v}</option>`).join('')}
+                 </select>
+               </div>
+
+               <button class="pd-amz-btn yellow" onclick="addById('${p._id}',pdQty)">Add to Cart</button>
+               <button class="pd-amz-btn orange" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled' : ''}>Buy Now</button>
+               
+               <div class="pd-bb-meta">
+                 <div><span>Ships from</span> <b>RK BAZAAR</b></div>
+                 <div><span>Sold by</span> <b>RK Retails</b></div>
+               </div>
+
+               <button class="pd-wl-btn" onclick="togWish('${p._id}');this.classList.toggle('on')">
+                 <i class="fas fa-heart"></i> Add to Wish List
+               </button>
+            </div>
+          </div>
         </div>
-        
-        <div class="pd-tabs">
-          <div class="pd-tab on" onclick="pdSwitchTab('desc',this)">Description</div>
-          <div class="pd-tab" onclick="pdSwitchTab('specs',this)">Specs</div>
-          <div class="pd-tab" onclick="pdSwitchTab('revs',this)">Reviews (${p.numReviews || 0})</div>
-        </div>
-        <div class="pd-tabcontent on" id="pdt-desc">${(()=>{ const d = p.description || 'No description available.'; const pts = d.split(/[•·]/).map(s=>s.trim()).filter(Boolean); if(pts.length > 1){ return '<ul class="pd-desc-list">' + pts.map(pt=>'<li>'+pt+'</li>').join('') + '</ul>'; } return '<p class="pd-desc">'+d+'</p>'; })()}</div>
-        <div class="pd-tabcontent" id="pdt-specs">${specsHtml}</div>
-        <div class="pd-tabcontent" id="pdt-revs">${revHtml}${reviewFormHtml}</div>
-      </div>
-      <div class="pd-acts" style="margin-top:20px">
-        <button class="pd-ac" onclick="addById('${p._id}',pdQty)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-        <button class="pd-by" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled style="opacity:.5"' : ''}><i class="fas fa-bolt"></i> Buy Now</button>
-      </div>
-    </div>
+      `;
+    }
 
     <!-- Related Products -->
 
