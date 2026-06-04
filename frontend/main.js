@@ -309,6 +309,11 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
     // STORE LOGIC
     // ══════════════════════════════════════════
     async function loadStoreData() {
+      // Show skeletons during initial load for smooth feel
+      showSkeletons('trendRow', 4);
+      showSkeletons('featRow', 4);
+      showSkeletons('sgrid', 4);
+      
       await loadCats(); await loadProds(); await loadOffers();
       renderStrip(); renderTrend(); renderFeat();
       renderCatFull(); renderChips(); doSearch();
@@ -592,14 +597,40 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
     function filterCat(id) { S.filter = id; go('search', document.getElementById('bn-search')); document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); document.querySelector(`.chip[data-cat="${id}"]`)?.classList.add('on'); doSearch() }
     function renderChips() { document.getElementById('fchips').innerHTML = `<button class="chip on" data-cat="All" onclick="setF('All',this)">All</button>` + S.categories.map(c => `<button class="chip" data-cat="${c._id || c.name}" onclick="setF('${c._id || c.name}',this)">${c.name}</button>`).join('') }
     function setF(f, btn) { S.filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); if (btn) btn.classList.add('on'); doSearch() }
+    function debounce(fn, wait) {
+      let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait); };
+    }
+    const debouncedSearch = debounce(() => doSearch(), 300);
+
+    function sanitize(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function showSkeletons(id, count = 4) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = new Array(count).fill(0).map(() => `
+        <div class="skel-card">
+          <div class="skel-img skel"></div>
+          <div class="skel-line skel"></div>
+          <div class="skel-line short skel"></div>
+        </div>
+      `).join('');
+    }
+
     function doSearch() {
-      const q = (document.getElementById('si')?.value || '').toLowerCase();
+      const rawQ = document.getElementById('si')?.value || '';
+      const q = sanitize(rawQ).toLowerCase().trim();
       let l = S.products;
       if (S.filter !== 'All') l = l.filter(p => (p.category?.name === S.filter || p.category?._id === S.filter || p.category === S.filter));
       if (q) l = l.filter(p => p.name.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q));
       const g = document.getElementById('sgrid'), e = document.getElementById('sempty');
-      if (!l.length) { g.innerHTML = ''; e.style.display = 'flex'; } else { e.style.display = 'none'; g.innerHTML = l.map(pgcCard).join(''); }
+      if (!l.length) { if(g) g.innerHTML = ''; if(e) e.style.display = 'flex'; } 
+      else { if(e) e.style.display = 'none'; if(g) g.innerHTML = l.map(pgcCard).join(''); }
     }
+
 
     // ── Product Detail State
     let pdQty = 1, pdImgIdx = 0, pdAllImgs = [];
