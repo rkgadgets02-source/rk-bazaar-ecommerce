@@ -3524,48 +3524,54 @@ img {
     top: 76px !important;
   }
 
-  /* 🟢 FINAL ALIGNMENT FIX 🟢 */
+  /* 📱 MOBILE-FIRST FIX (Restoring Structure) 📱 */
   .pd-layout {
-    display: grid;
-    grid-template-columns: 80px 450px 1fr 300px;
-    gap: 32px;
-    align-items: start;
-    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 15px;
   }
 
-  @media (max-width: 1200px) {
+  /* 💻 ONLY APPLY AMAZON GRID ON DESKTOP 💻 */
+  @media (min-width: 1024px) {
     .pd-layout {
-      grid-template-columns: 80px 400px 1fr;
+      display: grid;
+      grid-template-columns: 80px 450px 1fr 300px;
+      gap: 32px;
+      padding: 24px;
+      align-items: start;
     }
-    .pd-buy-box-amz { display: none; } /* Show below on smaller screens */
-  }
-
-  @media (max-width: 992px) {
-    .pd-layout {
-      display: flex;
+    .pd-thumbs-v {
+      display: flex !important;
       flex-direction: column;
-      gap: 20px;
-      padding: 15px;
+      gap: 10px;
     }
+  }
+
+  /* Hide vertical thumbs and fix scale on small screens */
+  @media (max-width: 1023px) {
     .pd-thumbs-v {
       display: flex;
       flex-direction: row;
       overflow-x: auto;
-      gap: 10px;
-      width: 100%;
-      height: auto;
+      gap: 8px;
+      margin-top: 10px;
     }
     .pd-thumb-v {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       flex-shrink: 0;
     }
     .pd-img-area {
       width: 100%;
-      max-width: 100%;
     }
-    .pd-slide img {
-      max-height: 400px;
+    .pd-info-area {
+      width: 100%;
+    }
+    .pd-buy-box-amz {
+      position: static !important;
+      width: 100% !important;
+      margin-top: 15px;
     }
   }
 
