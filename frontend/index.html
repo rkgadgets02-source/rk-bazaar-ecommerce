@@ -15,6 +15,40 @@
 
 </head>
 <body>
+
+  <!-- LOADER -->
+  <div id="ldr">
+    <div class="lring"></div>
+    <div class="llogo">RK <b>BAZAAR</b></div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- SHARE SHEET FALLBACK -->
+  <div id="share-sheet-overlay" class="ss-overlay" onclick="closeShareSheet()">
+    <div class="ss-sheet" onclick="event.stopPropagation()">
+      <div class="ss-head">
+        <h3>Share Product</h3>
+        <button class="ss-close" onclick="closeShareSheet()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="ss-body">
+        <div class="ss-opt" id="ss-wa">
+          <div class="ss-ic wa"><i class="fab fa-whatsapp"></i></div>
+          <span>WhatsApp</span>
+        </div>
+        <div class="ss-opt" id="ss-fb">
+          <div class="ss-ic fb"><i class="fab fa-facebook-f"></i></div>
+          <span>Facebook</span>
+        </div>
+        <div class="ss-opt" id="ss-copy">
+          <div class="ss-ic cp"><i class="fas fa-link"></i></div>
+          <span>Copy Link</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="auth-screen">
     <div class="auth-bg"></div>
 
@@ -159,7 +193,12 @@
         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
         <span>Shop</span>
       </div>
+      <div class="bn" id="bn-search" onclick="go('search',this)">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>Search</span>
+      </div>
       <div class="bn" id="bn-cart" onclick="go('cart',this)">
+
         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
         <span>Cart</span>
       </div>
