@@ -4344,45 +4344,76 @@ html {
   box-shadow: 0 0 25px rgba(255, 69, 0, 0.08) !important;
 }
 
-/* ── SEARCH AUTO-SUGGESTIONS ── */
+/* ── SEARCH AUTO-SUGGESTIONS (Amazon Style) ── */
 .sug-box {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--s2);
-  border: 1px solid var(--bdr);
+  background: #fff;
+  border: 1px solid #ddd;
   border-top: none;
-  border-radius: 0 0 16px 16px;
+  border-radius: 0 0 4px 4px;
   z-index: 3000;
   display: none;
-  max-height: 400px;
+  max-height: 480px;
   overflow-y: auto;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .sug-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 10px 16px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  transition: all 0.2s;
+  border-bottom: 1px solid #f3f3f3;
+  transition: background 0.15s;
+  color: #111; /* Dark text for Amazon style */
+}
+
+.sug-item:last-child {
+  border-bottom: none;
 }
 
 .sug-item:hover {
-  background: rgba(255, 69, 0, 0.08);
+  background: #f1f1f1;
+}
+
+.sug-icon {
+  color: #888;
+  font-size: 0.9rem;
+  width: 16px;
+  text-align: center;
+}
+
+.sug-item-name {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sug-item-cat {
+  font-size: 0.8rem;
+  color: #666;
+  margin-left: 8px;
+}
+
+.sug-item-cat span {
+  font-weight: 600;
+  color: #222;
 }
 
 .sug-item-img {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
   overflow: hidden;
-  background: var(--s3);
-  flex-shrink: 0;
+  opacity: 0.8;
+  filter: grayscale(0.2);
 }
 
 .sug-item-img img {
@@ -4391,35 +4422,17 @@ html {
   object-fit: cover;
 }
 
-.sug-item-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.sug-item-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--w);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sug-item-cat {
-  font-size: 0.65rem;
-  color: var(--g);
-  margin-top: 2px;
-}
-
-.sug-item-p {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--o);
-}
-
+/* Adjust for Search Page */
 #si-sug {
   top: calc(100% + 2px);
-  border-radius: 12px;
-  border: 1px solid var(--bdr);
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
+
+/* Ensure suggestions are readable in global Dark Mode if needed */
+.desktop-header .sug-box {
+  background: #fff;
+  color: #111;
+}
+
 

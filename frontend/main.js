@@ -634,7 +634,7 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
         p.name.toLowerCase().includes(q) || 
         (p.category?.name || p.category || '').toString().toLowerCase().includes(q) ||
         (p.brand || '').toLowerCase().includes(q)
-      ).slice(0, 6);
+      ).slice(0, 10);
 
       if (!matches.length) { 
         sug.style.display = 'none'; 
@@ -643,14 +643,13 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
 
       sug.innerHTML = matches.map(p => `
         <div class="sug-item" onclick="selSug('${id}', '${p._id}', '${p.name.replace(/'/g, "\\'")}')">
+          <i class="fas fa-search sug-icon"></i>
+          <div class="sug-item-name">${p.name}</div>
+          <div class="sug-item-cat">in <span>${p.category?.name || 'Store'}</span></div>
           <div class="sug-item-img"><img src="${p.images?.[0] || 'https://via.placeholder.com/44'}" onerror="this.src='https://via.placeholder.com/44'"></div>
-          <div class="sug-item-info">
-            <div class="sug-item-name">${p.name}</div>
-            <div class="sug-item-cat">${p.category?.name || 'Product'}</div>
-          </div>
-          <div class="sug-item-p">₹${p.price}</div>
         </div>
       `).join('');
+      sug.style.display = 'block';
       sug.style.display = 'block';
     }
 
