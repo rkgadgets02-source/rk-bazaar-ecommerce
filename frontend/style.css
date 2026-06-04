@@ -855,6 +855,7 @@ img {
   width: 100%;
   box-sizing: border-box;
   overflow: visible;
+  position: relative;
 }
 
 .sbar:active {
@@ -3346,8 +3347,9 @@ img {
   background: var(--s2);
   border-radius: 12px;
   border: 1px solid var(--bdr);
-  overflow: hidden;
-  transition: border .2s
+  overflow: visible;
+  transition: border .2s;
+  position: relative;
 }
 
 .dh-search:focus-within {
