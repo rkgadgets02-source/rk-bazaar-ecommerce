@@ -602,6 +602,17 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
     }
     const debouncedSearch = debounce(() => doSearch(), 300);
 
+    function triggerSearch(sourceId) {
+      const sourceEl = document.getElementById(sourceId);
+      const targetEl = document.getElementById('si');
+      if (sourceEl && targetEl) {
+        targetEl.value = sourceEl.value;
+      }
+      go('search', document.getElementById('bn-search'));
+      // Minor delay to ensure page is active before searching
+      setTimeout(() => doSearch(), 50);
+    }
+
     function sanitize(str) {
       const div = document.createElement('div');
       div.textContent = str;
@@ -621,11 +632,18 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
     }
 
     function doSearch() {
-      const rawQ = document.getElementById('si')?.value || '';
+      const si = document.getElementById('si');
+      if (!si) return;
+      const rawQ = si.value || '';
       const q = sanitize(rawQ).toLowerCase().trim();
       let l = S.products;
       if (S.filter !== 'All') l = l.filter(p => (p.category?.name === S.filter || p.category?._id === S.filter || p.category === S.filter));
-      if (q) l = l.filter(p => p.name.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q));
+      if (q) l = l.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        (p.description || '').toLowerCase().includes(q) ||
+        (p.category?.name || '').toLowerCase().includes(q) ||
+        (p.brand || '').toLowerCase().includes(q)
+      );
       const g = document.getElementById('sgrid'), e = document.getElementById('sempty');
       if (!l.length) { if(g) g.innerHTML = ''; if(e) e.style.display = 'flex'; } 
       else { if(e) e.style.display = 'none'; if(g) g.innerHTML = l.map(pgcCard).join(''); }

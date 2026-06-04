@@ -41,10 +41,8 @@
     </div>
     <div class="dh-search">
       <input type="text" id="dh-si" autocomplete="off" placeholder="Search earbuds, chargers, watches..."
-        onkeypress="if(event.key==='Enter') { document.getElementById('si').value = this.value; document.getElementById('bn-search').click(); setTimeout(()=>doSearch(), 50); }">
-      <button
-        onclick="document.getElementById('si').value = document.getElementById('dh-si').value; document.getElementById('bn-search').click(); setTimeout(()=>doSearch(), 50);"><i
-          class="fas fa-search"></i></button>
+        onkeypress="if(event.key==='Enter') triggerSearch('dh-si')">
+      <button onclick="triggerSearch('dh-si')"><i class="fas fa-search"></i></button>
     </div>
     <div class="dh-acts">
       <button class="dh-act" onclick="go('account',document.getElementById('bn-account'))"><i
@@ -278,7 +276,7 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" placeholder="Search earbuds, chargers, watches..." readonly>
+          <input type="text" id="home-si" placeholder="Search earbuds, chargers, watches..." readonly>
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--o)" stroke-width="2" fill="none">
             <line x1="4" y1="21" x2="4" y2="14"></line>
             <line x1="4" y1="10" x2="4" y2="3"></line>
