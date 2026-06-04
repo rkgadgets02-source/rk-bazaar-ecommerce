@@ -605,17 +605,53 @@ const debouncedSearch = debounce(() => doSearch(), 300);
 function triggerSearch(sourceId) {
   const sourceEl = document.getElementById(sourceId);
   const targetEl = document.getElementById('si');
-  if (sourceEl && targetEl) {
-    targetEl.value = sourceEl.value;
-  }
+  const homeSi = document.getElementById('home-si');
+  const dhSi = document.getElementById('dh-si');
+  
+  const val = sourceEl ? sourceEl.value : (targetEl ? targetEl.value : '');
+  
+  if (targetEl) targetEl.value = val;
+  if (homeSi) homeSi.value = val;
+  if (dhSi) dhSi.value = val;
+
   go('search', document.getElementById('bn-search'));
-  // Sync from target to source in case of mobile -> search page navigation
-  if (sourceEl && targetEl && (sourceId === 'si' || sourceId === 'home-si')) {
-    const dhSi = document.getElementById('dh-si');
-    if (dhSi) dhSi.value = targetEl.value;
-  }
   doSearch();
   hideSug();
+}
+
+function doSearch() {
+  const q = (document.getElementById('si')?.value || '').toLowerCase().trim();
+  const resEl = document.getElementById('searchRes');
+  if (!resEl) return;
+
+  let filtered = S.products;
+
+  // Search Filter
+  if (q) {
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(q) || 
+      (p.brand || '').toLowerCase().includes(q) ||
+      (p.category?.name || p.category || '').toString().toLowerCase().includes(q)
+    );
+  }
+
+  // Category Filter
+  if (S.filter !== 'All') {
+    filtered = filtered.filter(p => 
+      p.category?._id === S.filter || 
+      p.category === S.filter || 
+      p.category?.name === S.filter
+    );
+  }
+
+  const countEl = document.getElementById('search-count');
+  if (countEl) countEl.textContent = `${filtered.length} products found`;
+
+  if (filtered.length === 0) {
+    resEl.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No results for "${q}"</h3><p>Try searching for something else</p></div>`;
+  } else {
+    resEl.innerHTML = `<div class="search-grid">${filtered.map(pgcCard).join('')}</div>`;
+  }
 }
 
 function showSug(id) {
