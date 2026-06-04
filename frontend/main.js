@@ -610,12 +610,57 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
       }
       go('search', document.getElementById('bn-search'));
       // Sync from target to source in case of mobile -> search page navigation
-      if (sourceEl && targetEl && sourceId === 'si') {
+      if (sourceEl && targetEl && (sourceId === 'si' || sourceId === 'home-si')) {
          const dhSi = document.getElementById('dh-si');
          if(dhSi) dhSi.value = targetEl.value;
       }
       doSearch();
+      hideSug();
     }
+
+    function showSug(id) {
+      const el = document.getElementById(id);
+      const sug = document.getElementById(id + (id === 'si' ? '-sug' : '-sug'));
+      if (!el || !sug) return;
+      const q = el.value.toLowerCase().trim();
+      if (!q || q.length < 1) { sug.style.display = 'none'; return; }
+      
+      const matches = S.products.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        (p.category?.name || '').toLowerCase().includes(q) ||
+        (p.brand || '').toLowerCase().includes(q)
+      ).slice(0, 6);
+
+      if (!matches.length) { sug.style.display = 'none'; return; }
+
+      sug.innerHTML = matches.map(p => `
+        <div class="sug-item" onclick="selSug('${id}', '${p._id}', '${p.name.replace(/'/g, "\\'")}')">
+          <div class="sug-item-img"><img src="${p.images[0]}" onerror="this.src='/uploads/fallback.png'"></div>
+          <div class="sug-item-info">
+            <div class="sug-item-name">${p.name}</div>
+            <div class="sug-item-cat">${p.category?.name || 'Product'}</div>
+          </div>
+          <div class="sug-item-p">₹${p.price}</div>
+        </div>
+      `).join('');
+      sug.style.display = 'block';
+    }
+
+    function selSug(inputId, prodId, name) {
+      const el = document.getElementById(inputId);
+      if (el) el.value = name;
+      hideSug();
+      openProd(prodId);
+    }
+
+    function hideSug() {
+      document.querySelectorAll('.sug-box').forEach(s => s.style.display = 'none');
+    }
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.dh-search') && !e.target.closest('.sbar')) hideSug();
+    });
 
     function sanitize(str) {
       const div = document.createElement('div');

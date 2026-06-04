@@ -41,8 +41,9 @@
     </div>
     <div class="dh-search">
       <input type="text" id="dh-si" autocomplete="off" placeholder="Search earbuds, chargers, watches..."
-        onkeypress="if(event.key==='Enter') triggerSearch('dh-si')">
+        onkeypress="if(event.key==='Enter') triggerSearch('dh-si')" oninput="showSug('dh-si')">
       <button onclick="triggerSearch('dh-si')"><i class="fas fa-search"></i></button>
+      <div id="dh-sug" class="sug-box"></div>
     </div>
     <div class="dh-acts">
       <button class="dh-act" onclick="go('account',document.getElementById('bn-account'))"><i
@@ -394,7 +395,9 @@
           style="position:sticky; top:var(--nav); z-index:290; background:var(--bg); border-bottom:1px solid var(--bdr); margin-bottom:14px; padding-top:16px;">
           <div class="sbar" style="border-color:var(--o); margin:0 0 12px; width:100%"><i class="fas fa-search"
               style="color:var(--o)"></i><input type="text" placeholder="Search products..." id="si"
-              oninput="debouncedSearch()"></div>
+              oninput="debouncedSearch(); showSug('si')" autocomplete="off">
+            <div id="si-sug" class="sug-box"></div>
+          </div>
           <div class="chips" id="fchips" style="margin-bottom:20px"></div>
         </div>
         <div class="pgrid" id="sgrid"></div>

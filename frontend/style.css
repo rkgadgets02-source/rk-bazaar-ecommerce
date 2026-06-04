@@ -4341,4 +4341,83 @@ html {
 .pcs:hover, .pgc:hover, .cat-card:hover {
   box-shadow: 0 0 25px rgba(255, 69, 0, 0.08) !important;
 }
+
+/* ── SEARCH AUTO-SUGGESTIONS ── */
+.sug-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--s2);
+  border: 1px solid var(--bdr);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  z-index: 3000;
+  display: none;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  backdrop-filter: blur(20px);
+}
+
+.sug-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: all 0.2s;
+}
+
+.sug-item:hover {
+  background: rgba(255, 69, 0, 0.08);
+}
+
+.sug-item-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--s3);
+  flex-shrink: 0;
+}
+
+.sug-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sug-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sug-item-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--w);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sug-item-cat {
+  font-size: 0.65rem;
+  color: var(--g);
+  margin-top: 2px;
+}
+
+.sug-item-p {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--o);
+}
+
+#si-sug {
+  top: calc(100% + 2px);
+  border-radius: 12px;
+  border: 1px solid var(--bdr);
+}
 
