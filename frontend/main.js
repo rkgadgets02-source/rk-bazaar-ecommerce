@@ -866,27 +866,21 @@ const API = (location.protocol === 'file:' || location.hostname === 'localhost' 
                </button>
             </div>
           </div>
+
+          <!-- Related Products -->
+          <div class="pw" style="grid-column:1/-1;">
+            <h3 class="rel-head">You Might Also Like</h3>
+            <div class="rel-grid" id="relGrid">
+              ${S.products
+                .filter(x => x._id !== p._id && (x.category?._id === p.category?._id || x.category === p.category))
+                .slice(0, 4)
+                .map(rp => pgcCard(rp))
+                .join('')}
+            </div>
+          </div>
+          <div style="height:30px;grid-column:1/-1"></div>
         </div>
       `;
-    }
-
-    <!-- Related Products -->
-
-    <div class="pw">
-      <h3 class="rel-head">You Might Also Like</h3>
-      <div class="rel-grid" id="relGrid">
-        ${S.products
-          .filter(x => x._id !== p._id && (x.category?._id === p.category?._id || x.category === p.category))
-          .slice(0, 4)
-          .map(rp => pgcCard(rp))
-          .join('')}
-      </div>
-    </div>
-    <div style="height:30px"></div>
-`;
-
-
-      // Init swipe
       pdInitSwipe();
     }
 
