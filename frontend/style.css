@@ -3524,78 +3524,49 @@ img {
     top: 76px !important;
   }
 
-  .pd-grid {
+  /* 🟢 FINAL ALIGNMENT FIX 🟢 */
+  .pd-layout {
     display: grid;
-    grid-template-columns: 80px 1fr 300px;
+    grid-template-columns: 80px 450px 1fr 300px;
     gap: 32px;
     align-items: start;
+    padding: 24px;
+  }
+
+  @media (max-width: 1200px) {
+    .pd-layout {
+      grid-template-columns: 80px 400px 1fr;
+    }
+    .pd-buy-box-amz { display: none; } /* Show below on smaller screens */
   }
 
   @media (max-width: 992px) {
-    .pd-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-    .pd-left-col {
-      order: 1;
+    .pd-layout {
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column;
+      gap: 20px;
+      padding: 15px;
     }
-    .pd-thumbs {
+    .pd-thumbs-v {
+      display: flex;
       flex-direction: row;
-      margin-top: 10px;
       overflow-x: auto;
-      padding-bottom: 5px;
+      gap: 10px;
+      width: 100%;
+      height: auto;
     }
-    .thumb-item {
+    .pd-thumb-v {
       width: 60px;
       height: 60px;
       flex-shrink: 0;
     }
-    .pd-center-col { order: 2; }
-    .pd-right-col { 
-      order: 3;
-      position: static !important;
+    .pd-img-area {
+      width: 100%;
+      max-width: 100%;
     }
-  }
-
-  .pd-desktop-grid {
-    display: grid;
-    grid-template-columns: 40% 1fr 340px;
-    gap: 30px;
-    align-items: start;
-    padding: 24px
-  }
-
-  .pd-col-img {
-    position: sticky;
-    top: calc(var(--nav) + 20px);
-    padding: 0;
-    background: var(--s1);
-    border-radius: 20px;
-    border: 1px solid var(--bdr);
-    overflow: hidden
-  }
-
-  .pd-col-buy {
-    position: sticky;
-    top: calc(var(--nav) + 20px);
-    border: 1px solid var(--bdr);
-    border-radius: 16px;
-    padding: 24px;
-    background: var(--s2)
-  }
-
-  .pd-acts {
-    position: relative !important;
-    bottom: auto !important;
-    left: auto;
-    right: auto;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    flex-direction: column;
-    background: transparent !important
+    .pd-slide img {
+      max-height: 400px;
+    }
   }
 
   .pd-qty-row {
