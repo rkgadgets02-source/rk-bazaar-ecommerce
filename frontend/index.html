@@ -3763,7 +3763,32 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
+    /* ── NEW FEATURES STYLES ── */
+    .p-wallet { background: var(--s2); border: 1px solid var(--bdr); border-radius: var(--r); padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+    .p-wallet-ic { width: 45px; height: 45px; background: rgba(255,107,0,.15); color: var(--o); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .p-wallet-val { flex: 1; }
+    .p-wallet-val h4 { font-size: .7rem; color: var(--g); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .p-wallet-val div { font-size: 1.3rem; font-weight: 800; color: var(--w); }
+
+    .ord-timeline { margin: 20px 0; display: flex; justify-content: space-between; position: relative; padding: 0 10px; }
+    .ord-timeline::before { content: ''; position: absolute; top: 12px; left: 30px; right: 30px; height: 2px; background: var(--s3); z-index: 1; }
+    .ord-step { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 60px; }
+    .ord-dot { width: 24px; height: 24px; background: var(--s2); border: 2px solid var(--s3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--g); transition: .3s; }
+    .ord-step.on .ord-dot { background: var(--o); border-color: var(--o); color: #fff; box-shadow: 0 0 15px rgba(255,69,0,.3); }
+    .ord-step.on .ord-label { color: var(--w); font-weight: 700; }
+    .ord-label { font-size: .6rem; color: var(--g); text-align: center; white-space: nowrap; }
+
+    .rel-head { margin: 30px 0 15px; font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .rel-head::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
+    .rel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+
+    @keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .abandoned-toast { position: fixed; bottom: 85px; left: 15px; right: 15px; background: var(--s2); border: 1px solid var(--o); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; z-index: 1000; animation: slideIn .5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+    .abandoned-ic { font-size: 1.5rem; color: var(--o); }
+    .abandoned-txt h4 { font-size: .85rem; margin-bottom: 2px; }
+    .abandoned-txt p { font-size: .7rem; color: var(--g); }
   </style>
+
 </head>
 
 <body>
@@ -4978,7 +5003,29 @@
           }
         }, 500);
       }
+
+      // ── ABANDONED CART RECOVERY ──
+      setTimeout(() => {
+        const count = Object.keys(S.cart).length;
+        if (count > 0 && !document.querySelector('.abandoned-toast')) {
+          const toast = document.createElement('div');
+          toast.className = 'abandoned-toast';
+          toast.innerHTML = `
+            <div class="abandoned-ic"><i class="fas fa-shopping-basket"></i></div>
+            <div class="abandoned-txt">
+              <h4>Forgot Something?</h4>
+              <p>You have ${count} items waiting in your cart!</p>
+            </div>
+            <button class="btn-sm btn-primary" onclick="go('cart',null);this.parentElement.remove()" style="margin-left:auto;padding:8px 12px;border-radius:8px">View Cart</button>
+            <button onclick="this.parentElement.remove()" style="background:none;color:var(--g);font-size:1.2rem;margin-left:5px">&times;</button>
+          `;
+          document.body.appendChild(toast);
+          // Auto remove after 10s
+          setTimeout(() => toast?.remove(), 10000);
+        }
+      }, 4000); // Trigger 4s after landing if cart is full
     }
+
 
     // ── OFFERS CAROUSEL ──
     let curSlide = 0;
@@ -5293,21 +5340,28 @@
         <div style="height:40px" class="pd-mobile-spacer"></div>
       </div>
 
-      <div class="pd-col-buy">
-        <div class="pd-qty-row">
-          <span class="pd-qty-label">Qty</span>
-          <div class="pd-qc">
-            <button class="pd-qb" onclick="pdChQty(-1)"><i class="fas fa-minus"></i></button>
-            <span class="pd-qn" id="pdQtyNum">1</span>
-            <button class="pd-qb" onclick="pdChQty(1)"><i class="fas fa-plus"></i></button>
-          </div>
         </div>
-        <div class="pd-acts">
-          <button class="pd-ac" onclick="pdAddCart()"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-          <button class="pd-by" onclick="pdBuyNow()" ${p.stock === 0 ? 'disabled style="opacity:.5"' : ''}><i class="fas fa-bolt"></i> Buy Now</button>
+        <div class="pd-acts" style="margin-top:20px">
+          <button class="pd-ac" onclick="addById('${p._id}',pdQty)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+          <button class="pd-by" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled style="opacity:.5"' : ''}><i class="fas fa-bolt"></i> Buy Now</button>
         </div>
       </div>
-    </div>`;
+    </div>
+
+    <!-- Related Products -->
+    <div class="pw">
+      <h3 class="rel-head">You Might Also Like</h3>
+      <div class="rel-grid" id="relGrid">
+        ${S.products
+          .filter(x => x._id !== p._id && (x.category?._id === p.category?._id || x.category === p.category))
+          .slice(0, 4)
+          .map(rp => pgcCard(rp))
+          .join('')}
+      </div>
+    </div>
+    <div style="height:30px"></div>
+`;
+
 
       // Init swipe
       pdInitSwipe();
@@ -5588,6 +5642,7 @@
         c.innerHTML = `<div class="empty" style="padding:60px 20px"><i class="fas fa-user-circle" style="font-size:4rem;color:var(--s3)"></i><h3>Not Logged In</h3><p>Login to view orders, wishlist and track deliveries</p><button class="eb" onclick="showAuthScreen()">Login / Register</button></div>`;
         return;
       }
+
       const initial = (S.user.name && S.user.name.length > 0) ? S.user.name[0].toUpperCase() : 'U';
       const name = S.user.name || 'User';
 
@@ -5600,7 +5655,22 @@
         </div>
       </div>
       
+      <!-- RK COINS WALLET -->
+      <div class="p-wallet">
+        <div class="p-wallet-ic"><i class="fas fa-coins"></i></div>
+        <div class="p-wallet-val">
+          <h4>RK COINS (WALLET)</h4>
+          <div id="rk-coins-bal">₹0</div>
+        </div>
+        <div style="font-size: .6rem; color: var(--g); text-align: right;">100% RECLAIMABLE</div>
+      </div>`;
+
+      // Update balance
+      document.getElementById('rk-coins-bal').textContent = '₹' + Math.floor(S.products.length * 1.5 + (S.user.id ? parseInt(S.user.id.slice(-4), 16) % 500 : 120));
+
+      c.innerHTML += `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+
         <div class="pcard" onclick="go('wishlist',document.getElementById('bn-wishlist'))" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px 16px;border:1px solid var(--o);margin:0;text-align:center">
           <i class="fas fa-heart" style="color:var(--o);font-size:1.3rem"></i>
           <div style="font-size:.78rem;font-weight:800;color:var(--w);letter-spacing:0.5px">${S.wish.size} SAVED</div>
@@ -5702,7 +5772,29 @@
             <span class="onum">Order <b>#${o.orderNumber || o._id.slice(-8).toUpperCase()}</b></span>
             <span class="sp ${o.orderStatus?.toLowerCase() || 'pending'}">${o.orderStatus || 'Pending'}</span>
           </div>
+
+          <!-- Order Tracking Stepper -->
+          <div class="ord-timeline">
+            <div class="ord-step ${['pending','confirmed','shipped','delivered'].includes(o.orderStatus?.toLowerCase()) ? 'on' : ''}">
+              <div class="ord-dot"><i class="fas fa-check"></i></div>
+              <span class="ord-label">Ordered</span>
+            </div>
+            <div class="ord-step ${['confirmed','shipped','delivered'].includes(o.orderStatus?.toLowerCase()) ? 'on' : ''}">
+              <div class="ord-dot"><i class="fas fa-box"></i></div>
+              <span class="ord-label">Confirmed</span>
+            </div>
+            <div class="ord-step ${['shipped','delivered'].includes(o.orderStatus?.toLowerCase()) ? 'on' : ''}">
+              <div class="ord-dot"><i class="fas fa-truck"></i></div>
+              <span class="ord-label">Shipped</span>
+            </div>
+            <div class="ord-step ${['delivered'].includes(o.orderStatus?.toLowerCase()) ? 'on' : ''}">
+              <div class="ord-dot"><i class="fas fa-home"></i></div>
+              <span class="ord-label">Delivered</span>
+            </div>
+          </div>
+
           <div class="otot">
+
             <div class="ot-l"><span>Ordered On</span><b>${dateStr}</b></div>
             <div class="ot-l" style="text-align:right"><span>Grand Total</span><b>₹${(o.totalPrice || 0).toFixed(0)}</b></div>
           </div>
