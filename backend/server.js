@@ -376,7 +376,7 @@ app.use('/api/coupons', require('./routes/coupons'));
 
 // ─── SERVE FRONTEND ───────────────────────────────────────────
 // Never cache HTML files — always serve fresh so product updates show instantly
-app.use(express.static(path.join(process.cwd(), 'frontend'), {
+app.use(express.static(path.join(__dirname, '..', 'frontend'), {
   maxAge: 0,
   etag: false,
   setHeaders: (res, filePath) => {
@@ -394,7 +394,7 @@ app.use(express.static(path.join(process.cwd(), 'frontend'), {
 
 // ─── ADMIN PANEL ROUTE (SECRET) ──────────────────────────────
 app.get('/rk-secure-manager.html', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'frontend', 'rk-secure-manager.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'rk-secure-manager.html'));
 });
 
 // Redirect old Admin path to home
@@ -402,7 +402,7 @@ app.get('/Admin.html', (req, res) => res.redirect('/'));
 
 // ─── SPA CATCH-ALL ────────────────────────────────────────────
 app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
 // ─── 404 HANDLER ──────────────────────────────────────────────
