@@ -3773,47 +3773,6 @@ img {
   letter-spacing: 1px;
 }
 
-/* ── NEW FEATURES STYLES ── */
-.p-wallet {
-  background: var(--s2);
-  border: 1px solid var(--bdr);
-  border-radius: var(--r);
-  padding: 20px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.p-wallet-ic {
-  width: 45px;
-  height: 45px;
-  background: rgba(255, 107, 0, .15);
-  color: var(--o);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-}
-
-.p-wallet-val {
-  flex: 1;
-}
-
-.p-wallet-val h4 {
-  font-size: .7rem;
-  color: var(--g);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 2px;
-}
-
-.p-wallet-val div {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--w);
-}
 
 .ord-timeline {
   margin: 20px 0;

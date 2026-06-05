@@ -1219,20 +1219,7 @@ function renderAcc() {
           <p>${S.user.email}</p>
           <p style="font-size:.63rem;color:var(--g);margin-top:1px">${S.user.phone || ''}</p>
         </div>
-      </div>
-      
-      <!-- RK COINS WALLET -->
-      <div class="p-wallet">
-        <div class="p-wallet-ic"><i class="fas fa-coins"></i></div>
-        <div class="p-wallet-val">
-          <h4>RK COINS (WALLET)</h4>
-          <div id="rk-coins-bal">₹0</div>
-        </div>
-        <div style="font-size: .6rem; color: var(--g); text-align: right;">100% RECLAIMABLE</div>
       </div>`;
-
-  // Update balance
-  document.getElementById('rk-coins-bal').textContent = '₹' + Math.floor(S.products.length * 1.5 + (S.user.id ? parseInt(S.user.id.slice(-4), 16) % 500 : 120));
 
   c.innerHTML += `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
