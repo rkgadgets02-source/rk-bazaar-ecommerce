@@ -1946,6 +1946,8 @@ img {
 
 .co-wrap {
   padding: 14px;
+  /* Extra bottom padding to prevent overlap with sticky button on mobile */
+  padding-bottom: 90px;
 }
 
 .sc {
@@ -2111,6 +2113,9 @@ img {
   justify-content: center;
   gap: 8px;
   box-shadow: 0 8px 24px rgba(255, 69, 0, .32);
+  position: sticky !important;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 1000 !important;
 }
 
 .succ-pg {
@@ -3596,9 +3601,6 @@ img {
   .desktop-header {
     display: none !important;
   }
-  #page-checkout .pw {
-    padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)) !important;
-  }
 }
 
 @media(max-width:500px) {
@@ -3648,7 +3650,7 @@ img {
   /* Checkout Button Fix: Sit above bottom nav */
   .pbtn {
     position: sticky !important;
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: 80px !important;
     /* Lies exactly above bottom nav (64px) */
     z-index: 1000 !important;
     width: calc(100% - 28px) !important;
@@ -3776,6 +3778,47 @@ img {
   letter-spacing: 1px;
 }
 
+/* ── NEW FEATURES STYLES ── */
+.p-wallet {
+  background: var(--s2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--r);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.p-wallet-ic {
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 107, 0, .15);
+  color: var(--o);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.p-wallet-val {
+  flex: 1;
+}
+
+.p-wallet-val h4 {
+  font-size: .7rem;
+  color: var(--g);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.p-wallet-val div {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--w);
+}
 
 .ord-timeline {
   margin: 20px 0;
