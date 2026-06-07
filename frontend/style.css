@@ -1945,7 +1945,7 @@ img {
 }
 
 .co-wrap {
-  padding: 14px
+  padding: 14px;
 }
 
 .sc {
@@ -2110,7 +2110,7 @@ img {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 8px 24px rgba(255, 69, 0, .32)
+  box-shadow: 0 8px 24px rgba(255, 69, 0, .32);
 }
 
 .succ-pg {
@@ -3596,6 +3596,9 @@ img {
   .desktop-header {
     display: none !important;
   }
+  #page-checkout .pw {
+    padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 
 @media(max-width:500px) {
@@ -3645,7 +3648,7 @@ img {
   /* Checkout Button Fix: Sit above bottom nav */
   .pbtn {
     position: sticky !important;
-    bottom: 80px !important;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
     /* Lies exactly above bottom nav (64px) */
     z-index: 1000 !important;
     width: calc(100% - 28px) !important;
