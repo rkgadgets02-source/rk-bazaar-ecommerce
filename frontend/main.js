@@ -536,63 +536,9 @@ function pgcCard(p) {
 function renderTrend() { document.getElementById('trendRow').innerHTML = S.products.slice(0, 8).map(pcsCard).join('') }
 function renderFeat() { const l = S.products.filter(p => p.isFeatured); document.getElementById('featRow').innerHTML = (l.length ? l : S.products.slice(4, 10)).map(pcsCard).join('') }
 function renderCatFull() {
-  const CAT_META = {
-    'Wired Earphone': { icon: 'fa-headphones', grad: 'linear-gradient(135deg,#1a1a2e,#16213e)', accent: '#4FC3F7' },
-    'Earbuds': { icon: 'fa-headphones-alt', grad: 'linear-gradient(135deg,#0f3460,#533483)', accent: '#CE93D8' },
-    'Bluetooth Neckband': { icon: 'fa-broadcast-tower', grad: 'linear-gradient(135deg,#1b4332,#2d6a4f)', accent: '#69F0AE' },
-    'Bluetooth Headphone': { icon: 'fa-headphones', grad: 'linear-gradient(135deg,#3e1f47,#6d3b8b)', accent: '#F48FB1' },
-    'Smart Watches': { icon: 'fa-clock', grad: 'linear-gradient(135deg,#7B2D00,#c0392b)', accent: '#FF8A65' },
-    'Mobile Charger': { icon: 'fa-plug', grad: 'linear-gradient(135deg,#1a237e,#283593)', accent: '#90CAF9' },
-    'Charging Cables': { icon: 'fa-cable-car', grad: 'linear-gradient(135deg,#263238,#37474f)', accent: '#80DEEA' },
-    'Bluetooth Speaker': { icon: 'fa-music', grad: 'linear-gradient(135deg,#4a0000,#7f0000)', accent: '#EF9A9A' },
-    'Car Charger': { icon: 'fa-car', grad: 'linear-gradient(135deg,#1b2a1b,#2e4a2e)', accent: '#A5D6A7' },
-    'Wireless Charger': { icon: 'fa-wifi', grad: 'linear-gradient(135deg,#0d0d2b,#1a1a4e)', accent: '#80CBC4' },
-    'Power Bank': { icon: 'fa-battery-full', grad: 'linear-gradient(135deg,#3e2723,#6d4c41)', accent: '#FFCC80' },
-    'Mobile Battery': { icon: 'fa-battery-three-quarters', grad: 'linear-gradient(135deg,#01579b,#0277bd)', accent: '#81D4FA' },
-  };
-  const DEFAULT_META = { icon: 'fa-box-open', grad: 'linear-gradient(135deg,#1a1a1a,#333)', accent: '#FF7043' };
-
   const el = document.getElementById('catFull');
   if (!el) return;
-
-  // Update the count badge
-  const badge = document.getElementById('cat-total-count');
-  if (badge) badge.textContent = S.categories.length + ' Categories';
-
-  el.innerHTML = S.categories.map((c, idx) => {
-    const meta = CAT_META[c.name] || DEFAULT_META;
-    const prodCount = S.products.filter(p =>
-      p.category?.name === c.name ||
-      p.category?._id === (c._id || c.name) ||
-      p.category === c.name
-    ).length;
-    const hasImg = c.image && c.image.startsWith('http');
-    const fallbackImg = CIMG[c.name] || PIMG[idx % PIMG.length];
-    const imgSrc = hasImg ? c.image : fallbackImg;
-
-    return `<div class="cat-card" onclick="filterCat('${c._id || c.name}')" style="animation-delay:${idx * 40}ms">
-          <div class="cat-card-bg" style="background:${meta.grad}">
-            <div class="cat-card-glow" style="background:${meta.accent}"></div>
-            <img class="cat-card-img" src="${imgSrc}" alt="${c.name}" loading="lazy"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="cat-card-icon-fb" style="display:none;color:${meta.accent}">
-              <i class="fas ${meta.icon}"></i>
-            </div>
-          </div>
-          <div class="cat-card-body">
-            <div class="cat-card-icon-ring" style="background:${meta.accent}22;border-color:${meta.accent}44">
-              <i class="fas ${meta.icon}" style="color:${meta.accent}"></i>
-            </div>
-            <div class="cat-card-info">
-              <h4 class="cat-card-name">${c.name}</h4>
-              <span class="cat-card-count">${prodCount > 0 ? prodCount + ' items' : 'Explore'}</span>
-            </div>
-            <div class="cat-card-arrow" style="color:${meta.accent}">
-              <i class="fas fa-chevron-right"></i>
-            </div>
-          </div>
-        </div>`;
-  }).join('');
+  el.innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140/181818/FF4500?text=📦'"></div><div class="pgc-body"><h4>${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse &rarr;</span></div></div>`).join('');
 }
 function filterCat(id) { S.filter = id; go('search', document.getElementById('bn-search')); document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); document.querySelector(`.chip[data-cat="${id}"]`)?.classList.add('on'); doSearch() }
 function renderChips() { document.getElementById('fchips').innerHTML = `<button class="chip on" data-cat="All" onclick="setF('All',this)">All</button>` + S.categories.map(c => `<button class="chip" data-cat="${c._id || c.name}" onclick="setF('${c._id || c.name}',this)">${c.name}</button>`).join('') }
@@ -670,7 +616,7 @@ function showSug(id) {
     p.name.toLowerCase().includes(q) ||
     (p.category?.name || p.category || '').toString().toLowerCase().includes(q) ||
     (p.brand || '').toLowerCase().includes(q)
-  ).slice(0, 10);
+  ).slice(0, 6);
 
   if (!matches.length) {
     sug.style.display = 'none';
@@ -679,13 +625,14 @@ function showSug(id) {
 
   sug.innerHTML = matches.map(p => `
         <div class="sug-item" onclick="selSug('${id}', '${p._id}', '${p.name.replace(/'/g, "\\'")}')">
-          <i class="fas fa-search sug-icon"></i>
-          <div class="sug-item-name">${p.name}</div>
-          <div class="sug-item-cat">in <span>${p.category?.name || 'Store'}</span></div>
           <div class="sug-item-img"><img src="${p.images?.[0] || 'https://via.placeholder.com/44'}" onerror="this.src='https://via.placeholder.com/44'"></div>
+          <div class="sug-item-info">
+            <div class="sug-item-name">${p.name}</div>
+            <div class="sug-item-cat">${p.category?.name || 'Product'}</div>
+          </div>
+          <div class="sug-item-p">₹${p.price}</div>
         </div>
       `).join('');
-  sug.style.display = 'block';
   sug.style.display = 'block';
 }
 
@@ -792,144 +739,122 @@ async function openProd(id) {
 
   const dsc = disc(p);
   const inWish = S.wish.has(p._id);
-  const slidesHtml = pdAllImgs.map((img, i) => `<div class="pd-slide"><img src="${img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/350/111/FF4500'"></div>`).join('');
-  const thumbsHtml = pdAllImgs.length > 1 ? `<div class="pd-thumbs-v" id="pdThumbs">${pdAllImgs.map((img, i) => `<div class="pd-thumb-v${i === 0 ? ' on' : ''}" onmouseover="pdGoSlide(${i})"><img src="${img}" alt=""></div>`).join('')}</div>` : '';
+
+  const slidesHtml = pdAllImgs.map((img, i) => `<div class="pd-slide"><img src="${img}" alt="${p.name} image ${i + 1}" onerror="this.src='https://via.placeholder.com/260/181818/FF4500?text=%F0%9F%93%A6'"></div>`).join('');
+  const thumbsHtml = pdAllImgs.length > 1 ? `<div class="pd-thumbs" id="pdThumbs">${pdAllImgs.map((img, i) => `<div class="pd-thumb${i === 0 ? ' on' : ''}" onclick="pdGoSlide(${i})"><img src="${img}" alt=""></div>`).join('')}</div>` : '';
+  const dotsHtml = pdAllImgs.length > 1 ? `<div class="pd-dots" id="pdDots">${pdAllImgs.map((_, i) => `<div class="pd-dot${i === 0 ? ' on' : ''}"></div>`).join('')}</div>` : '';
+  const prevBtn = pdAllImgs.length > 1 ? `<button class="pd-carousel-btn prev" onclick="pdGoSlide(pdImgIdx-1)"><i class="fas fa-chevron-left"></i></button><button class="pd-carousel-btn next" onclick="pdGoSlide(pdImgIdx+1)"><i class="fas fa-chevron-right"></i></button>` : '';
 
   const specs = p.specifications || [];
-  const specsHtml = `<table class="pd-specs">${specs.map(s => `<tr><td>${s.key}</td><td>${s.value}</td></tr>`).join('')}</table>`;
+  const stdSpecs = [
+    ['Brand', p.brand || 'Generic'],
+    ['SKU', p.sku || '—'],
+    ['Category', p.category?.name || '—'],
+    ['Unit', p.unit || '1 pcs'],
+    ['Stock', p.stock > 0 ? `${p.stock} units` : 'Out of Stock'],
+  ];
+  const allSpecs = [...stdSpecs, ...specs.map(s => [s.key, s.value])];
+  const specsHtml = `<table class="pd-specs">${allSpecs.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>`;
+
+  const revs = (p.reviews || []).slice().reverse();
+  const revHtml = revs.length
+    ? `<div class="pd-rev">${revs.map(r => `<div class="pd-rcard"><div class="pd-rhead"><span class="pd-rname">${r.name}</span><span class="pd-rdate">${new Date(r.createdAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span></div><div class="pd-rstars">${stars(r.rating)}</div><div class="pd-rtext">${r.comment}</div></div>`).join('')}</div>`
+    : `<div class="pd-no-rev"><i class="fas fa-comment-slash" style="font-size:2rem;margin-bottom:10px;display:block;color:var(--s3)"></i>No reviews yet.<br>Be the first to review!</div>`;
+
+  const reviewFormHtml = S.user
+    ? `<div class="pd-review-form" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--bdr)">
+        <h4 style="margin-bottom:10px;font-size:1rem;">Write a Review</h4>
+        <div id="pd-rev-res" style="display:none;margin-bottom:10px;font-size:.8rem;padding:8px;border-radius:6px"></div>
+        <div style="display:flex;gap:8px;margin-bottom:15px;font-size:1.2rem" id="pd-star-select">
+          <i class="far fa-star pd-star-sel" data-val="1" onclick="pdSetStar(1)" style="cursor:pointer;color:var(--o)"></i>
+          <i class="far fa-star pd-star-sel" data-val="2" onclick="pdSetStar(2)" style="cursor:pointer;color:var(--o)"></i>
+          <i class="far fa-star pd-star-sel" data-val="3" onclick="pdSetStar(3)" style="cursor:pointer;color:var(--o)"></i>
+          <i class="far fa-star pd-star-sel" data-val="4" onclick="pdSetStar(4)" style="cursor:pointer;color:var(--o)"></i>
+          <i class="far fa-star pd-star-sel" data-val="5" onclick="pdSetStar(5)" style="cursor:pointer;color:var(--o)"></i>
+        </div>
+        <textarea id="pd-rev-comment" placeholder="What do you think about this product?" rows="3" style="width:100%;background:var(--s2);color:var(--w);border:1px solid var(--bdr);padding:12px;border-radius:10px;margin-bottom:15px;outline:none"></textarea>
+        <button onclick="pdSubmitReview('${p._id}')" class="pd-by" id="pd-rev-btn" style="width:100%;padding:10px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-weight:700">Submit Review</button>
+       </div>`
+    : `<div class="pd-review-login" style="margin-top:20px;padding:20px;text-align:center;background:var(--s1);border-radius:10px">
+         <p style="font-size:.9rem">Please <a onclick="showAuthScreen()" style="color:var(--blue);cursor:pointer;font-weight:700;text-decoration:underline">Login</a> to write a review.</p>
+       </div>`;
+
+  const tags = (p.tags || []).map(t => `<span class="pd-tag">${t}</span>`).join('');
 
   document.getElementById('pdcontent').innerHTML = `
-        <div class="pd-layout">
-          <!-- Left: Vertical Thumbs -->
-          ${thumbsHtml}
-
-          <!-- Middle Left: Carousel -->
-          <div class="pd-img-area">
-            <div class="pd-carousel amz" id="pdCarousel">
-              ${dsc ? `<div class="pd-badge-sale amz">-${dsc}%</div>` : ''}
-              <button class="pd-share-float" onclick="shareProd('${p._id}', '${p.name.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i></button>
-              <div class="pd-slides" id="pdSlides">${slidesHtml}</div>
-            </div>
-          </div>
-
-          <!-- Middle Right: Core Info -->
-          <div class="pd-info-area">
-            <div class="pd-brand-link">Visit the ${p.brand || 'Generic'} Store</div>
-            <h1 class="pd-name-amz">${p.name}</h1>
-            <div class="pd-rating-amz">
-              <span>${p.rating || 0}</span>
-              <div class="pd-stars">${stars(p.rating || 0)}</div>
-              <span class="pd-rev-count">${p.numReviews || 0} ratings</span>
-            </div>
-            
-            <hr class="pd-hr">
-
-            <div class="pd-price-row">
-               ${dsc ? `<span class="pd-dsc-amz">-${dsc}%</span>` : ''}
-               <span class="pd-curr">₹</span>
-               <span class="pd-p-amz">${p.price.toLocaleString('en-IN')}</span>
-            </div>
-            ${p.mrp && p.mrp > p.price ? `<div class="pd-mrp-amz">M.R.P.: <span>₹${p.mrp.toLocaleString('en-IN')}</span></div>` : ''}
-            <div class="pd-tax-hint">Inclusive of all taxes</div>
-            <div class="pd-emi-hint"><b>EMI</b> starts at ₹${Math.ceil(p.price / 12)}. No Cost EMI available</div>
-
-            <hr class="pd-hr">
-
-            <!-- Amazon Style Offers -->
-            <div class="pd-offers-label"><i class="fas fa-percentage"></i> Offers</div>
-            <div class="pd-offers-grid">
-              <div class="pd-offer-card">
-                <b>Bank Offer</b>
-                <p>Upto ₹2,000 discount on select Credit Cards</p>
-                <a href="#">2 offers ></a>
-              </div>
-              <div class="pd-offer-card">
-                <b>No Cost EMI</b>
-                <p>Upto ₹1,500 EMI interest savings on select Credit Cards</p>
-                <a href="#">1 offer ></a>
-              </div>
-              <div class="pd-offer-card">
-                <b>Cashback</b>
-                <p>Get ₹50 cashback as Amazon Pay Balance</p>
-                <a href="#">1 offer ></a>
-              </div>
-            </div>
-
-            <hr class="pd-hr">
-
-            <!-- Trust Icons -->
-            <div class="pd-trust-strip">
-              <div class="pd-trust-item"><i class="fas fa-undo"></i><span>7 days Replacement</span></div>
-              <div class="pd-trust-item"><i class="fas fa-truck"></i><span>Free Delivery</span></div>
-              <div class="pd-trust-item"><i class="fas fa-shield-alt"></i><span>1 Year Warranty</span></div>
-              <div class="pd-trust-item"><i class="fas fa-wallet"></i><span>Pay on Delivery</span></div>
-            </div>
-
-            <hr class="pd-hr">
-            
-            <div class="pd-desc-amz">
-              <h3>About this item</h3>
-              <ul>
-                ${(p.aboutList && p.aboutList.length)
-      ? p.aboutList.map(line => `<li>${line.trim()}</li>`).join('')
-      : (p.description || '').split(/[•·\n]/).filter(Boolean).map(line => `<li>${line.trim()}</li>`).join('')
-    }
-              </ul>
-            </div>
-
-            ${(p.specifications && p.specifications.length) ? `
-              <hr class="pd-hr">
-              <div class="pd-desc-amz">
-                <h3>Technical Details</h3>
-                <table class="pd-specs-table">
-                  ${p.specifications.map(s => `<tr><td class="pd-s-key">${s.key}</td><td class="pd-s-val">${s.value}</td></tr>`).join('')}
-                </table>
-              </div>
-            ` : ''}
-          </div>
-
-          <!-- Right: Buy Box -->
-          <div class="pd-buy-box-area">
-            <div class="pd-buy-box">
-               <div class="pd-bb-price">₹${p.price.toLocaleString('en-IN')}</div>
-               <div class="pd-bb-delivery">FREE delivery <b>Tomorrow</b>. Order within <span class="pd-timer">2 hrs 40 mins</span></div>
-               <div class="pd-bb-stock ${p.stock > 0 ? 'in' : 'out'}">${p.stock > 0 ? 'In Stock' : 'Out of Stock'}</div>
-               
-               <div class="pd-bb-qty">
-                 <label>Qty:</label>
-                 <select id="pdQtySel" onchange="pdQty=parseInt(this.value)">
-                   ${[1, 2, 3, 4, 5].map(v => `<option value="${v}">${v}</option>`).join('')}
-                 </select>
-               </div>
-
-               <button class="pd-amz-btn yellow" onclick="addById('${p._id}',pdQty)">Add to Cart</button>
-               <button class="pd-amz-btn orange" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled' : ''}>Buy Now</button>
-               
-               <div class="pd-bb-meta">
-                 <div><span>Ships from</span> <b>RK BAZAAR</b></div>
-                 <div><span>Sold by</span> <b>RK Retails</b></div>
-               </div>
-
-               <button class="pd-wl-btn" onclick="togWish('${p._id}');this.classList.toggle('on')">
-                 <i class="fas fa-heart"></i> Add to Wish List
-               </button>
-            </div>
-          </div>
-
-          <!-- Related Products -->
-          <div class="pw" style="grid-column:1/-1;">
-            <h3 class="rel-head">You Might Also Like</h3>
-            <div class="rel-grid" id="relGrid">
-              ${S.products
-      .filter(x => x._id !== p._id && (x.category?._id === p.category?._id || x.category === p.category))
-      .slice(0, 4)
-      .map(rp => pgcCard(rp))
-      .join('')}
-            </div>
-          </div>
-          <div style="height:30px;grid-column:1/-1"></div>
+    <div class="pd-desktop-grid">
+      <div class="pd-col-img">
+        <div class="pd-carousel" id="pdCarousel">
+          ${dsc ? `<div class="pd-badge-sale">${dsc}% OFF</div>` : ''}
+          <button class="pd-wl-float${inWish ? ' on' : ''}" id="pdwl" onclick="togWish('${p._id}');this.classList.toggle('on',S.wish.has('${p._id}'))"><i class="fas fa-heart"></i></button>
+          <button class="pd-share-float" onclick="shareProd('${p._id}', '${p.name.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i></button>
+          ${prevBtn}
+          <div class="pd-slides" id="pdSlides">${slidesHtml}</div>
+          ${dotsHtml}
         </div>
-      `;
+        ${thumbsHtml}
+      </div>
+
+      <div class="pd-col-info">
+        <div class="pd-info">
+          <div class="pd-brand">${p.brand || 'Generic'}</div>
+          <div class="pd-name">${p.name}</div>
+          <div class="pd-sr"><span class="s">${stars(p.rating || 0)}</span><span>${(p.rating || 0).toFixed(1)} (${p.numReviews || 0} reviews)</span></div>
+          <div class="pd-pr">
+            <span class="p">₹${p.price.toLocaleString('en-IN')}</span>
+            ${p.mrp && p.mrp > p.price ? `<span class="m">₹${p.mrp.toLocaleString('en-IN')}</span>` : ''}${dsc ? `<span class="d">${dsc}% OFF</span>` : ''}
+          </div>
+          ${p.mrp && p.mrp > p.price ? `<div class="pd-save">💰 You save ₹${(p.mrp - p.price).toLocaleString('en-IN')}</div>` : ''}
+          <div class="pd-st ${p.stock > 0 ? 'y' : 'n'}">${p.stock > 0 ? `<i class="fas fa-check-circle"></i> In Stock (${p.stock} available)` : '<i class="fas fa-times-circle"></i> Out of Stock'}</div>
+          
+          <!-- Quantity Row -->
+          <div class="pd-qty-row">
+            <span class="pd-qty-label">Quantity:</span>
+            <div class="pd-qc">
+              <button class="pd-qb" onclick="pdChQty(-1)">−</button>
+              <span class="pd-qn" id="pdQtyNum">1</span>
+              <button class="pd-qb" onclick="pdChQty(1)">+</button>
+            </div>
+          </div>
+
+          ${tags ? `<div class="pd-meta">${tags}</div>` : ''}
+        </div>
+        
+        <div class="pd-tabs">
+          <div class="pd-tab on" onclick="pdSwitchTab('desc',this)">Description</div>
+          <div class="pd-tab" onclick="pdSwitchTab('specs',this)">Specs</div>
+          <div class="pd-tab" onclick="pdSwitchTab('revs',this)">Reviews (${p.numReviews || 0})</div>
+        </div>
+        <div class="pd-tabcontent on" id="pdt-desc">${(() => {
+          const d = p.description || 'No description available.';
+          const pts = (p.aboutList && p.aboutList.length) ? p.aboutList : d.split(/[•·\n]/).map(s=>s.trim()).filter(Boolean);
+          if (pts.length > 1) {
+            return '<ul class="pd-desc-list">' + pts.map(pt=>'<li>'+pt+'</li>').join('') + '</ul>';
+          }
+          return '<p class="pd-desc">'+d+'</p>';
+        })()}</div>
+        <div class="pd-tabcontent" id="pdt-specs">${specsHtml}</div>
+        <div class="pd-tabcontent" id="pdt-revs">${revHtml}${reviewFormHtml}</div>
+      </div>
+      <div class="pd-acts" style="margin-top:20px">
+        <button class="pd-ac" onclick="pdAddCart()"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+        <button class="pd-by" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled style="opacity:.5"' : ''}><i class="fas fa-bolt"></i> Buy Now</button>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="pw">
+      <h3 class="rel-head">You Might Also Like</h3>
+      <div class="rel-grid" id="relGrid">
+        ${S.products
+          .filter(x => x._id !== p._id && (x.category?._id === p.category?._id || x.category === p.category))
+          .slice(0, 4)
+          .map(rp => pgcCard(rp))
+          .join('')}
+      </div>
+    </div>
+    <div style="height:30px"></div>
+  `;
   pdInitSwipe();
 }
 
