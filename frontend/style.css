@@ -1946,8 +1946,8 @@ img {
 
 .co-wrap {
   padding: 14px;
-  /* Extra bottom padding to prevent overlap with sticky button on mobile */
-  padding-bottom: 90px;
+  /* Bottom padding ensures content above bottom nav after button */
+  padding-bottom: 14px;
 }
 
 .sc {
@@ -2113,9 +2113,9 @@ img {
   justify-content: center;
   gap: 8px;
   box-shadow: 0 8px 24px rgba(255, 69, 0, .32);
-  position: sticky !important;
-  bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
-  z-index: 1000 !important;
+  /* On mobile: NOT sticky — renders naturally below Order Summary */
+  position: relative;
+  z-index: 1;
 }
 
 .succ-pg {
@@ -3647,14 +3647,18 @@ img {
     /* Extra bottom padding for all pages */
   }
 
-  /* Checkout Button Fix: Sit above bottom nav */
+  /* Checkout Button Fix: Normal flow on mobile, no overlap */
   .pbtn {
-    position: sticky !important;
-    bottom: 80px !important;
-    /* Lies exactly above bottom nav (64px) */
-    z-index: 1000 !important;
-    width: calc(100% - 28px) !important;
-    margin: 14px !important;
+    position: relative !important;
+    bottom: auto !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    margin: 0 0 14px 0 !important;
+  }
+
+  /* Checkout page: enough room at bottom for button + bottom nav */
+  #page-checkout .pw {
+    padding-bottom: calc(var(--bot) + 24px) !important;
   }
 
   /* Input Fluidity */
