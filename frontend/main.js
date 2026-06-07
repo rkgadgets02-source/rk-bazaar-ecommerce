@@ -783,6 +783,7 @@ async function openProd(id) {
 
   document.getElementById('pdcontent').innerHTML = `
     <div class="pd-desktop-grid">
+      <!-- Left Column: Carousel & Thumbs -->
       <div class="pd-col-img">
         <div class="pd-carousel" id="pdCarousel">
           ${dsc ? `<div class="pd-badge-sale">${dsc}% OFF</div>` : ''}
@@ -795,6 +796,7 @@ async function openProd(id) {
         ${thumbsHtml}
       </div>
 
+      <!-- Middle Column: Product Details & Tabs -->
       <div class="pd-col-info">
         <div class="pd-info">
           <div class="pd-brand">${p.brand || 'Generic'}</div>
@@ -806,17 +808,6 @@ async function openProd(id) {
           </div>
           ${p.mrp && p.mrp > p.price ? `<div class="pd-save">💰 You save ₹${(p.mrp - p.price).toLocaleString('en-IN')}</div>` : ''}
           <div class="pd-st ${p.stock > 0 ? 'y' : 'n'}">${p.stock > 0 ? `<i class="fas fa-check-circle"></i> In Stock (${p.stock} available)` : '<i class="fas fa-times-circle"></i> Out of Stock'}</div>
-          
-          <!-- Quantity Row -->
-          <div class="pd-qty-row">
-            <span class="pd-qty-label">Quantity:</span>
-            <div class="pd-qc">
-              <button class="pd-qb" onclick="pdChQty(-1)">−</button>
-              <span class="pd-qn" id="pdQtyNum">1</span>
-              <button class="pd-qb" onclick="pdChQty(1)">+</button>
-            </div>
-          </div>
-
           ${tags ? `<div class="pd-meta">${tags}</div>` : ''}
         </div>
         
@@ -836,9 +827,23 @@ async function openProd(id) {
         <div class="pd-tabcontent" id="pdt-specs">${specsHtml}</div>
         <div class="pd-tabcontent" id="pdt-revs">${revHtml}${reviewFormHtml}</div>
       </div>
-      <div class="pd-acts" style="margin-top:20px">
-        <button class="pd-ac" onclick="pdAddCart()"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-        <button class="pd-by" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled style="opacity:.5"' : ''}><i class="fas fa-bolt"></i> Buy Now</button>
+
+      <!-- Right Column: Buy Box Sticky Card -->
+      <div class="pd-col-buy">
+        <!-- Quantity Row -->
+        <div class="pd-qty-row">
+          <span class="pd-qty-label">QTY</span>
+          <div class="pd-qc">
+            <button class="pd-qb" onclick="pdChQty(-1)">−</button>
+            <span class="pd-qn" id="pdQtyNum">1</span>
+            <button class="pd-qb" onclick="pdChQty(1)">+</button>
+          </div>
+        </div>
+
+        <div class="pd-acts" style="margin-top:20px">
+          <button class="pd-ac" onclick="pdAddCart()"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+          <button class="pd-by" onclick="buyNow('${p._id}')" ${p.stock === 0 ? 'disabled style="opacity:.5"' : ''}><i class="fas fa-bolt"></i> Buy Now</button>
+        </div>
       </div>
     </div>
 
