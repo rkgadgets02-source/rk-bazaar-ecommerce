@@ -3449,6 +3449,11 @@ img {
   animation: fadeUp .3s ease both
 }
 
+.page.active .pw > .pd-desktop-grid {
+  animation: fadeIn .3s ease both
+}
+
+
 /* ── MOBILE FIXES ── */
 @media(max-width:400px) {
   .fr {
