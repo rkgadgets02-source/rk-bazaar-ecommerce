@@ -3012,6 +3012,17 @@ img {
   border-bottom: 1px solid var(--bdr)
 }
 
+.pd-qty-mobile {
+  display: flex;
+  margin-top: 15px;
+  border-bottom: none;
+  padding: 0;
+}
+
+.pd-qty-desktop {
+  display: none !important;
+}
+
 .pd-qty-label {
   font-size: .7rem;
   font-weight: 800;
@@ -3574,6 +3585,14 @@ img {
     padding: 0 0 20px 0
   }
 
+  .pd-qty-mobile {
+    display: none !important;
+  }
+
+  .pd-qty-desktop {
+    display: flex !important;
+  }
+
   .pd-info {
     padding: 0 0 20px;
     border-bottom: none
@@ -3689,10 +3708,14 @@ img {
   }
 
   .pd-acts {
-    bottom: 0 !important;
+    bottom: calc(var(--bot) + env(safe-area-inset-bottom, 0px)) !important;
     padding: 10px !important;
     background: #000 !important;
     border-top: 1px solid var(--bdr);
+  }
+
+  #page-pd .pw {
+    padding-bottom: calc(var(--bot) + 84px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .auth-box {

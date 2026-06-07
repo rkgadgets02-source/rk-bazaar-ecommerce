@@ -808,6 +808,17 @@ async function openProd(id) {
           </div>
           ${p.mrp && p.mrp > p.price ? `<div class="pd-save">💰 You save ₹${(p.mrp - p.price).toLocaleString('en-IN')}</div>` : ''}
           <div class="pd-st ${p.stock > 0 ? 'y' : 'n'}">${p.stock > 0 ? `<i class="fas fa-check-circle"></i> In Stock (${p.stock} available)` : '<i class="fas fa-times-circle"></i> Out of Stock'}</div>
+          
+          <!-- Quantity Row for Mobile -->
+          <div class="pd-qty-row pd-qty-mobile">
+            <span class="pd-qty-label">QTY</span>
+            <div class="pd-qc">
+              <button class="pd-qb" onclick="pdChQty(-1)">−</button>
+              <span class="pd-qn pd-qty-num-val" id="pdQtyNum">1</span>
+              <button class="pd-qb" onclick="pdChQty(1)">+</button>
+            </div>
+          </div>
+
           ${tags ? `<div class="pd-meta">${tags}</div>` : ''}
         </div>
         
@@ -830,12 +841,12 @@ async function openProd(id) {
 
       <!-- Right Column: Buy Box Sticky Card -->
       <div class="pd-col-buy">
-        <!-- Quantity Row -->
-        <div class="pd-qty-row">
+        <!-- Quantity Row for Desktop -->
+        <div class="pd-qty-row pd-qty-desktop">
           <span class="pd-qty-label">QTY</span>
           <div class="pd-qc">
             <button class="pd-qb" onclick="pdChQty(-1)">−</button>
-            <span class="pd-qn" id="pdQtyNum">1</span>
+            <span class="pd-qn pd-qty-num-val">1</span>
             <button class="pd-qb" onclick="pdChQty(1)">+</button>
           </div>
         </div>
@@ -887,8 +898,9 @@ function pdInitSwipe() {
 function pdChQty(d) {
   const max = S.curP?.stock || 99;
   pdQty = Math.max(1, Math.min(max, pdQty + d));
-  const el = document.getElementById('pdQtyNum');
-  if (el) el.textContent = pdQty;
+  document.querySelectorAll('.pd-qty-num-val').forEach(el => {
+    el.textContent = pdQty;
+  });
 }
 
 function pdSwitchTab(tab, btn) {
