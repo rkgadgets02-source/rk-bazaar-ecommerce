@@ -118,6 +118,11 @@ router.get('/orders', async (req, res) => {
       isExpressDelivery: !!o.isExpressDelivery,
       shippingAddress: o.shippingAddress || {},
       createdAt: o.createdAt,
+      itemsPrice: o.itemsPrice || 0,
+      shippingPrice: o.shippingPrice || 0,
+      taxPrice: o.taxPrice || 0,
+      discountAmount: o.discountAmount || 0,
+      orderNumber: o.orderNumber || '',
     }));
 
     res.json({ success: true, data: normalized, total });

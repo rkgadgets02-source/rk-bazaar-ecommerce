@@ -984,6 +984,243 @@
     .auth-card.hidden {
       display: none;
     }
+
+    /* Products Column Styles */
+    .prod-cell {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .prod-item-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prod-thumb-sm {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--s2);
+    }
+    .prod-item-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+    .prod-item-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--w);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+    }
+    .prod-item-meta {
+      font-size: 0.65rem;
+      color: var(--g);
+      white-space: nowrap;
+    }
+    .prod-more-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--orange);
+      cursor: pointer;
+      position: relative;
+      margin-top: 2px;
+      width: fit-content;
+    }
+    .prod-more-tooltip {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      min-width: 250px;
+      margin-top: 4px;
+    }
+    .prod-more-badge:hover .prod-more-tooltip {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tooltip-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 4px;
+    }
+    .tooltip-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .prod-thumb-xs {
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--s1);
+    }
+    .tooltip-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .tooltip-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--w);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+    .tooltip-meta {
+      font-size: 0.6rem;
+      color: var(--g);
+    }
+    .order-id-link {
+      color: var(--blue);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color .2s;
+    }
+    .order-id-link:hover {
+      color: var(--orange);
+    }
+
+    /* Detailed Order Modal Styles */
+    .modal-lg {
+      max-width: 680px;
+    }
+    .order-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .order-detail-section {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .order-detail-section h4 {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 0;
+    }
+    .order-detail-info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      margin-bottom: 6px;
+    }
+    .order-detail-info-row:last-child {
+      margin-bottom: 0;
+    }
+    .order-detail-info-row span:first-child {
+      color: var(--g);
+    }
+    .order-detail-info-row span:last-child {
+      color: var(--w);
+      font-weight: 600;
+    }
+    .order-detail-products-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      padding-right: 4px;
+    }
+    .order-detail-product-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+    }
+    .order-detail-prod-img {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--s1);
+    }
+    .order-detail-prod-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .order-detail-prod-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--w);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .order-detail-prod-meta {
+      font-size: 0.65rem;
+      color: var(--g);
+      margin-top: 2px;
+    }
+    .order-detail-prod-price {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--blue);
+      text-align: right;
+    }
+    .order-detail-summary {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 16px;
+    }
+    .order-detail-summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+      color: var(--g);
+    }
+    .order-detail-summary-row.total {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: var(--orange);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 6px;
+      margin-bottom: 0;
+    }
+    .order-detail-summary-row.total strong {
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 
@@ -1556,6 +1793,112 @@
     </div>
   </div>
 
+  <!-- ── DETAILED ORDER VIEW MODAL ── -->
+  <div class="modal-overlay" id="modal-order-detail">
+    <div class="modal modal-lg">
+      <h3 id="detail-order-number">Order Details</h3>
+      <p id="detail-order-id" style="margin-bottom: 12px;">Order ID: </p>
+      
+      <div class="order-detail-grid">
+        <!-- Customer & Shipping Info -->
+        <div class="order-detail-section">
+          <h4><i class="fas fa-user"></i> Customer Info</h4>
+          <div class="order-detail-info-row">
+            <span>Name</span>
+            <span id="detail-cust-name">—</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Email</span>
+            <span id="detail-cust-email">—</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Phone</span>
+            <span id="detail-cust-phone">—</span>
+          </div>
+        </div>
+        
+        <div class="order-detail-section">
+          <h4><i class="fas fa-map-marker-alt"></i> Shipping Address</h4>
+          <div class="order-detail-info-row">
+            <span>Recipient</span>
+            <span id="detail-ship-name">—</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Phone</span>
+            <span id="detail-ship-phone">—</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Address</span>
+            <span id="detail-ship-address" style="text-align: right; max-width: 180px; word-break: break-word;">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-detail-grid">
+        <!-- Order Stats & Payment Info -->
+        <div class="order-detail-section">
+          <h4><i class="fas fa-info-circle"></i> Order Info</h4>
+          <div class="order-detail-info-row">
+            <span>Status</span>
+            <span id="detail-order-status" class="status s-pending">Pending</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Delivery Type</span>
+            <span id="detail-delivery-type">—</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Date</span>
+            <span id="detail-order-date">—</span>
+          </div>
+        </div>
+        
+        <div class="order-detail-section">
+          <h4><i class="fas fa-credit-card"></i> Payment Details</h4>
+          <div class="order-detail-info-row">
+            <span>Method</span>
+            <span id="detail-pay-method">—</span>
+          </div>
+          <div class="order-detail-info-row">
+            <span>Status</span>
+            <span id="detail-pay-status" class="status s-pending">Pending</span>
+          </div>
+          <div id="detail-pay-tx-row" class="order-detail-info-row" style="display:none">
+            <span>Tx ID</span>
+            <span id="detail-pay-tx" style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">—</span>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="font-size:0.75rem; font-weight:800; color:var(--blue); text-transform:uppercase; letter-spacing:0.5px; margin: 16px 0 8px 0; display:flex; align-items:center; gap:6px;"><i class="fas fa-shopping-cart"></i> Ordered Products</h4>
+      <div class="order-detail-products-list" id="detail-products-list">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="order-detail-summary">
+        <div class="order-detail-summary-row">
+          <span>Subtotal</span>
+          <strong id="detail-sum-subtotal">₹0</strong>
+        </div>
+        <div class="order-detail-summary-row">
+          <span>Shipping Charges</span>
+          <strong id="detail-sum-shipping">₹0</strong>
+        </div>
+        <div class="order-detail-summary-row" id="detail-sum-discount-row" style="display:none">
+          <span>Discount</span>
+          <strong id="detail-sum-discount" style="color:var(--green)">-₹0</strong>
+        </div>
+        <div class="order-detail-summary-row total">
+          <span>Total Payable</span>
+          <strong id="detail-sum-total">₹0</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 16px;">
+        <button class="btn-cancel" onclick="closeModal('modal-order-detail')">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── ADD/EDIT CATEGORY MODAL ── -->
   <div class="modal-overlay" id="modal-category">
     <div class="modal" style="max-width:450px">
@@ -2118,6 +2461,17 @@
       const rb = document.getElementById('recent-orders-body');
       if (!r2) { rb.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load</h3></div>'; return; }
       const d2 = await r2.json();
+
+      // Store globally for detailed view
+      if (!window._adminOrders) window._adminOrders = [];
+      if (d2.success && d2.data) {
+        d2.data.forEach(o => {
+          const idx = window._adminOrders.findIndex(x => x._id === o._id);
+          if (idx > -1) window._adminOrders[idx] = o;
+          else window._adminOrders.push(o);
+        });
+      }
+
       if (!d2.success || !d2.data?.length) {
         rb.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No orders yet</h3><p>Orders will appear here</p></div>';
         return;
@@ -2126,7 +2480,12 @@
     ${d2.data.map(o => {
           const s = o.shippingAddress || {};
           return `<tr>
-      <td class="td-muted">#${esc(o._id?.slice(-8)?.toUpperCase() || '—')}${o.isExpressDelivery ? ' <span class="badge" style="background:rgba(255, 69, 0, .08); color:var(--orange); font-size:0.55rem; padding:2px 6px; margin-left:4px"><i class="fas fa-bolt"></i></span>' : ''}</td>
+      <td>
+        <span class="order-id-link" onclick="openOrderDetail('${o._id}')">
+          #${esc(o._id?.slice(-8)?.toUpperCase() || '—')}
+        </span>
+        ${o.isExpressDelivery ? ' <span class="badge" style="background:rgba(255, 69, 0, .08); color:var(--orange); font-size:0.55rem; padding:2px 6px; margin-left:4px"><i class="fas fa-bolt"></i></span>' : ''}
+      </td>
       <td>
         <div class="td-name">${esc(o.user?.name || 'Guest')}</div>
         <div class="td-muted" style="font-size:.65rem">${esc(o.user?.email || '')}</div>
@@ -2540,17 +2899,73 @@
       const res = await af(`${API}/admin/orders`);
       if (!res) { body.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load orders</h3></div>'; return; }
       const data = await res.json();
+      
+      // Store globally for detailed view
+      if (!window._adminOrders) window._adminOrders = [];
+      if (data.success && data.data) {
+        data.data.forEach(o => {
+          const idx = window._adminOrders.findIndex(x => x._id === o._id);
+          if (idx > -1) window._adminOrders[idx] = o;
+          else window._adminOrders.push(o);
+        });
+      }
+
       const normalOrders = data.success ? data.data.filter(o => !o.isExpressDelivery) : [];
       if (!data.success || !normalOrders.length) {
         body.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><h3>No orders yet</h3><p>Normal orders will appear here when customers buy</p></div>';
         return;
       }
-      body.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+      body.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Products</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
     ${normalOrders.map(o => {
           const s = o.shippingAddress || {};
-          const searchStr = `${esc(o._id)} ${esc(o.user?.name || '')} ${esc(o.user?.email || '')} ${esc(o.user?.phone || '')} ${esc(s.name || '')} ${esc(s.city || '')} ${esc(s.state || '')} ${esc(s.pincode || '')} ${o.isExpressDelivery ? 'express' : ''}`.toLowerCase();
+          const items = o.orderItems || [];
+          const searchStr = `${esc(o._id)} ${esc(o.user?.name || '')} ${esc(o.user?.email || '')} ${esc(o.user?.phone || '')} ${esc(s.name || '')} ${esc(s.city || '')} ${esc(s.state || '')} ${esc(s.pincode || '')} ${items.map(item => esc(item.name)).join(' ')} ${o.isExpressDelivery ? 'express' : ''}`.toLowerCase();
+          
+          let productsHtml = '';
+          if (items.length > 0) {
+            const first = items[0];
+            const variantStr = getItemVariantStr(first);
+            productsHtml = `
+              <div class="prod-cell">
+                <div class="prod-item-row">
+                  <img src="${first.image}" class="prod-thumb-sm" onerror="this.src='https://via.placeholder.com/32/181818/FF4500?text=📦'">
+                  <div class="prod-item-info">
+                    <span class="prod-item-name" title="${esc(first.name)}">${esc(first.name)}</span>
+                    <span class="prod-item-meta">Qty: ${first.quantity}${variantStr ? ` · ${variantStr}` : ''}</span>
+                  </div>
+                </div>
+                ${items.length > 1 ? `
+                  <div class="prod-more-badge">
+                    +${items.length - 1} more items
+                    <div class="prod-more-tooltip">
+                      ${items.map(item => {
+                        const vStr = getItemVariantStr(item);
+                        return `
+                          <div class="tooltip-item">
+                            <img src="${item.image}" class="prod-thumb-xs" onerror="this.src='https://via.placeholder.com/24/181818/FF4500?text=📦'">
+                            <div class="tooltip-info">
+                              <span class="tooltip-name" title="${esc(item.name)}">${esc(item.name)}</span>
+                              <span class="tooltip-meta">Qty: ${item.quantity} · Price: ₹${item.price.toLocaleString('en-IN')}${vStr ? ` · ${vStr}` : ''}</span>
+                            </div>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          } else {
+            productsHtml = `<span style="color:var(--g); font-size:0.75rem">—</span>`;
+          }
+
           return `<tr data-search="${searchStr}">
-      <td class="td-muted">#${esc(o._id?.slice(-8)?.toUpperCase() || '—')}${o.isExpressDelivery ? ' <span class="badge" style="background:rgba(255, 69, 0, .1); color:var(--o); font-size:0.6rem; margin-left:4px"><i class="fas fa-bolt"></i> Express</span>' : ''}</td>
+      <td>
+        <span class="order-id-link" onclick="openOrderDetail('${o._id}')">
+          #${esc(o._id?.slice(-8)?.toUpperCase() || '—')}
+        </span>
+        ${o.isExpressDelivery ? ' <span class="badge" style="background:rgba(255, 69, 0, .1); color:var(--o); font-size:0.6rem; margin-left:4px"><i class="fas fa-bolt"></i> Express</span>' : ''}
+      </td>
       <td>
         <div class="td-name">${esc(o.user?.name || 'Guest')}</div>
         <div class="td-muted">${esc(o.user?.email || '')}</div>
@@ -2564,6 +2979,7 @@
           ${esc(s.city || '')}, ${esc(s.state || '')} - ${esc(s.pincode || '')}
         </div>
       </td>
+      <td>${productsHtml}</td>
       <td class="td-price">₹${(o.totalAmount || o.totalPrice || 0).toLocaleString('en-IN')}</td>
       <td><span class="status s-${(o.paymentStatus || 'Pending').toLowerCase()}">${esc(o.paymentStatus || 'Pending')}</span></td>
       <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
@@ -2579,17 +2995,73 @@
       const res = await af(`${API}/admin/orders`);
       if (!res) { body.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Failed to load express orders</h3></div>'; return; }
       const data = await res.json();
+
+      // Store globally for detailed view
+      if (!window._adminOrders) window._adminOrders = [];
+      if (data.success && data.data) {
+        data.data.forEach(o => {
+          const idx = window._adminOrders.findIndex(x => x._id === o._id);
+          if (idx > -1) window._adminOrders[idx] = o;
+          else window._adminOrders.push(o);
+        });
+      }
+
       const expressOrders = data.success ? data.data.filter(o => o.isExpressDelivery) : [];
       if (!data.success || !expressOrders.length) {
         body.innerHTML = '<div class="empty-state"><i class="fas fa-bolt" style="color:var(--orange)"></i><h3>No express orders yet</h3><p>Express orders will appear here</p></div>';
         return;
       }
-      body.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+      body.innerHTML = `<table><thead><tr><th>Order ID</th><th>Customer</th><th>Shipping Address</th><th>Products</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
     ${expressOrders.map(o => {
           const s = o.shippingAddress || {};
-          const searchStr = `${esc(o._id)} ${esc(o.user?.name || '')} ${esc(o.user?.email || '')} ${esc(o.user?.phone || '')} ${esc(s.name || '')} ${esc(s.city || '')} ${esc(s.state || '')} ${esc(s.pincode || '')} express`.toLowerCase();
+          const items = o.orderItems || [];
+          const searchStr = `${esc(o._id)} ${esc(o.user?.name || '')} ${esc(o.user?.email || '')} ${esc(o.user?.phone || '')} ${esc(s.name || '')} ${esc(s.city || '')} ${esc(s.state || '')} ${esc(s.pincode || '')} ${items.map(item => esc(item.name)).join(' ')} express`.toLowerCase();
+          
+          let productsHtml = '';
+          if (items.length > 0) {
+            const first = items[0];
+            const variantStr = getItemVariantStr(first);
+            productsHtml = `
+              <div class="prod-cell">
+                <div class="prod-item-row">
+                  <img src="${first.image}" class="prod-thumb-sm" onerror="this.src='https://via.placeholder.com/32/181818/FF4500?text=📦'">
+                  <div class="prod-item-info">
+                    <span class="prod-item-name" title="${esc(first.name)}">${esc(first.name)}</span>
+                    <span class="prod-item-meta">Qty: ${first.quantity}${variantStr ? ` · ${variantStr}` : ''}</span>
+                  </div>
+                </div>
+                ${items.length > 1 ? `
+                  <div class="prod-more-badge">
+                    +${items.length - 1} more items
+                    <div class="prod-more-tooltip">
+                      ${items.map(item => {
+                        const vStr = getItemVariantStr(item);
+                        return `
+                          <div class="tooltip-item">
+                            <img src="${item.image}" class="prod-thumb-xs" onerror="this.src='https://via.placeholder.com/24/181818/FF4500?text=📦'">
+                            <div class="tooltip-info">
+                              <span class="tooltip-name" title="${esc(item.name)}">${esc(item.name)}</span>
+                              <span class="tooltip-meta">Qty: ${item.quantity} · Price: ₹${item.price.toLocaleString('en-IN')}${vStr ? ` · ${vStr}` : ''}</span>
+                            </div>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          } else {
+            productsHtml = `<span style="color:var(--g); font-size:0.75rem">—</span>`;
+          }
+
           return `<tr data-search="${searchStr}">
-      <td class="td-muted">#${esc(o._id?.slice(-8)?.toUpperCase() || '—')} <span class="badge" style="background:rgba(255, 107, 0, .1); color:var(--orange); font-size:0.6rem; margin-left:4px"><i class="fas fa-bolt"></i> Express</span></td>
+      <td>
+        <span class="order-id-link" onclick="openOrderDetail('${o._id}')">
+          #${esc(o._id?.slice(-8)?.toUpperCase() || '—')}
+        </span>
+        <span class="badge" style="background:rgba(255, 107, 0, .1); color:var(--orange); font-size:0.6rem; margin-left:4px"><i class="fas fa-bolt"></i> Express</span>
+      </td>
       <td>
         <div class="td-name">${esc(o.user?.name || 'Guest')}</div>
         <div class="td-muted">${esc(o.user?.email || '')}</div>
@@ -2603,6 +3075,7 @@
           ${esc(s.city || '')}, ${esc(s.state || '')} - ${esc(s.pincode || '')}
         </div>
       </td>
+      <td>${productsHtml}</td>
       <td class="td-price">₹${(o.totalAmount || o.totalPrice || 0).toLocaleString('en-IN')}</td>
       <td><span class="status s-${(o.paymentStatus || 'Pending').toLowerCase()}">${esc(o.paymentStatus || 'Pending')}</span></td>
       <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
@@ -2610,6 +3083,92 @@
       <td><button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button></td>
     </tr>`}).join('')}
   </tbody></table>`;
+    }
+
+    function getItemVariantStr(item) {
+      const parts = [];
+      if (item.color) parts.push(`Color: ${item.color}`);
+      if (item.storage) parts.push(`Storage: ${item.storage}`);
+      if (item.size) parts.push(`Size: ${item.size}`);
+      if (item.variant) parts.push(`Variant: ${item.variant}`);
+      return parts.join(', ');
+    }
+
+    function openOrderDetail(id) {
+      const o = window._adminOrders.find(x => x._id === id);
+      if (!o) { showToast('Order details not found.', 'error'); return; }
+      
+      // Populate modal
+      document.getElementById('detail-order-number').textContent = 'Order #' + (o.orderNumber || o._id.slice(-8).toUpperCase());
+      document.getElementById('detail-order-id').innerHTML = `Order ID: <span style="font-family: monospace; color: var(--g); font-size:0.7rem;">${o._id}</span>`;
+      
+      document.getElementById('detail-cust-name').textContent = o.user?.name || 'Guest';
+      document.getElementById('detail-cust-email').textContent = o.user?.email || '—';
+      document.getElementById('detail-cust-phone').textContent = o.user?.phone || '—';
+      
+      const s = o.shippingAddress || {};
+      document.getElementById('detail-ship-name').textContent = s.name || '—';
+      document.getElementById('detail-ship-phone').textContent = s.phone || '—';
+      document.getElementById('detail-ship-address').textContent = `${s.street || ''}, ${s.city || ''}, ${s.state || ''} - ${s.pincode || ''}`;
+      
+      const statusEl = document.getElementById('detail-order-status');
+      statusEl.textContent = o.status || 'pending';
+      statusEl.className = `status s-${o.status || 'pending'}`;
+      
+      document.getElementById('detail-delivery-type').textContent = o.isExpressDelivery ? '🚀 Express Delivery' : '📦 Standard Delivery';
+      document.getElementById('detail-order-date').textContent = new Date(o.createdAt).toLocaleString('en-IN');
+      
+      document.getElementById('detail-pay-method').textContent = o.paymentMethod?.toUpperCase() || '—';
+      
+      const payStatusEl = document.getElementById('detail-pay-status');
+      payStatusEl.textContent = o.paymentStatus || 'Pending';
+      payStatusEl.className = `status s-${(o.paymentStatus || 'Pending').toLowerCase()}`;
+      
+      const txRow = document.getElementById('detail-pay-tx-row');
+      if (o.paymentResult?.id || o.paymentResult?.razorpay_payment_id) {
+        txRow.style.display = 'flex';
+        document.getElementById('detail-pay-tx').textContent = o.paymentResult.id || o.paymentResult.razorpay_payment_id;
+      } else {
+        txRow.style.display = 'none';
+      }
+      
+      // Calculate Subtotal & Shipping
+      const items = o.orderItems || [];
+      const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = o.totalPrice || o.totalAmount || 0;
+      // If there was a coupon or discount
+      const discount = o.discountAmount || 0;
+      const shipping = Math.max(0, total - subtotal + discount);
+      
+      document.getElementById('detail-sum-subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+      document.getElementById('detail-sum-shipping').textContent = shipping === 0 ? 'FREE' : '₹' + shipping.toLocaleString('en-IN');
+      
+      const discRow = document.getElementById('detail-sum-discount-row');
+      if (discount > 0) {
+        discRow.style.display = 'flex';
+        document.getElementById('detail-sum-discount').textContent = '-₹' + discount.toLocaleString('en-IN');
+      } else {
+        discRow.style.display = 'none';
+      }
+      document.getElementById('detail-sum-total').textContent = '₹' + total.toLocaleString('en-IN');
+      
+      // Populate products list
+      const listEl = document.getElementById('detail-products-list');
+      listEl.innerHTML = items.map(item => {
+        const variantStr = getItemVariantStr(item);
+        return `
+          <div class="order-detail-product-item">
+            <img src="${item.image}" class="order-detail-prod-img" onerror="this.src='https://via.placeholder.com/44/181818/FF4500?text=📦'">
+            <div class="order-detail-prod-info">
+              <div class="order-detail-prod-name">${esc(item.name)}</div>
+              <div class="order-detail-prod-meta">Quantity: ${item.quantity}${variantStr ? ` · ${variantStr}` : ''}</div>
+            </div>
+            <div class="order-detail-prod-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</div>
+          </div>
+        `;
+      }).join('');
+      
+      openModal('modal-order-detail');
     }
 
     function openUpdateOrder(id, currentStatus) {
@@ -2627,7 +3186,11 @@
       if (res && res.ok) {
         showToast('Order status updated!', 'success');
         closeModal('modal-order');
-        loadOrders();
+        if (document.getElementById('section-express').classList.contains('active')) {
+          loadExpressOrders();
+        } else {
+          loadOrders();
+        }
       } else showToast('Failed to update order.', 'error');
     }
 

@@ -72,6 +72,10 @@ const orderItemSchema = new mongoose.Schema({
   image: String,
   price: { type: Number, required: true },
   quantity: { type: Number, required: true, min: 1 },
+  color: { type: String, default: '' },
+  storage: { type: String, default: '' },
+  size: { type: String, default: '' },
+  variant: { type: String, default: '' },
 });
 
 const orderSchema = new mongoose.Schema({
