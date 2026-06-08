@@ -3712,8 +3712,8 @@ img {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    /* Account for iOS notch */
-    padding-top: env(safe-area-inset-top, 0px) !important;
+    /* No padding here — .snav already handles safe-area-inset-top internally */
+    padding-top: 0 !important;
   }
 
   /* Pull .snav out of fixed-positioning so it joins the flex flow */
@@ -3726,10 +3726,9 @@ img {
     width: 100% !important;
     z-index: 300 !important;
     box-sizing: border-box !important;
-    /* Keep its original visual style */
-    background: rgba(8, 8, 8, .96) !important;
-    backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid var(--bdr) !important;
+    /* Match solid mobile header style */
+    background: #000 !important;
+    border-bottom: 2px solid var(--bdr) !important;
   }
 
   /* pw fills the remaining space below snav */
@@ -3749,7 +3748,7 @@ img {
   /* Search bar + chips header — rigid, never scrolls */
   .search-sticky-header {
     position: relative !important;
-    top: 0 !important;
+    top: auto !important;
     flex-shrink: 0 !important;
     transform: none !important;
     animation: none !important;
