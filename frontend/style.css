@@ -3692,9 +3692,12 @@ img {
     padding-top: calc(62px + env(safe-area-inset-top, 0px) + 8px) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    overflow: visible !important;
   }
 
   .search-sticky-header {
+    animation: fadeIn 0.3s ease both !important;
+    transform: none !important;
     top: calc(62px + env(safe-area-inset-top, 0px)) !important;
     padding-top: 8px !important;
     margin-bottom: 8px !important;
