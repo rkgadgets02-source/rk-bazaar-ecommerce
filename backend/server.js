@@ -415,7 +415,15 @@ app.use((err, req, res, next) => {
   // Log full error internally
   console.error(`❌ Error [${req.method} ${req.path}]:`, err.message);
 
-  // CORS errors — only catch actual CORS errors, not errors that happen to mention CORS in their message
+  // Multer / Upload errors
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ success: false, message: 'File too large. Maximum size is 5MB.' });
+  }
+  if (err.message && err.message.startsWith('LIMIT_FILE_TYPE:')) {
+    return res.status(400).json({ success: false, message: err.message.replace('LIMIT_FILE_TYPE: ', '') });
+  }
+
+  // CORS errors — only catch actual CORS errors
   if (err.isCorsError || (err.message && err.message.startsWith('CORS policy:'))) {
     return res.status(403).json({ success: false, message: 'CORS: Origin not allowed' });
   }

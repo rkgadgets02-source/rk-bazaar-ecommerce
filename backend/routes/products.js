@@ -5,12 +5,31 @@ const path = require('path');
 const Product = require('../models/Product');
 const { protect, adminOnly } = require('../middleware/auth');
 
+// Helper to escape regex special characters
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
 // Multer setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/products/'),
   filename: (req, file, cb) => cb(null, `product_${Date.now()}${path.extname(file.originalname)}`)
 });
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('LIMIT_FILE_TYPE: Only image files (JPEG, JPG, PNG, WEBP, GIF) are allowed.'), false);
+  }
+};
+
+const upload = multer({ 
+  storage, 
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } 
+});
 
 // GET /api/products — all products with search, filter, sort, pagination
 router.get('/', async (req, res) => {
@@ -18,11 +37,14 @@ router.get('/', async (req, res) => {
     const { search, category, minPrice, maxPrice, sort, page = 1, limit = 12, featured, trending } = req.query;
     let query = { isActive: true };
 
-    if (search) query.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { description: { $regex: search, $options: 'i' } },
-      { tags: { $regex: search, $options: 'i' } }
-    ];
+    if (search) {
+      const cleanSearch = escapeRegex(search);
+      query.$or = [
+        { name: { $regex: cleanSearch, $options: 'i' } },
+        { description: { $regex: cleanSearch, $options: 'i' } },
+        { tags: { $regex: cleanSearch, $options: 'i' } }
+      ];
+    }
     if (category) query.category = category;
     if (minPrice || maxPrice) {
       query.price = {};

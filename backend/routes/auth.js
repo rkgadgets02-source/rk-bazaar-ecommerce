@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const { protect, generateToken } = require('../middleware/auth');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 // ── EMAIL TRANSPORTER ─────────────────────────────
 function getTransporter() {
@@ -51,7 +52,7 @@ async function sendOTPEmail(email, name, otp) {
 
 // ── GENERATE OTP ──────────────────────────────────
 function generateOTP() {
-  return String(Math.floor(100000 + Math.random() * 900000));
+  return String(crypto.randomInt(100000, 1000000));
 }
 
 // ─────────────────────────────────────────────────
@@ -362,6 +363,17 @@ router.delete('/address/:id', protect, async (req, res) => {
 // ─────────────────────────────────────────────────
 router.post('/setup-master-admin', async (req, res) => {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({ success: false, message: 'Forbidden: setup-master-admin is disabled in production.' });
+    }
+
+    const token = req.headers['x-setup-token'] || req.query.token;
+    const expectedToken = process.env.SETUP_TOKEN || process.env.JWT_SECRET;
+
+    if (!expectedToken || !token || token !== expectedToken) {
+      return res.status(403).json({ success: false, message: 'Forbidden: Invalid or missing setup token.' });
+    }
+
     const adminEmail = process.env.ADMIN_EMAIL || 'rkgadgets02@gmail.com';
     
     // Check if admin already exists

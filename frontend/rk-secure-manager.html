@@ -1937,10 +1937,16 @@
 
     // ══ INITIALIZE ADMIN ══
     async function initAdmin() {
+      const setupToken = prompt('Enter Master Admin Setup Token (if configured):') || '';
       const btn = document.getElementById('init-btn');
       btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing...';
       try {
-        const res = await fetch(`${API}/auth/setup-master-admin`, { method: 'POST' });
+        const url = new URL(`${API}/auth/setup-master-admin`);
+        if (setupToken) url.searchParams.append('token', setupToken);
+        const res = await fetch(url.toString(), { 
+          method: 'POST',
+          headers: { 'x-setup-token': setupToken }
+        });
         const data = await res.json();
         if (data.success) {
           showToast(data.message, 'success');
@@ -1948,7 +1954,7 @@
           document.getElementById('admin-password').value = 'Admin@1234';
           showToast('Credentials filled! You can now login.', 'info');
         } else {
-          showToast(data.message || 'Already initialized.', 'info');
+          showToast(data.message || 'Initialization failed.', 'error');
         }
       } catch (e) {
         showToast('Operation failed. Check connection.', 'error');

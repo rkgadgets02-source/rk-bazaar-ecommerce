@@ -3629,9 +3629,6 @@ img {
   .desktop-header {
     display: none !important;
   }
-}
-
-@media(max-width:500px) {
 
   /* Unify all headers to solid black and kill Ghost Bar */
   .topbar {
@@ -3705,7 +3702,10 @@ img {
     background: var(--bg) !important;
     z-index: 290 !important;
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .search-sticky-header .sbar {
@@ -3722,7 +3722,9 @@ img {
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
     display: flex !important;
+    flex-wrap: nowrap !important;
   }
 
   #page-search .pgrid {
@@ -3753,6 +3755,23 @@ img {
     padding: 14px !important;
   }
 
+  .pd-acts {
+    bottom: calc(var(--bot) + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 10px !important;
+    background: #000 !important;
+    border-top: 1px solid var(--bdr);
+  }
+
+  #page-pd .pw {
+    padding-bottom: calc(var(--bot) + 84px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .auth-box {
+    padding: 20px 15px !important;
+  }
+}
+
+@media(max-width:500px) {
   /* 2-Column Product Grid Fix */
   .ps,
   .pgrid {
@@ -3780,21 +3799,6 @@ img {
 
   .hero-body h1 span {
     font-size: 1.55rem !important;
-  }
-
-  .pd-acts {
-    bottom: calc(var(--bot) + env(safe-area-inset-bottom, 0px)) !important;
-    padding: 10px !important;
-    background: #000 !important;
-    border-top: 1px solid var(--bdr);
-  }
-
-  #page-pd .pw {
-    padding-bottom: calc(var(--bot) + 84px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-
-  .auth-box {
-    padding: 20px 15px !important;
   }
 }
 
