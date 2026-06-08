@@ -3698,7 +3698,9 @@ img {
     left: 0 !important;
     right: 0 !important;
     height: calc(100% - 62px - env(safe-area-inset-top, 0px)) !important;
-    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
     padding-top: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -3707,8 +3709,9 @@ img {
   .search-sticky-header {
     animation: fadeIn 0.3s ease both !important;
     transform: none !important;
-    position: sticky !important;
+    position: relative !important;
     top: 0 !important;
+    flex-shrink: 0 !important;
     padding-top: 8px !important;
     margin-bottom: 8px !important;
     margin-left: 0 !important;
@@ -3744,8 +3747,16 @@ img {
   }
 
   #page-search .pgrid {
-    padding: 0 12px 12px 12px !important;
+    flex-grow: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0 12px 110px 12px !important;
     gap: 12px !important;
+  }
+
+  #page-search .empty {
+    flex-grow: 1 !important;
+    height: auto !important;
   }
 
   /* Checkout Button Fix: Normal flow on mobile, no overlap */
