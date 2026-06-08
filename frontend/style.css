@@ -1759,6 +1759,8 @@ img {
   scrollbar-width: none;
   padding-bottom: 2px;
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .chips::-webkit-scrollbar {
@@ -3701,6 +3703,8 @@ img {
     border-bottom: 1px solid var(--bdr) !important;
     background: var(--bg) !important;
     z-index: 290 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .search-sticky-header .sbar {
@@ -3714,6 +3718,10 @@ img {
     padding-left: 16px !important;
     padding-right: 16px !important;
     margin-bottom: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    display: flex !important;
   }
 
   #page-search .pgrid {
