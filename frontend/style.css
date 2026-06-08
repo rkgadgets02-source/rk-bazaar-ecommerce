@@ -3693,12 +3693,14 @@ img {
   }
 
   /* ── Search Page: Flex-column lock — only .pgrid scrolls ── */
-  /* ROOT CAUSE FIX:
-     .snav is position:fixed globally but lives inside .page.active
-     which is overflow-y:auto. On iOS, that makes the "fixed" nav
-     scroll away with the page. Solution: override .snav to
-     position:relative inside #page-search so the whole page becomes
-     a rigid flex column — nothing scrolls except .pgrid. */
+  /*
+   * LAYOUT:
+   *  #page-search  (position:absolute, fills full viewport, overflow:hidden, display:flex, flex-direction:column)
+   *    ↳ .snav             (position:relative — rigid flex item, header never scrolls)
+   *    ↳ .pw               (flex:1, overflow:hidden, display:flex, flex-direction:column)
+   *        ↳ .search-sticky-header  (flex-shrink:0 — search bar + chips never scroll)
+   *        ↳ .pgrid                 (flex:1, overflow-y:auto — THE ONLY scrollable element)
+   */
 
   #page-search {
     /* Block the page container from scrolling at all */
@@ -3706,17 +3708,17 @@ img {
     /* Become the flex column that stacks snav + pw */
     display: flex !important;
     flex-direction: column !important;
-    /* Fill the full viewport */
+    /* Fill the full viewport exactly */
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    /* Account for iOS notch */
-    padding-top: env(safe-area-inset-top, 0px) !important;
+    /* No extra padding here — snav already handles safe-area-inset-top internally */
+    padding-top: 0 !important;
   }
 
-  /* Pull .snav out of fixed-positioning so it joins the flex flow */
+  /* Pull .snav into the flex flow so it never scrolls */
   #page-search .snav {
     position: relative !important;
     top: auto !important;
@@ -3726,10 +3728,10 @@ img {
     width: 100% !important;
     z-index: 300 !important;
     box-sizing: border-box !important;
-    /* Keep its original visual style */
-    background: rgba(8, 8, 8, .96) !important;
-    backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid var(--bdr) !important;
+    /* Visual style */
+    background: #000 !important;
+    border-bottom: 2px solid var(--bdr) !important;
+    /* Height already set by the .snav override above: calc(62px + safe-area) */
   }
 
   /* pw fills the remaining space below snav */
@@ -3749,7 +3751,7 @@ img {
   /* Search bar + chips header — rigid, never scrolls */
   .search-sticky-header {
     position: relative !important;
-    top: 0 !important;
+    top: auto !important;
     flex-shrink: 0 !important;
     transform: none !important;
     animation: none !important;
