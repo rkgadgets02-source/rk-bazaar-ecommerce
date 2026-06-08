@@ -1780,6 +1780,7 @@ img {
   transition: all .2s;
   font-family: 'Outfit', sans-serif;
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .chip.on {
