@@ -864,7 +864,8 @@ img {
   border-color: var(--o);
 }
 
-.sbar svg {
+.sbar svg,
+.sbar i {
   color: var(--o);
   flex-shrink: 0;
   margin-right: 12px;
@@ -1739,6 +1740,16 @@ img {
   font-weight: 700;
   display: block;
   margin-top: 2px
+}
+
+.search-sticky-header {
+  position: sticky;
+  top: var(--nav);
+  z-index: 290;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bdr);
+  margin-bottom: 14px;
+  padding-top: 16px;
 }
 
 .chips {
@@ -3672,6 +3683,42 @@ img {
     padding-top: 84px !important;
     padding-bottom: 110px !important;
     /* Extra bottom padding for all pages */
+  }
+
+  /* Search Page Mobile Spacing, Gap, & Overlap Fixes */
+  #page-search .pw {
+    padding-top: calc(62px + env(safe-area-inset-top, 0px) + 8px) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .search-sticky-header {
+    top: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    padding-top: 8px !important;
+    margin-bottom: 8px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-bottom: 1px solid var(--bdr) !important;
+    background: var(--bg) !important;
+    z-index: 290 !important;
+  }
+
+  .search-sticky-header .sbar {
+    margin: 0 16px 12px 16px !important;
+    width: calc(100% - 32px) !important;
+  }
+
+  .search-sticky-header .chips {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    margin-bottom: 12px !important;
+  }
+
+  #page-search .pgrid {
+    padding: 0 12px 12px 12px !important;
+    gap: 12px !important;
   }
 
   /* Checkout Button Fix: Normal flow on mobile, no overlap */
