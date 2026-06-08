@@ -3628,6 +3628,11 @@ img {
 
 /* -- MOBILE NUCLEAR HARDENING 2.0 -- */
 @media(max-width:900px) {
+  html, body {
+    overflow: hidden !important;
+    height: 100% !important;
+  }
+
   .desktop-header {
     display: none !important;
   }
@@ -3747,6 +3752,7 @@ img {
   }
 
   #page-search .pgrid {
+    position: relative !important;
     flex-grow: 1 !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
