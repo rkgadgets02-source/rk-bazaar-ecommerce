@@ -3692,75 +3692,32 @@ img {
     /* Extra bottom padding for all pages */
   }
 
-  /* ── Search Page: Flex-column lock — only .pgrid scrolls ── */
-  /* ROOT CAUSE FIX:
-     .snav is position:fixed globally but lives inside .page.active
-     which is overflow-y:auto. On iOS, that makes the "fixed" nav
-     scroll away with the page. Solution: override .snav to
-     position:relative inside #page-search so the whole page becomes
-     a rigid flex column — nothing scrolls except .pgrid. */
+  /* ── Search Page: sticky header + search bar, products scroll naturally ── */
 
-  #page-search {
-    /* Block the page container from scrolling at all */
-    overflow: hidden !important;
-    /* Become the flex column that stacks snav + pw */
-    display: flex !important;
-    flex-direction: column !important;
-    /* Fill the full viewport */
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    /* Account for iOS notch */
-    padding-top: env(safe-area-inset-top, 0px) !important;
-  }
-
-  /* Pull .snav out of fixed-positioning so it joins the flex flow */
+  /* snav sticks to top as the page scrolls */
   #page-search .snav {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    flex-shrink: 0 !important;
-    width: 100% !important;
-    z-index: 300 !important;
-    box-sizing: border-box !important;
-    /* Keep its original visual style */
-    background: rgba(8, 8, 8, .96) !important;
-    backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid var(--bdr) !important;
-  }
-
-  /* pw fills the remaining space below snav */
-  #page-search .pw {
-    flex: 1 1 0 !important;
-    min-height: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    position: relative !important;
-    padding-top: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* Search bar + chips header — rigid, never scrolls */
-  .search-sticky-header {
-    position: relative !important;
+    position: sticky !important;
     top: 0 !important;
-    flex-shrink: 0 !important;
-    transform: none !important;
-    animation: none !important;
+    z-index: 300 !important;
+    background: #000 !important;
+    border-bottom: 2px solid var(--bdr) !important;
+  }
+
+  /* pw: remove top padding since snav is now in the normal flow */
+  #page-search .pw {
+    padding-top: 0 !important;
+  }
+
+  /* Search bar + filter chips sticks just below the header */
+  .search-sticky-header {
+    position: sticky !important;
+    top: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    z-index: 290 !important;
+    background: var(--bg) !important;
+    border-bottom: 1px solid var(--bdr) !important;
     padding-top: 8px !important;
     margin: 0 !important;
-    border-bottom: 1px solid var(--bdr) !important;
-    background: var(--bg) !important;
-    z-index: 290 !important;
     width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
     box-sizing: border-box !important;
   }
 
@@ -3773,7 +3730,6 @@ img {
     padding: 0 16px 12px !important;
     margin: 0 !important;
     width: 100% !important;
-    max-width: 100% !important;
     box-sizing: border-box !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
@@ -3782,22 +3738,7 @@ img {
     flex-wrap: nowrap !important;
   }
 
-  /* The ONLY scrollable element on the search page */
-  #page-search .pgrid {
-    flex: 1 1 0 !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior: contain !important;
-    position: relative !important;
-    padding: 12px 12px 120px !important;
-    gap: 12px !important;
-  }
 
-  #page-search .empty {
-    flex: 1 1 0 !important;
-    height: auto !important;
-  }
 
   /* Checkout Button Fix: Normal flow on mobile, no overlap */
   .pbtn {
