@@ -1755,7 +1755,9 @@ img {
 .chips {
   display: flex;
   gap: 10px;
-  overflow-x: auto;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   scrollbar-width: none;
   padding-bottom: 2px;
   margin-bottom: 20px;
@@ -3721,8 +3723,9 @@ img {
     margin-bottom: 12px !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow-x: auto !important;
+    overflow-x: scroll !important;
     -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
     display: flex !important;
     flex-wrap: nowrap !important;
   }
