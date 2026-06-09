@@ -671,6 +671,7 @@ function showSkeletons(id, count = 4) {
 }
 
 function doSearch() {
+  window.scrollTo(0, 0);
   const si = document.getElementById('si');
   if (!si) return;
 
