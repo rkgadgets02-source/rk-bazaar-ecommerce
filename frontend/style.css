@@ -1737,17 +1737,16 @@ img {
 }
 
 .search-sticky-header {
-  position: sticky;
-  top: var(--nav);
-  z-index: 290;
-  background: #080808 !important;
-  border-bottom: 1px solid var(--bdr);
-  margin-bottom: 14px;
-  padding-top: 16px;
+  position: relative;
+  z-index: auto;
+  background: transparent !important;
+  border-bottom: none;
+  margin: 0;
+  padding-top: 10px;
 }
 
 .search-sticky-header .chips {
-  background: #080808 !important;
+  background: transparent !important;
 }
 
 .chips {
@@ -3565,7 +3564,6 @@ img {
     border-bottom: 1px solid var(--bdr);
     width: 100%;
     box-sizing: border-box;
-    transition: margin-bottom 0.2s ease;
   }
 
   #page-search .search-sticky-header {
@@ -3732,7 +3730,6 @@ img {
     border-bottom: 2px solid var(--bdr) !important;
     width: 100%;
     box-sizing: border-box;
-    transition: margin-bottom 0.2s ease;
   }
 
   #page-search .snav {
