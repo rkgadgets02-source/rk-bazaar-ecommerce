@@ -3581,7 +3581,7 @@ img {
 
   /* Consistent gap above product grid on search page */
   #page-search .pw {
-    padding-top: 16px !important;
+    padding-top: 32px !important;
   }
 
   .pd-desktop-grid {
@@ -3726,7 +3726,7 @@ img {
 
   /* pw: consistent spacing below sticky header */
   #page-search .pw {
-    padding-top: 16px !important;
+    padding-top: 32px !important;
   }
 
   /* Search bar + filter chips sticks just below the header */
