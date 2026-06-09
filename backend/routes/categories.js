@@ -10,6 +10,14 @@ router.get('/', async (req, res) => {
   } catch (err) { res.status(400).json({ success: false, message: err.message }); }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const cat = await Category.findById(req.params.id);
+    if (!cat || !cat.isActive) return res.status(404).json({ success: false, message: 'Category not found' });
+    res.json({ success: true, category: cat });
+  } catch (err) { res.status(400).json({ success: false, message: err.message }); }
+});
+
 router.post('/', protect, adminOnly, async (req, res) => {
   try {
     const cat = await Category.create(req.body);

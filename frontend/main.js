@@ -315,12 +315,19 @@ async function loadStoreData() {
   showSkeletons('sgrid', 4);
 
   await loadCats(); await loadProds(); await loadOffers();
+  
+  const params = new URLSearchParams(window.location.search);
+  const catId = params.get('cat') || params.get('category');
+  if (catId) {
+    S.filter = catId;
+    setTimeout(() => {
+      go('search', document.getElementById('bn-search'));
+    }, 200);
+  }
+
   renderStrip(); renderTrend(); renderFeat();
   renderCatFull(); renderChips(); doSearch();
   renderAcc(); updCart(); startTimer();
-
-  // Check for product in URL
-  const params = new URLSearchParams(window.location.search);
   const prodId = params.get('prod') || params.get('product');
   if (prodId) {
     // Wait a bit for everything to settle
@@ -541,7 +548,14 @@ function renderCatFull() {
   el.innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140/181818/FF4500?text=📦'"></div><div class="pgc-body"><h4>${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse &rarr;</span></div></div>`).join('');
 }
 function filterCat(id) { S.filter = id; go('search', document.getElementById('bn-search')); document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); document.querySelector(`.chip[data-cat="${id}"]`)?.classList.add('on'); doSearch() }
-function renderChips() { document.getElementById('fchips').innerHTML = `<button class="chip on" data-cat="All" onclick="setF('All',this)">All</button>` + S.categories.map(c => `<button class="chip" data-cat="${c._id || c.name}" onclick="setF('${c._id || c.name}',this)">${c.name}</button>`).join('') }
+function renderChips() {
+  document.getElementById('fchips').innerHTML = 
+    `<button class="chip${S.filter === 'All' ? ' on' : ''}" data-cat="All" onclick="setF('All',this)">All</button>` + 
+    S.categories.map(c => {
+      const isSelected = S.filter === (c._id || c.name);
+      return `<button class="chip${isSelected ? ' on' : ''}" data-cat="${c._id || c.name}" onclick="setF('${c._id || c.name}',this)">${c.name}</button>`;
+    }).join('');
+}
 function setF(f, btn) { S.filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); if (btn) btn.classList.add('on'); doSearch() }
 function debounce(fn, wait) {
   let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait); };
@@ -683,7 +697,20 @@ function adjustSearchStickyHeight() {
 // Recalculate sticky spacing on resize
 window.addEventListener('resize', adjustSearchStickyHeight);
 
-function doSearch() {
+function updateURLCategory(catId) {
+  const url = new URL(window.location.href);
+  if (catId && catId !== 'All') {
+    url.searchParams.set('cat', catId);
+  } else {
+    url.searchParams.delete('cat');
+    url.searchParams.delete('category');
+  }
+  url.searchParams.delete('prod');
+  url.searchParams.delete('product');
+  window.history.replaceState({}, '', url.toString());
+}
+
+async function doSearch() {
   const pg = document.getElementById('page-search');
   if (pg) pg.scrollTop = 0;
   
@@ -720,14 +747,38 @@ function doSearch() {
   if (titleEl) {
     let t = 'All Products';
     if (S.filter !== 'All') {
-      const catObj = S.categories.find(c => (c._id === S.filter || c.name === S.filter));
-      t = catObj ? catObj.name : S.filter;
+      let catObj = S.categories.find(c => (c._id === S.filter || c.name === S.filter));
+      if (!catObj && S.filter.match(/^[0-9a-fA-F]{24}$/)) {
+        // Try fetching category dynamically from backend
+        try {
+          const res = await req('/categories/' + S.filter);
+          if (res.success && res.category) {
+            catObj = res.category;
+            S.categories.push(catObj);
+          }
+        } catch (err) {
+          console.log('Failed to fetch category:', err);
+        }
+      }
+      
+      if (catObj) {
+        t = catObj.name;
+      } else {
+        if (S.filter.match(/^[0-9a-fA-F]{24}$/)) {
+          t = 'Category Not Found';
+        } else {
+          t = S.filter;
+        }
+      }
     }
     if (q) {
       t += ` - Results for "${rawQ}"`;
     }
     titleEl.textContent = t;
   }
+
+  // Update URL to match active category filter
+  updateURLCategory(S.filter);
 
   const g = document.getElementById('sgrid'), e = document.getElementById('sempty');
   if (!l.length) {

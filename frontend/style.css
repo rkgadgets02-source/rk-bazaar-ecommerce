@@ -3591,6 +3591,7 @@ img {
   #page-search .pw {
     padding-top: 24px;
     padding-bottom: 40px !important;
+    min-height: auto !important;
   }
 
   .pd-desktop-grid {
@@ -3745,6 +3746,7 @@ img {
   /* pw: spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
     padding-top: 24px;
+    min-height: auto !important;
   }
 
   /* Search bar + filter chips relative inside the sticky container */
