@@ -3589,7 +3589,7 @@ img {
 
   /* Spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
-    padding-top: 24px !important;
+    padding-top: 24px;
     padding-bottom: 40px !important;
   }
 
@@ -3744,7 +3744,7 @@ img {
 
   /* pw: spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
-    padding-top: 24px !important;
+    padding-top: 24px;
   }
 
   /* Search bar + filter chips relative inside the sticky container */

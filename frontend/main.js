@@ -676,7 +676,7 @@ function adjustSearchStickyHeight() {
   if (container && pw) {
     const h = container.offsetHeight;
     container.style.marginBottom = `-${h}px`;
-    pw.style.paddingTop = `${h + (window.innerWidth > 900 ? 24 : 16)}px`;
+    pw.style.setProperty('padding-top', `${h + (window.innerWidth > 900 ? 24 : 16)}px`, 'important');
   }
 }
 
@@ -718,7 +718,11 @@ function doSearch() {
   // Update Search / Category Title
   const titleEl = document.getElementById('search-title');
   if (titleEl) {
-    let t = S.filter === 'All' ? 'All Products' : S.filter;
+    let t = 'All Products';
+    if (S.filter !== 'All') {
+      const catObj = S.categories.find(c => (c._id === S.filter || c.name === S.filter));
+      t = catObj ? catObj.name : S.filter;
+    }
     if (q) {
       t += ` - Results for "${rawQ}"`;
     }
