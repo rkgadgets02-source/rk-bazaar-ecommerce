@@ -394,6 +394,9 @@ app.use(express.static(path.join(__dirname, '..', 'frontend'), {
 
 // ─── ADMIN PANEL ROUTE (SECRET) ──────────────────────────────
 app.get('/rk-secure-manager.html', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(__dirname, '..', 'frontend', 'rk-secure-manager.html'));
 });
 
@@ -402,6 +405,9 @@ app.get('/Admin.html', (req, res) => res.redirect('/'));
 
 // ─── SPA CATCH-ALL ────────────────────────────────────────────
 app.get('*', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 

@@ -579,40 +579,6 @@ function triggerSearch(sourceId) {
   hideSug();
 }
 
-function doSearch() {
-  const q = (document.getElementById('si')?.value || '').toLowerCase().trim();
-  const resEl = document.getElementById('searchRes');
-  if (!resEl) return;
-
-  let filtered = S.products;
-
-  // Search Filter
-  if (q) {
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(q) || 
-      (p.brand || '').toLowerCase().includes(q) ||
-      (p.category?.name || p.category || '').toString().toLowerCase().includes(q)
-    );
-  }
-
-  // Category Filter
-  if (S.filter !== 'All') {
-    filtered = filtered.filter(p => 
-      p.category?._id === S.filter || 
-      p.category === S.filter || 
-      p.category?.name === S.filter
-    );
-  }
-
-  const countEl = document.getElementById('search-count');
-  if (countEl) countEl.textContent = `${filtered.length} products found`;
-
-  if (filtered.length === 0) {
-    resEl.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No results for "${q}"</h3><p>Try searching for something else</p></div>`;
-  } else {
-    resEl.innerHTML = `<div class="search-grid">${filtered.map(pgcCard).join('')}</div>`;
-  }
-}
 
 function showSug(id) {
   const el = document.getElementById(id);
@@ -755,6 +721,7 @@ async function doSearch() {
           if (res.success && res.category) {
             catObj = res.category;
             S.categories.push(catObj);
+            renderChips();
           }
         } catch (err) {
           console.log('Failed to fetch category:', err);
@@ -833,7 +800,7 @@ async function openProd(id) {
   const stdSpecs = [
     ['Brand', p.brand || 'Generic'],
     ['SKU', p.sku || '—'],
-    ['Category', p.category?.name || '—'],
+    ['Category', getCatName(p)],
     ['Unit', p.unit || '1 pcs'],
     ['Stock', p.stock > 0 ? `${p.stock} units` : 'Out of Stock'],
   ];
