@@ -3559,8 +3559,29 @@ img {
     padding-bottom: 40px !important;
   }
 
-  #page-search .pw>div:first-child {
-    top: 76px !important;
+  /* Search page: chips bar sticks just below the 76px desktop header */
+  #page-search > .search-sticky-header {
+    position: sticky;
+    top: 76px;
+    z-index: 1900;
+    background: var(--bg);
+    border-bottom: 1px solid var(--bdr);
+    padding: 10px 0 0;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #page-search > .search-sticky-header .chips {
+    padding: 0 24px 12px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Consistent gap above product grid on search page */
+  #page-search .pw {
+    padding-top: 16px !important;
   }
 
   .pd-desktop-grid {
@@ -3703,9 +3724,9 @@ img {
     border-bottom: 2px solid var(--bdr) !important;
   }
 
-  /* pw: remove top padding since snav is now in the normal flow */
+  /* pw: consistent spacing below sticky header */
   #page-search .pw {
-    padding-top: 0 !important;
+    padding-top: 16px !important;
   }
 
   /* Search bar + filter chips sticks just below the header */
