@@ -1746,10 +1746,14 @@ img {
   position: sticky;
   top: var(--nav);
   z-index: 290;
-  background: var(--bg);
+  background: #080808 !important;
   border-bottom: 1px solid var(--bdr);
   margin-bottom: 14px;
   padding-top: 16px;
+}
+
+.search-sticky-header .chips {
+  background: #080808 !important;
 }
 
 .chips {
@@ -3564,7 +3568,7 @@ img {
     position: sticky;
     top: 76px;
     z-index: 1900;
-    background: var(--bg);
+    background: #080808 !important;
     border-bottom: 1px solid var(--bdr);
     padding: 10px 0 0;
     margin: 0;
@@ -3577,6 +3581,7 @@ img {
     margin: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    background: #080808 !important;
   }
 
   /* Consistent gap above product grid on search page */
@@ -3734,7 +3739,7 @@ img {
     position: sticky !important;
     top: calc(62px + env(safe-area-inset-top, 0px)) !important;
     z-index: 290 !important;
-    background: var(--bg) !important;
+    background: #080808 !important;
     border-bottom: 1px solid var(--bdr) !important;
     padding-top: 8px !important;
     margin: 0 !important;
@@ -3757,6 +3762,7 @@ img {
     touch-action: pan-x !important;
     display: flex !important;
     flex-wrap: nowrap !important;
+    background: #080808 !important;
   }
 
 
