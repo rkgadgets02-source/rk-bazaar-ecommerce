@@ -3556,9 +3556,14 @@ img {
   }
 
   /* Search page: sticky container holds the chips row, sticks below 76px desktop header */
+  #page-search {
+    padding-top: 0px !important;
+  }
+
   #search-sticky-container {
     position: sticky;
     top: 76px;
+    margin-top: 76px;
     z-index: 1900;
     background: #000000 !important;
     border-bottom: 1px solid var(--bdr);
