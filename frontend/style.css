@@ -660,8 +660,7 @@ img {
   left: 0;
   right: 0;
   height: var(--nav);
-  background: rgba(8, 8, 8, .96);
-  backdrop-filter: blur(20px);
+  background: #080808 !important;
   border-bottom: 1px solid var(--bdr);
   z-index: 1000;
   display: grid;
@@ -3349,8 +3348,7 @@ img {
   justify-content: space-between;
   padding: 0 30px;
   height: 76px;
-  background: rgba(8, 8, 8, .95);
-  backdrop-filter: blur(24px);
+  background: #080808 !important;
   border-bottom: 1px solid var(--bdr);
   position: fixed;
   top: 0;
@@ -3719,8 +3717,8 @@ img {
   #page-search .snav {
     position: sticky !important;
     top: 0 !important;
-    z-index: 300 !important;
-    background: #000 !important;
+    z-index: 1000 !important;
+    background: #080808 !important;
     border-bottom: 2px solid var(--bdr) !important;
   }
 
@@ -3732,8 +3730,8 @@ img {
   /* Search bar + filter chips sticks just below the header */
   .search-sticky-header {
     position: sticky !important;
-    top: calc(62px + env(safe-area-inset-top, 0px)) !important;
-    z-index: 290 !important;
+    top: calc(var(--nav) + env(safe-area-inset-top, 0px)) !important;
+    z-index: 900 !important;
     background: #080808 !important;
     border-bottom: 1px solid var(--bdr) !important;
     padding-top: 8px !important;
