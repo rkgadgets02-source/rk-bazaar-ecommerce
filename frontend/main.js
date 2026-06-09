@@ -654,9 +654,8 @@ function adjustSearchStickyHeight() {
   const container = document.getElementById('search-sticky-container');
   const pw = document.querySelector('#page-search .pw');
   if (container && pw) {
-    const h = container.offsetHeight;
-    container.style.marginBottom = `-${h}px`;
-    pw.style.setProperty('padding-top', `${h + (window.innerWidth > 900 ? 24 : 16)}px`, 'important');
+    container.style.marginBottom = '0px';
+    pw.style.removeProperty('padding-top');
   }
 }
 

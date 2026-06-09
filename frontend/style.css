@@ -3589,7 +3589,7 @@ img {
 
   /* Spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
-    padding-top: 24px;
+    padding-top: 24px !important;
     padding-bottom: 40px !important;
     min-height: auto !important;
   }
@@ -3745,7 +3745,7 @@ img {
 
   /* pw: spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
-    padding-top: 24px;
+    padding-top: 16px !important;
     min-height: auto !important;
   }
 
