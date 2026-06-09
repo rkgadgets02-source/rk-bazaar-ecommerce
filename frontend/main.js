@@ -670,8 +670,23 @@ function showSkeletons(id, count = 4) {
       `).join('');
 }
 
+function adjustSearchStickyHeight() {
+  const container = document.getElementById('search-sticky-container');
+  const pw = document.querySelector('#page-search .pw');
+  if (container && pw) {
+    const h = container.offsetHeight;
+    container.style.marginBottom = `-${h}px`;
+    pw.style.paddingTop = `${h + (window.innerWidth > 900 ? 24 : 16)}px`;
+  }
+}
+
+// Recalculate sticky spacing on resize
+window.addEventListener('resize', adjustSearchStickyHeight);
+
 function doSearch() {
-  window.scrollTo(0, 0);
+  const pg = document.getElementById('page-search');
+  if (pg) pg.scrollTop = 0;
+  
   const si = document.getElementById('si');
   if (!si) return;
 
@@ -700,6 +715,16 @@ function doSearch() {
     );
   }
 
+  // Update Search / Category Title
+  const titleEl = document.getElementById('search-title');
+  if (titleEl) {
+    let t = S.filter === 'All' ? 'All Products' : S.filter;
+    if (q) {
+      t += ` - Results for "${rawQ}"`;
+    }
+    titleEl.textContent = t;
+  }
+
   const g = document.getElementById('sgrid'), e = document.getElementById('sempty');
   if (!l.length) {
     if (g) g.innerHTML = '';
@@ -708,6 +733,9 @@ function doSearch() {
     if (e) e.style.display = 'none';
     if (g) g.innerHTML = l.map(pgcCard).join('');
   }
+  
+  // Recalculate sticky area height after content renders
+  setTimeout(adjustSearchStickyHeight, 50);
 }
 
 
@@ -1347,13 +1375,21 @@ function doLogout() {
 function go(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById('page-' + id);
-  if (pg) pg.classList.add('active');
+  if (pg) {
+    pg.classList.add('active');
+    pg.scrollTop = 0; // Scroll the active page container back to top
+  }
   if (btn) {
     document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
   window.scrollTo(0, 0);
-  if (id === 'search') setTimeout(() => document.getElementById('si')?.focus(), 250);
+  if (id === 'search') {
+    setTimeout(() => {
+      document.getElementById('si')?.focus();
+      adjustSearchStickyHeight(); // Ensure sticky spacing is calculated when search page is loaded
+    }, 250);
+  }
   if (id === 'checkout') goCheckout();
   if (id === 'wishlist') renderWish();
   if (id === 'cart') renderCart();

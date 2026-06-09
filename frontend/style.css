@@ -3556,30 +3556,41 @@ img {
     padding-bottom: 40px !important;
   }
 
-  /* Search page: chips bar sticks just below the 76px desktop header */
-  #page-search > .search-sticky-header {
+  /* Search page: sticky container holds the chips row, sticks below 76px desktop header */
+  #search-sticky-container {
     position: sticky;
     top: 76px;
     z-index: 1900;
-    background: #080808 !important;
+    background: #000000 !important;
     border-bottom: 1px solid var(--bdr);
-    padding: 10px 0 0;
-    margin: 0;
     width: 100%;
     box-sizing: border-box;
+    transition: margin-bottom 0.2s ease;
   }
 
-  #page-search > .search-sticky-header .chips {
+  #page-search .search-sticky-header {
+    position: relative !important;
+    top: auto !important;
+    z-index: auto !important;
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 10px 0 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  #page-search .search-sticky-header .chips {
     padding: 0 24px 12px !important;
     margin: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    background: #080808 !important;
+    background: transparent !important;
   }
 
-  /* Consistent gap above product grid on search page */
+  /* Spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
-    padding-top: 32px !important;
+    padding-top: 24px !important;
+    padding-bottom: 40px !important;
   }
 
   .pd-desktop-grid {
@@ -3711,29 +3722,38 @@ img {
     /* Extra bottom padding for all pages */
   }
 
-  /* ── Search Page: sticky header + search bar, products scroll naturally ── */
-
-  /* snav sticks to top as the page scrolls */
-  #page-search .snav {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1000 !important;
-    background: #080808 !important;
+  /* ── Search Page: sticky container, products scroll naturally ── */
+  #search-sticky-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #000000 !important;
     border-bottom: 2px solid var(--bdr) !important;
+    width: 100%;
+    box-sizing: border-box;
+    transition: margin-bottom 0.2s ease;
   }
 
-  /* pw: consistent spacing below sticky header */
+  #page-search .snav {
+    position: relative !important;
+    top: auto !important;
+    z-index: auto !important;
+    background: transparent !important;
+    border-bottom: none !important;
+  }
+
+  /* pw: spacing dynamically updated by JS, fallback styling */
   #page-search .pw {
-    padding-top: 32px !important;
+    padding-top: 24px !important;
   }
 
-  /* Search bar + filter chips sticks just below the header */
+  /* Search bar + filter chips relative inside the sticky container */
   .search-sticky-header {
-    position: sticky !important;
-    top: calc(var(--nav) + env(safe-area-inset-top, 0px)) !important;
-    z-index: 900 !important;
-    background: #080808 !important;
-    border-bottom: 1px solid var(--bdr) !important;
+    position: relative !important;
+    top: auto !important;
+    z-index: auto !important;
+    background: transparent !important;
+    border-bottom: none !important;
     padding-top: 8px !important;
     margin: 0 !important;
     width: 100% !important;
@@ -3755,7 +3775,7 @@ img {
     touch-action: pan-x !important;
     display: flex !important;
     flex-wrap: nowrap !important;
-    background: #080808 !important;
+    background: transparent !important;
   }
 
 
@@ -4220,6 +4240,22 @@ html {
   top: calc(100% + 2px);
   border-radius: 12px;
   border: 1px solid var(--bdr);
+}
+
+/* ── Dynamic Category Title Spacing ── */
+#search-title {
+  margin: 0 24px 20px 24px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+@media(max-width:500px) {
+  #search-title {
+    margin: 10px 14px 10px 14px;
+    font-size: 1.2rem;
+  }
 }
 
 

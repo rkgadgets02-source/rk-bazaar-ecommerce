@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     crossorigin="anonymous" referrerpolicy="no-referrer">
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=1.7.8">
+  <link rel="stylesheet" href="style.css?v=1.8.0">
 
 
 </head>
@@ -342,19 +342,22 @@
 
     <!-- SEARCH -->
     <div class="page" id="page-search">
-      <nav class="snav"><button class="bk" onclick="go('home',document.getElementById('bn-home'))"><i
-            class="fas fa-arrow-left"></i></button>
-        <h2>Search Products</h2>
-      </nav>
-      <div class="search-sticky-header">
-        <div class="sbar" style="border-color:var(--o); margin:0 0 12px; width:100%"><i class="fas fa-search"
-            style="color:var(--o)"></i><input type="text" placeholder="Search products..." id="si"
-            oninput="debouncedSearch(); showSug('si')" autocomplete="off">
-          <div id="si-sug" class="sug-box"></div>
+      <div class="sticky-container" id="search-sticky-container">
+        <nav class="snav"><button class="bk" onclick="go('home',document.getElementById('bn-home'))"><i
+              class="fas fa-arrow-left"></i></button>
+          <h2>Search Products</h2>
+        </nav>
+        <div class="search-sticky-header">
+          <div class="sbar" style="border-color:var(--o); margin:0 0 12px; width:100%"><i class="fas fa-search"
+              style="color:var(--o)"></i><input type="text" placeholder="Search products..." id="si"
+              oninput="debouncedSearch(); showSug('si')" autocomplete="off">
+            <div id="si-sug" class="sug-box"></div>
+          </div>
+          <div class="chips" id="fchips" style="margin-bottom:20px"></div>
         </div>
-        <div class="chips" id="fchips" style="margin-bottom:20px"></div>
       </div>
       <div class="pw">
+        <h2 id="search-title">All Products</h2>
         <div class="pgrid" id="sgrid"></div>
         <div class="empty" id="sempty"
           style="display:none; height:60vh; flex-direction:column; justify-content:center; gap:10px;"><i
@@ -954,7 +957,7 @@
   </div>
   </div><!-- end store-screen -->
 
-  <script src="main.js?v=1.7.0" defer></script>
+  <script src="main.js?v=1.8.0" defer></script>
   <!-- ── SHARE SHEET HTML ── -->
   <div id="share-sheet-overlay" onclick="if(event.target===this) closeShareSheet()">
     <div id="share-sheet">
