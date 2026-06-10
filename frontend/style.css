@@ -528,6 +528,11 @@ img {
   #auth-screen {
     justify-content: flex-start;
     padding-top: calc(24px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  #auth-main-panel, #auth-otp-panel, #auth-forgot-panel, #auth-reset-panel {
+    margin-bottom: 80px !important;
   }
 
   .auth-box {
