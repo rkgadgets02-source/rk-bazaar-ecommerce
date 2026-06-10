@@ -3684,11 +3684,14 @@ img {
   }
 
   #auth-screen {
-    position: relative !important;
-    height: auto !important;
-    min-height: 100vh !important;
-    overflow: visible !important;
+    position: fixed !important;
+    inset: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
     perspective: none !important;
+    z-index: 8000 !important;
   }
 
   /* Force all mobile pages to expand naturally and use native body scroll */
