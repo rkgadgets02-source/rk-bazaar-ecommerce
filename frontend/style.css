@@ -3681,15 +3681,15 @@ img {
     overflow-x: hidden !important;
     height: auto !important;
     min-height: 100% !important;
+    overscroll-behavior: auto !important;
   }
 
   #auth-screen {
-    position: fixed !important;
+    position: absolute !important;
     inset: 0 !important;
-    height: 100% !important;
-    width: 100% !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: visible !important;
     perspective: none !important;
     z-index: 8000 !important;
   }
