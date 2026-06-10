@@ -156,6 +156,7 @@ img {
   perspective: 1000px;
   z-index: 5;
   margin-top: 20px;
+  pointer-events: none;
 }
 
 .brand-3d-logo {
@@ -240,6 +241,7 @@ img {
   background-repeat: no-repeat;
   z-index: 1;
   filter: brightness(1.16) contrast(1.1) saturate(1.15);
+  pointer-events: none;
 }
 
 /* Dark overlay for text readability */
