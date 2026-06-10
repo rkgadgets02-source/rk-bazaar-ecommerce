@@ -129,11 +129,8 @@ img {
    AUTH SCREEN (shows FIRST before store)
 ══════════════════════════════════════════ */
 #auth-screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
   z-index: 8000;
   background: transparent;
   display: flex;
@@ -144,6 +141,8 @@ img {
   font-family: 'Outfit', 'Inter', sans-serif;
   perspective: 1200px;
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── BRAND 3D PROFILE (Replaces Model Viewer) ── */
@@ -233,7 +232,7 @@ img {
 
 /* ── AUTH BACKGROUND — full-screen cover, no black cutoff ── */
 .auth-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background-image: url('rk_bazaar_login_bg.png');
   background-size: cover;
