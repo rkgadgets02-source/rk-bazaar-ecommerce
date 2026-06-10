@@ -557,7 +557,7 @@ img {
   }
 
   #brand-3d-container {
-    height: 36vh;
+    height: 180px;
   }
 }
 
@@ -3677,7 +3677,7 @@ img {
 /* -- MOBILE NUCLEAR HARDENING 2.0 -- */
 @media(max-width:900px) {
   html, body {
-    overflow-y: auto !important;
+    overflow: visible !important;
     overflow-x: hidden !important;
     height: auto !important;
     min-height: 100% !important;
@@ -3685,13 +3685,16 @@ img {
   }
 
   #auth-screen {
-    position: absolute !important;
-    inset: 0 !important;
+    position: relative !important;
     height: auto !important;
-    min-height: 100% !important;
-    overflow-y: visible !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
     perspective: none !important;
     z-index: 8000 !important;
+  }
+
+  #brand-3d-container {
+    height: 180px !important;
   }
 
   /* Force all mobile pages to expand naturally and use native body scroll */
