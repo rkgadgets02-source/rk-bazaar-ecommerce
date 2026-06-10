@@ -133,16 +133,22 @@ img {
   inset: 0;
   z-index: 8000;
   background: transparent;
+  perspective: 1200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.auth-scroll-wrapper {
+  width: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px;
   font-family: 'Outfit', 'Inter', sans-serif;
-  perspective: 1200px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 /* ── BRAND 3D PROFILE (Replaces Model Viewer) ── */
@@ -527,7 +533,7 @@ img {
 
 /* ── AUTH SCREEN RESPONSIVE ── */
 @media (max-width: 480px) {
-  #auth-screen {
+  .auth-scroll-wrapper {
     justify-content: flex-start;
     padding-top: calc(24px + env(safe-area-inset-top, 0px));
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
@@ -541,6 +547,8 @@ img {
     width: 95%;
     padding: 24px 18px;
     border-radius: 20px;
+    transform: none !important;
+    transform-style: flat !important;
   }
 
   .brand-3d-logo {
@@ -560,7 +568,7 @@ img {
 }
 
 @media (min-width: 1024px) {
-  #auth-screen {
+  .auth-scroll-wrapper {
     justify-content: center;
   }
 

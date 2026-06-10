@@ -171,7 +171,7 @@ function showStore() {
 
 function showAuthScreen() {
   document.getElementById('store-screen').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('auth-screen').style.display = 'block';
   backToAuth();
 }
 
