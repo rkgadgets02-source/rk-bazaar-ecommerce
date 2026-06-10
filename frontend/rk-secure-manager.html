@@ -2689,7 +2689,7 @@
     function openEditProduct(id) {
       const p = window._adminProducts.find(x => x._id === id);
       if (!p) return;
-      editProduct(p._id, p.name, p.price, p.mrp || '', p.stock, p.category?.name || p.category || '', p.brand || '', p.description || '', p.images || []);
+      editProduct(p);
     }
 
     function previewImgs(input) {
@@ -2757,18 +2757,18 @@
     // Store existing images for the product being edited
     let _editingImages = [];
 
-    function editProduct(id, name, price, mrp, stock, category, brand, desc, images) {
-      editingProductId = id;
-      _editingImages = images || [];
+    function editProduct(p) {
+      editingProductId = p._id;
+      _editingImages = p.images || [];
       updateCategoryDatalist();
       document.getElementById('modal-product-title').textContent = 'Edit Product';
-      document.getElementById('p-name').value = name;
-      document.getElementById('p-price').value = price;
-      document.getElementById('p-mrp').value = mrp;
-      document.getElementById('p-stock').value = stock;
-      document.getElementById('p-category').value = category;
-      document.getElementById('p-brand').value = brand;
-      document.getElementById('p-desc').value = desc;
+      document.getElementById('p-name').value = p.name || '';
+      document.getElementById('p-price').value = p.price || '';
+      document.getElementById('p-mrp').value = p.mrp || '';
+      document.getElementById('p-stock').value = p.stock || 0;
+      document.getElementById('p-category').value = p.category?.name || p.category || '';
+      document.getElementById('p-brand').value = p.brand || '';
+      document.getElementById('p-desc').value = p.description || '';
       
       // Pre-fill new fields
       const specs = p.specifications || [];
@@ -2777,13 +2777,13 @@
       document.getElementById('p-about').value = about.join('\n');
 
       // Pre-fill image URLs separated by new lines
-      document.getElementById('p-images').value = (images && images.length) ? images.join('\n') : '';
+      document.getElementById('p-images').value = (p.images && p.images.length) ? p.images.join('\n') : '';
       document.getElementById('p-img-preview').innerHTML = '';
       // Show existing images preview
       const existEl = document.getElementById('p-existing-imgs');
-      if (images && images.length) {
+      if (p.images && p.images.length) {
         existEl.innerHTML = `<span style="font-weight:700;color:var(--blue)">Current images:</span> ` +
-          images.map(img => `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;margin:2px;vertical-align:middle" onerror="this.style.display='none'">`).join('');
+          p.images.map(img => `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;margin:2px;vertical-align:middle" onerror="this.style.display='none'">`).join('');
       } else {
         existEl.textContent = 'No images yet. Enter URLs below.';
       }
