@@ -3681,6 +3681,21 @@ img {
     height: 100% !important;
   }
 
+  html.auth-mode, body.auth-mode {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  body.auth-mode #auth-screen {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    perspective: none !important;
+  }
+
   .desktop-header {
     display: none !important;
   }

@@ -164,12 +164,16 @@ function enterAsGuest() {
 }
 
 function showStore() {
+  document.body.classList.remove('auth-mode');
+  document.documentElement.classList.remove('auth-mode');
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('store-screen').style.display = 'block';
   loadStoreData();
 }
 
 function showAuthScreen() {
+  document.body.classList.add('auth-mode');
+  document.documentElement.classList.add('auth-mode');
   document.getElementById('store-screen').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'block';
   backToAuth();
