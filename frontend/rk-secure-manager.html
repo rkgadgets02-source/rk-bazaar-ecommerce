@@ -2531,7 +2531,7 @@
         <td class="td-name">${esc(p.name)}</td>
         <td class="td-muted">${esc(p.category?.name || p.category || '—')}</td>
         <td class="td-price">₹${(p.price || 0).toLocaleString('en-IN')}</td>
-        <td class="td-muted">${p.mrp ? '₹' + p.mrp.toLocaleString('en-IN') : '—'}</td>
+        <td class="td-muted">${(p.mrp && p.mrp > p.price) ? '₹' + p.mrp.toLocaleString('en-IN') : '—'}</td>
         <td><span class="${p.stock > 0 ? 'status s-active' : 'status s-banned'}">${p.stock ?? 0}</span></td>
         <td style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn-sm btn-outline" onclick="openEditProduct('${p._id}')"><i class="fas fa-edit"></i></button>
@@ -2816,7 +2816,21 @@
     async function saveProduct() {
       const name = document.getElementById('p-name').value.trim();
       const price = parseFloat(document.getElementById('p-price').value);
-      const mrp = parseFloat(document.getElementById('p-mrp').value) || null;
+      let mrp = parseFloat(document.getElementById('p-mrp').value) || null;
+
+      const originalProduct = editingProductId ? window._adminProducts.find(x => x._id === editingProductId) : null;
+      if (originalProduct) {
+        if (price !== originalProduct.price) {
+          if (!mrp || mrp < price || mrp === originalProduct.mrp) {
+            mrp = price;
+          }
+        }
+      } else {
+        if (!mrp || mrp < price) {
+          mrp = price;
+        }
+      }
+
       const stock = parseInt(document.getElementById('p-stock').value) || 0;
       const category = document.getElementById('p-category').value.trim();
       const brand = document.getElementById('p-brand').value.trim();

@@ -227,10 +227,13 @@ router.post('/products', async (req, res) => {
     // Auto-generate SKU
     const generatedSku = `SKU-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
+    const finalPrice = price;
+    const finalMrp = (mrp && mrp >= price) ? mrp : price;
+
     const product = await Product.create({
       name,
-      price,
-      mrp: mrp || price,
+      price: finalPrice,
+      mrp: finalMrp,
       stock: stock || 0,
       category: categoryId,
       brand: brand || 'Generic',
@@ -251,6 +254,27 @@ router.put('/products/:id', async (req, res) => {
   try {
     const { name, price, mrp, stock, category, brand, description, images } = req.body;
 
+    const originalProduct = await Product.findById(req.params.id);
+    if (!originalProduct) return res.status(404).json({ success: false, message: 'Product not found.' });
+
+    let finalPrice = price !== undefined ? price : originalProduct.price;
+    let finalMrp = mrp !== undefined ? mrp : originalProduct.mrp;
+
+    if (price !== undefined && price !== originalProduct.price) {
+      if (mrp === undefined || mrp === null || mrp === originalProduct.mrp || mrp < price) {
+        finalMrp = price;
+      }
+    } else {
+      if (finalMrp < finalPrice) {
+        finalMrp = finalPrice;
+      }
+    }
+
+    let discount = 0;
+    if (finalMrp && finalPrice) {
+      discount = Math.round(((finalMrp - finalPrice) / finalMrp) * 100);
+    }
+
     // Resolve category name → ObjectId (same as POST)
     let categoryId = undefined;
     if (category) {
@@ -263,8 +287,9 @@ router.put('/products/:id', async (req, res) => {
 
     const updateData = {
       ...(name !== undefined && { name }),
-      ...(price !== undefined && { price }),
-      ...(mrp !== undefined && { mrp }),
+      price: finalPrice,
+      mrp: finalMrp,
+      discount,
       ...(stock !== undefined && { stock }),
       ...(categoryId !== undefined && { category: categoryId }),
       ...(brand !== undefined && { brand }),

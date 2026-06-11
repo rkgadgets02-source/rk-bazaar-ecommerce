@@ -98,6 +98,11 @@ router.post('/', protect, adminOnly, upload.array('images', 5), async (req, res)
     const data = JSON.parse(req.body.data || '{}');
     if (req.files) data.images = req.files.map(f => `/uploads/products/${f.filename}`);
     data.sku = `BLT-${Date.now()}`;
+    if (data.price !== undefined) {
+      if (data.mrp === undefined || data.mrp === null || data.mrp < data.price) {
+        data.mrp = data.price;
+      }
+    }
     const product = await Product.create(data);
     res.status(201).json({ success: true, message: 'Product created', product });
   } catch (err) {
@@ -109,6 +114,32 @@ router.post('/', protect, adminOnly, upload.array('images', 5), async (req, res)
 router.put('/:id', protect, adminOnly, upload.array('images', 5), async (req, res) => {
   try {
     let data = typeof req.body.data === 'string' ? JSON.parse(req.body.data) : req.body;
+
+    const originalProduct = await Product.findById(req.params.id);
+    if (!originalProduct) return res.status(404).json({ success: false, message: 'Product not found' });
+
+    let finalPrice = data.price !== undefined ? data.price : originalProduct.price;
+    let finalMrp = data.mrp !== undefined ? data.mrp : originalProduct.mrp;
+
+    if (data.price !== undefined && data.price !== originalProduct.price) {
+      if (data.mrp === undefined || data.mrp === null || data.mrp === originalProduct.mrp || data.mrp < data.price) {
+        finalMrp = data.price;
+      }
+    } else {
+      if (finalMrp < finalPrice) {
+        finalMrp = finalPrice;
+      }
+    }
+
+    let discount = 0;
+    if (finalMrp && finalPrice) {
+      discount = Math.round(((finalMrp - finalPrice) / finalMrp) * 100);
+    }
+
+    data.price = finalPrice;
+    data.mrp = finalMrp;
+    data.discount = discount;
+
     if (req.files && req.files.length > 0) {
       data.images = req.files.map(f => `/uploads/products/${f.filename}`);
     }
