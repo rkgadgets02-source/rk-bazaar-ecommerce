@@ -43,6 +43,7 @@ const S = {
   filter: 'All', prev: 'home', payM: 'razorpay', curP: null,
   pendingEmail: '', isGuest: false,
   coupon: null,
+  history: [],
 };
 
 async function req(p, m = 'GET', b = null) {
@@ -881,9 +882,18 @@ async function doSearch() {
 // ── Product Detail State
 let pdQty = 1, pdImgIdx = 0, pdAllImgs = [];
 
-async function openProd(id) {
-  S.prev = document.querySelector('.page.active')?.id.replace('page-', '') || 'home';
-  go('pd', null);
+async function openProd(id, isBack = false) {
+  const activePage = document.querySelector('.page.active');
+  const currentId = activePage ? activePage.id.replace('page-', '') : 'home';
+  if (!isBack) {
+    const state = { id: currentId };
+    if (currentId === 'pd' && S.curP) {
+      state.prodId = S.curP._id;
+    }
+    S.history.push(state);
+  }
+  S.prev = currentId;
+  go('pd', null, true);
   document.getElementById('pdtitle').textContent = 'Loading...';
   document.getElementById('pdbk').onclick = goBack;
   document.getElementById('pdcontent').innerHTML = `<div style="padding:60px 0;text-align:center"><div class="lring" style="margin:auto"></div></div>`;
@@ -1511,7 +1521,38 @@ function doLogout() {
   toast('Logged out successfully');
 }
 
-function go(id, btn) {
+function go(id, btn, isBack = false) {
+  const activePage = document.querySelector('.page.active');
+  const currentId = activePage ? activePage.id.replace('page-', '') : 'home';
+
+  if (!isBack && currentId !== id) {
+    // Push current state to history
+    const state = { id: currentId };
+    if (currentId === 'pd' && S.curP) {
+      state.prodId = S.curP._id;
+    }
+    // If the top of stack is the same page, pop it (self-correcting)
+    if (S.history.length > 0 && S.history[S.history.length - 1].id === id) {
+      S.history.pop();
+    } else {
+      if (id === 'home') {
+        S.history = [];
+      } else {
+        S.history.push(state);
+      }
+    }
+  }
+
+  // Update back button display
+  const dhBack = document.getElementById('dh-back');
+  if (dhBack) {
+    if (id !== 'home' && S.history.length > 0) {
+      dhBack.style.display = 'flex';
+    } else {
+      dhBack.style.display = 'none';
+    }
+  }
+
   // Clear search state if we are moving on to a page other than 'search' or 'pd'
   if (id !== 'search' && id !== 'pd') {
     const si = document.getElementById('si');
@@ -1533,10 +1574,13 @@ function go(id, btn) {
     pg.classList.add('active');
     pg.scrollTop = 0; // Scroll the active page container back to top
   }
-  if (btn) {
+  
+  const targetBtn = btn || document.getElementById('bn-' + id);
+  if (targetBtn) {
     document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    targetBtn.classList.add('active');
   }
+  
   window.scrollTo(0, 0);
   if (id === 'search') {
     setTimeout(() => {
@@ -1544,7 +1588,7 @@ function go(id, btn) {
       adjustSearchStickyHeight(); // Ensure sticky spacing is calculated when search page is loaded
     }, 250);
   }
-  if (id === 'checkout') goCheckout();
+  if (id === 'checkout' && currentId !== 'checkout') goCheckout();
   if (id === 'wishlist') renderWish();
   if (id === 'cart') renderCart();
   if (id === 'account') renderAcc();
@@ -1555,7 +1599,18 @@ function go(id, btn) {
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && S.products.length > 0) refreshProducts();
 });
-function goBack() { go(S.prev || 'home', document.getElementById('bn-' + (S.prev || 'home'))) }
+function goBack() {
+  if (S.history && S.history.length > 0) {
+    const prevState = S.history.pop();
+    if (prevState.id === 'pd' && prevState.prodId) {
+      openProd(prevState.prodId, true);
+    } else {
+      go(prevState.id, document.getElementById('bn-' + prevState.id) || null, true);
+    }
+  } else {
+    go(S.prev || 'home', document.getElementById('bn-' + (S.prev || 'home')) || null, true);
+  }
+}
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500) }
 
 // ── SHARING LOGIC ──

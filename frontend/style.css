@@ -3400,6 +3400,28 @@ img {
   border-color: var(--o)
 }
 
+.dh-search .dh-back-btn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--g) !important;
+  font-size: 1.1rem !important;
+  cursor: pointer !important;
+  display: none; /* Controlled dynamically by JS */
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: auto !important;
+  padding: 0 10px 0 16px !important;
+  transition: color 0.2s !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.dh-search .dh-back-btn:hover {
+  color: var(--o) !important;
+}
+
 .dh-search input {
   flex: 1;
   border: none;

@@ -40,6 +40,7 @@
           class="fas fa-th-large"></i> Shop</button>
     </div>
     <div class="dh-search">
+      <button id="dh-back" onclick="goBack()" class="dh-back-btn" style="display:none;"><i class="fas fa-arrow-left"></i></button>
       <input type="text" id="dh-si" autocomplete="off" placeholder="Search earbuds, chargers, watches..."
         onkeypress="if(event.key==='Enter') triggerSearch('dh-si')" oninput="showSug('dh-si')">
       <button onclick="triggerSearch('dh-si')"><i class="fas fa-search"></i></button>
