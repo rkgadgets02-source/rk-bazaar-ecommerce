@@ -1546,7 +1546,7 @@ function go(id, btn, isBack = false) {
   // Update back button display
   const dhBack = document.getElementById('dh-back');
   if (dhBack) {
-    if (id !== 'home' && S.history.length > 0) {
+    if (id !== 'home') {
       dhBack.style.display = 'flex';
     } else {
       dhBack.style.display = 'none';
