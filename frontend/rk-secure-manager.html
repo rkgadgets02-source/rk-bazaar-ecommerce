@@ -2560,17 +2560,17 @@
           <td><span class="${c.isActive ? 'status s-active' : 'status s-banned'}">${c.isActive ? 'Active' : 'Hidden'}</span></td>
           <td style="display:flex;gap:6px">
             <button class="btn-sm btn-outline" onclick="openCategoryModal('${c._id}')"><i class="fas fa-edit"></i> Edit</button>
-            <button class="btn-sm btn-danger" onclick="deleteCategory('${c._id}')"><i class="fas fa-trash"></i> Hide</button>
+            <button class="btn-sm btn-danger" onclick="deleteCategory('${c._id}')"><i class="fas fa-trash"></i> Delete</button>
           </td>
         </tr>`).join('')}
       </tbody></table>`;
     }
 
     async function deleteCategory(id) {
-      if (!confirm('Hide this category from website?')) return;
+      if (!confirm('Delete this category? This cannot be undone.')) return;
       const res = await af(`${API}/categories/${id}`, { method: 'DELETE' });
-      if (res && res.ok) { showToast('Category hidden!', 'success'); loadAdminCategories(); }
-      else showToast('Failed to delete category', 'error');
+      if (res && res.ok) { showToast('Category deleted successfully.', 'success'); loadAdminCategories(); }
+      else showToast('Failed to delete category.', 'error');
     }
 
     function openCategoryModal(id = null) {

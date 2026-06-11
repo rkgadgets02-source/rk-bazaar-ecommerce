@@ -123,7 +123,8 @@ router.put('/:id', protect, adminOnly, upload.array('images', 5), async (req, re
 // DELETE /api/products/:id — admin
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
-    await Product.findByIdAndUpdate(req.params.id, { isActive: false });
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
     res.json({ success: true, message: 'Product removed' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

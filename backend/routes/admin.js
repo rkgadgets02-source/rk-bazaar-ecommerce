@@ -3,7 +3,7 @@ const router = express.Router();
 const { protect, adminOnly } = require('../middleware/auth');
 const User = require('../models/User');
 const Product = require('../models/Product');
-const { Category, Order, Brand, HeroSlide } = require('../models/index');
+const { Category, Order, Brand, HeroSlide, Cart, Wishlist } = require('../models/index');
 
 // ─── ALL ROUTES REQUIRE ADMIN ─────────────────────────────────
 router.use(protect, adminOnly);
@@ -94,6 +94,15 @@ router.delete('/users/:id', async (req, res) => {
     }
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
+
+    // Clean up associated cart and wishlist
+    try {
+      await Cart.deleteOne({ user: req.params.id });
+      await Wishlist.deleteOne({ user: req.params.id });
+    } catch (e) {
+      console.error('Error cleaning up user data:', e.message);
+    }
+
     res.json({ success: true, message: 'User deleted successfully.' });
   } catch (err) {
     console.error('Delete user error:', err.message);

@@ -43,7 +43,7 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
 
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
-    const cat = await Category.findByIdAndUpdate(req.params.id, { isActive: false });
+    const cat = await Category.findByIdAndDelete(req.params.id);
     if (!cat) return res.status(404).json({ success: false, message: 'Category not found' });
     res.json({ success: true, message: 'Category removed' });
   } catch (err) { res.status(400).json({ success: false, message: err.message }); }
