@@ -161,6 +161,18 @@ router.put('/orders/:id/status', async (req, res) => {
   }
 });
 
+router.delete('/orders/:id', async (req, res) => {
+  try {
+    if (!Order) return res.status(404).json({ success: false, message: 'Orders not available.' });
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) return res.status(404).json({ success: false, message: 'Order not found.' });
+    res.json({ success: true, message: 'Order deleted successfully.' });
+  } catch (err) {
+    console.error('Delete order error:', err.message);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ─── PRODUCTS ─────────────────────────────────────────────────
 router.get('/products', async (req, res) => {
   try {

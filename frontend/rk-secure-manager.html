@@ -2990,7 +2990,12 @@
       <td><span class="status s-${(o.paymentStatus || 'Pending').toLowerCase()}">${esc(o.paymentStatus || 'Pending')}</span></td>
       <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
       <td class="td-muted">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
-      <td><button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button></td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button>
+          <button class="btn-sm btn-danger" onclick="deleteOrder('${o._id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </td>
     </tr>`}).join('')}
   </tbody></table>`;
     }
@@ -3086,7 +3091,12 @@
       <td><span class="status s-${(o.paymentStatus || 'Pending').toLowerCase()}">${esc(o.paymentStatus || 'Pending')}</span></td>
       <td><span class="status s-${esc(o.status || o.orderStatus || 'pending')}">${esc(o.status || o.orderStatus || 'pending')}</span></td>
       <td class="td-muted">${new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
-      <td><button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button></td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-sm btn-outline" onclick="openUpdateOrder('${o._id}','${esc(o.status || o.orderStatus || 'pending')}')"><i class="fas fa-edit"></i> Update</button>
+          <button class="btn-sm btn-danger" onclick="deleteOrder('${o._id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </td>
     </tr>`}).join('')}
   </tbody></table>`;
     }
@@ -3198,6 +3208,22 @@
           loadOrders();
         }
       } else showToast('Failed to update order.', 'error');
+    }
+
+    async function deleteOrder(id) {
+      if (!confirm('Delete this order? This cannot be undone.')) return;
+      const res = await af(`${API}/admin/orders/${id}`, { method: 'DELETE' });
+      if (res && res.ok) {
+        showToast('Order deleted.', 'success');
+        if (document.getElementById('section-express').classList.contains('active')) {
+          loadExpressOrders();
+        } else {
+          loadOrders();
+        }
+      } else {
+        const err = res ? await res.json().catch(() => ({})) : {};
+        showToast(err.message || 'Failed to delete order.', 'error');
+      }
     }
 
     // ══ USERS ══
