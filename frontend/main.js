@@ -646,6 +646,19 @@ function showSug(id) {
   const el = document.getElementById(id);
   const sug = document.getElementById(id === 'dh-si' ? 'dh-sug' : id + '-sug');
   if (!el || !sug) return;
+
+  // Control the desktop back button show/hide based on search input presence on home page
+  const dhBack = document.getElementById('dh-back');
+  const activePage = document.querySelector('.page.active');
+  const currentId = activePage ? activePage.id.replace('page-', '') : 'home';
+  if (dhBack && currentId === 'home') {
+    if (el.value.length > 0 && id === 'dh-si') {
+      dhBack.style.display = 'flex';
+    } else if (id === 'dh-si') {
+      dhBack.style.display = 'none';
+    }
+  }
+
   const q = el.value.toLowerCase().trim();
 
   // If search bar has clear button, toggle it
@@ -1600,6 +1613,19 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden && S.products.length > 0) refreshProducts();
 });
 function goBack() {
+  const activePage = document.querySelector('.page.active');
+  const currentId = activePage ? activePage.id.replace('page-', '') : 'home';
+
+  if (currentId === 'home') {
+    // Clear desktop search
+    const dhSi = document.getElementById('dh-si');
+    if (dhSi) dhSi.value = '';
+    const dhBack = document.getElementById('dh-back');
+    if (dhBack) dhBack.style.display = 'none';
+    hideSug();
+    return;
+  }
+
   if (S.history && S.history.length > 0) {
     const prevState = S.history.pop();
     if (prevState.id === 'pd' && prevState.prodId) {
