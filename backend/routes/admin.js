@@ -87,6 +87,20 @@ router.put('/users/:id/status', async (req, res) => {
   }
 });
 
+router.delete('/users/:id', async (req, res) => {
+  try {
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(400).json({ success: false, message: 'Cannot delete your own account.' });
+    }
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
+    res.json({ success: true, message: 'User deleted successfully.' });
+  } catch (err) {
+    console.error('Delete user error:', err.message);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ─── ORDERS ───────────────────────────────────────────────────
 router.get('/orders', async (req, res) => {
   try {
