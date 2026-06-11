@@ -223,6 +223,20 @@ window.addEventListener('load', async () => {
     }
   }, 800);
 
+  // Set initial state of back button based on page and text existence on load
+  const dhBack = document.getElementById('dh-back');
+  if (dhBack) {
+    const activePage = document.querySelector('.page.active');
+    const currentId = activePage ? activePage.id.replace('page-', '') : 'home';
+    const dhSi = document.getElementById('dh-si');
+    const hasText = dhSi && dhSi.value.trim().length > 0;
+    if (currentId !== 'home' || hasText) {
+      dhBack.style.display = 'flex';
+    } else {
+      dhBack.style.display = 'none';
+    }
+  }
+
   // If user already logged in → go straight to store
   if (S.token && S.user) {
     showStore();

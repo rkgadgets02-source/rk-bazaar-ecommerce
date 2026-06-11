@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     crossorigin="anonymous" referrerpolicy="no-referrer">
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=1.9.7">
+  <link rel="stylesheet" href="style.css?v=1.9.8">
 
 
 </head>
@@ -40,7 +40,7 @@
           class="fas fa-th-large"></i> Shop</button>
     </div>
     <div class="dh-search">
-      <button id="dh-back" onclick="goBack()" class="dh-back-btn" style="display:none;"><i class="fas fa-arrow-left"></i></button>
+      <button id="dh-back" onclick="goBack()" class="dh-back-btn"><i class="fas fa-arrow-left"></i></button>
       <input type="text" id="dh-si" autocomplete="off" placeholder="Search earbuds, chargers, watches..."
         onkeypress="if(event.key==='Enter') triggerSearch('dh-si')" oninput="showSug('dh-si')">
       <button onclick="triggerSearch('dh-si')"><i class="fas fa-search"></i></button>
@@ -351,8 +351,9 @@
           <h2>Search Products</h2>
         </nav>
         <div class="search-sticky-header">
-          <div class="sbar" style="border-color:var(--o); margin:0 0 12px; width:100%"><i class="fas fa-search"
-              style="color:var(--o)"></i><input type="text" placeholder="Search products..." id="si"
+          <div class="sbar" style="border-color:var(--o); margin:0 0 12px; width:100%">
+            <button onclick="goBack()" class="sbar-back-btn" style="background:none; border:none; color:var(--o); cursor:pointer; padding:0; margin:0 12px 0 0; outline:none; font-size:1.1rem; display:flex; align-items:center; justify-content:center;"><i class="fas fa-arrow-left"></i></button>
+            <input type="text" placeholder="Search products..." id="si"
               oninput="onSearchInput(this)" autocomplete="off">
             <button id="si-clear" onclick="clearSearch()" style="background:none; border:none; color:var(--g); cursor:pointer; padding:0 8px; display:none; outline:none; font-size:1.1rem; transition:color 0.2s;"><i class="fas fa-times-circle" style="margin:0"></i></button>
             <div id="si-sug" class="sug-box"></div>
@@ -960,7 +961,7 @@
   </div>
   </div><!-- end store-screen -->
 
-  <script src="main.js?v=1.9.6" defer></script>
+  <script src="main.js?v=1.9.7" defer></script>
   <!-- ── SHARE SHEET HTML ── -->
   <div id="share-sheet-overlay" onclick="if(event.target===this) closeShareSheet()">
     <div id="share-sheet">

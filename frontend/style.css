@@ -3406,7 +3406,7 @@ img {
   color: var(--g) !important;
   font-size: 1.1rem !important;
   cursor: pointer !important;
-  display: none; /* Controlled dynamically by JS */
+  display: flex; /* Controlled dynamically by JS, visible by default */
   align-items: center;
   justify-content: center;
   height: 100%;
