@@ -547,7 +547,23 @@ function renderCatFull() {
   if (!el) return;
   el.innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140/181818/FF4500?text=📦'"></div><div class="pgc-body"><h4>${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse &rarr;</span></div></div>`).join('');
 }
-function filterCat(id) { S.filter = id; go('search', document.getElementById('bn-search')); document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); document.querySelector(`.chip[data-cat="${id}"]`)?.classList.add('on'); doSearch() }
+function filterCat(id) {
+  // Clear text search when filtering by category
+  const si = document.getElementById('si');
+  if (si) si.value = '';
+  const dhSi = document.getElementById('dh-si');
+  if (dhSi) dhSi.value = '';
+  const homeSi = document.getElementById('home-si');
+  if (homeSi) homeSi.value = '';
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  S.filter = id;
+  go('search', document.getElementById('bn-search'));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  document.querySelector(`.chip[data-cat="${id}"]`)?.classList.add('on');
+  doSearch();
+}
 function renderChips() {
   document.getElementById('fchips').innerHTML = 
     `<button class="chip${S.filter === 'All' ? ' on' : ''}" data-cat="All" onclick="setF('All',this)">All</button>` + 
@@ -556,7 +572,22 @@ function renderChips() {
       return `<button class="chip${isSelected ? ' on' : ''}" data-cat="${c._id || c.name}" onclick="setF('${c._id || c.name}',this)">${c.name}</button>`;
     }).join('');
 }
-function setF(f, btn) { S.filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); if (btn) btn.classList.add('on'); doSearch() }
+function setF(f, btn) {
+  // Clear text search when changing filter category
+  const si = document.getElementById('si');
+  if (si) si.value = '';
+  const dhSi = document.getElementById('dh-si');
+  if (dhSi) dhSi.value = '';
+  const homeSi = document.getElementById('home-si');
+  if (homeSi) homeSi.value = '';
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  S.filter = f;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  doSearch();
+}
 function debounce(fn, wait) {
   let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait); };
 }
@@ -574,51 +605,138 @@ function triggerSearch(sourceId) {
   if (homeSi) homeSi.value = val;
   if (dhSi) dhSi.value = val;
 
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) clearBtn.style.display = val.trim() ? 'block' : 'none';
+
   go('search', document.getElementById('bn-search'));
   doSearch();
   hideSug();
 }
 
+function onSearchInput(input) {
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) {
+    clearBtn.style.display = input.value.trim() ? 'block' : 'none';
+  }
+  debouncedSearch();
+  showSug('si');
+}
+
+function clearSearch() {
+  const si = document.getElementById('si');
+  if (si) {
+    si.value = '';
+    si.focus();
+  }
+  const dhSi = document.getElementById('dh-si');
+  if (dhSi) dhSi.value = '';
+  const homeSi = document.getElementById('home-si');
+  if (homeSi) homeSi.value = '';
+  
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+  }
+  doSearch();
+  hideSug();
+}
 
 function showSug(id) {
   const el = document.getElementById(id);
-  const sug = document.getElementById(id + '-sug');
+  const sug = document.getElementById(id === 'dh-si' ? 'dh-sug' : id + '-sug');
   if (!el || !sug) return;
   const q = el.value.toLowerCase().trim();
+
+  // If search bar has clear button, toggle it
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn && id === 'si') {
+    clearBtn.style.display = q ? 'block' : 'none';
+  }
 
   if (!q || q.length < 1) {
     sug.style.display = 'none';
     return;
   }
 
-  // Filter from available products
-  const matches = S.products.filter(p =>
-    p.name.toLowerCase().includes(q) ||
-    (p.category?.name || p.category || '').toString().toLowerCase().includes(q) ||
-    (p.brand || '').toLowerCase().includes(q)
-  ).slice(0, 6);
+  // 1. Find matching categories
+  const matchedCats = S.categories.filter(c =>
+    c.name.toLowerCase().includes(q)
+  ).slice(0, 3);
 
-  if (!matches.length) {
+  // 2. Find matching products
+  const matchedProds = S.products.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    (p.brand || '').toLowerCase().includes(q)
+  ).slice(0, 5);
+
+  if (!matchedCats.length && !matchedProds.length) {
     sug.style.display = 'none';
     return;
   }
 
-  sug.innerHTML = matches.map(p => `
-        <div class="sug-item" onclick="selSug('${id}', '${p._id}', '${p.name.replace(/'/g, "\\'")}')">
-          <div class="sug-item-img"><img src="${p.images?.[0] || 'https://via.placeholder.com/44'}" onerror="this.src='https://via.placeholder.com/44'"></div>
-          <div class="sug-item-info">
-            <div class="sug-item-name">${p.name}</div>
-            <div class="sug-item-cat">${p.category?.name || 'Product'}</div>
-          </div>
-          <div class="sug-item-p">₹${p.price}</div>
+  let html = '';
+
+  // Render category suggestions
+  if (matchedCats.length > 0) {
+    html += `<div class="sug-group-title" style="padding:6px 12px; font-size:.65rem; color:var(--o); font-weight:800; text-transform:uppercase; letter-spacing:.5px; background:rgba(255,255,255,0.01)">Categories</div>`;
+    html += matchedCats.map(c => `
+      <div class="sug-item" onclick="selSugCat('${id}', '${c._id || c.name}')" style="padding:8px 12px">
+        <div class="sug-item-img" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center; background:rgba(255,107,0,.1); border-radius:6px; flex-shrink:0">
+          <i class="fas fa-folder-open" style="margin:0; font-size:.9rem; color:var(--o)"></i>
         </div>
-      `).join('');
+        <div class="sug-item-info">
+          <div class="sug-item-name" style="font-size:0.8rem">${c.name}</div>
+          <div class="sug-item-cat" style="font-size:0.6rem">View Category</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Render product suggestions
+  if (matchedProds.length > 0) {
+    html += `<div class="sug-group-title" style="padding:6px 12px; font-size:.65rem; color:var(--o); font-weight:800; text-transform:uppercase; letter-spacing:.5px; background:rgba(255,255,255,0.01); border-top:1px solid rgba(255,255,255,0.03)">Products</div>`;
+    html += matchedProds.map(p => `
+      <div class="sug-item" onclick="selSugProd('${id}', '${p._id}')">
+        <div class="sug-item-img"><img src="${p.images?.[0] || 'https://via.placeholder.com/44'}" onerror="this.src='https://via.placeholder.com/44'"></div>
+        <div class="sug-item-info">
+          <div class="sug-item-name">${p.name}</div>
+          <div class="sug-item-cat">${p.category?.name || 'Product'}</div>
+        </div>
+        <div class="sug-item-p">₹${p.price}</div>
+      </div>
+    `).join('');
+  }
+
+  sug.innerHTML = html;
   sug.style.display = 'block';
 }
 
-function selSug(inputId, prodId, name) {
-  const el = document.getElementById(inputId);
-  if (el) el.value = name;
+function selSugCat(inputId, catId) {
+  // Clear search text since we are navigating to the category
+  const si = document.getElementById('si');
+  if (si) si.value = '';
+  const dhSi = document.getElementById('dh-si');
+  if (dhSi) dhSi.value = '';
+  const homeSi = document.getElementById('home-si');
+  if (homeSi) homeSi.value = '';
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  hideSug();
+  filterCat(catId);
+}
+
+function selSugProd(inputId, prodId) {
+  // Clear search text since we are navigating to the product
+  const si = document.getElementById('si');
+  if (si) si.value = '';
+  const dhSi = document.getElementById('dh-si');
+  if (dhSi) dhSi.value = '';
+  const homeSi = document.getElementById('home-si');
+  if (homeSi) homeSi.value = '';
+  const clearBtn = document.getElementById('si-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
+
   hideSug();
   openProd(prodId);
 }
@@ -1394,6 +1512,21 @@ function doLogout() {
 }
 
 function go(id, btn) {
+  // Clear search state if we are moving on to a page other than 'search' or 'pd'
+  if (id !== 'search' && id !== 'pd') {
+    const si = document.getElementById('si');
+    if (si) si.value = '';
+    const dhSi = document.getElementById('dh-si');
+    if (dhSi) dhSi.value = '';
+    const homeSi = document.getElementById('home-si');
+    if (homeSi) homeSi.value = '';
+    const clearBtn = document.getElementById('si-clear');
+    if (clearBtn) clearBtn.style.display = 'none';
+    
+    S.filter = 'All';
+    doSearch(); // Reset search results
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById('page-' + id);
   if (pg) {
