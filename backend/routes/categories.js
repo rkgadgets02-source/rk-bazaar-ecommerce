@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Category } = require('../models/index');
+const { Category, Product, Cart, Wishlist } = require('../models/index');
 const { protect, adminOnly } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
@@ -43,9 +43,27 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
 
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
+    // Find all products that belong to this category
+    const products = await Product.find({ category: req.params.id });
+    const productIds = products.map(p => p._id);
+
     const cat = await Category.findByIdAndDelete(req.params.id);
     if (!cat) return res.status(404).json({ success: false, message: 'Category not found' });
-    res.json({ success: true, message: 'Category removed' });
+
+    // Cascade delete all products in this category
+    await Product.deleteMany({ category: req.params.id });
+
+    // Clean up references of all deleted products in Carts and Wishlists
+    if (productIds.length > 0) {
+      try {
+        await Cart.updateMany({}, { $pull: { items: { product: { $in: productIds } } } });
+        await Wishlist.updateMany({}, { $pull: { products: { $in: productIds } } });
+      } catch (cleanupErr) {
+        console.error('Error cleaning up product references on category delete:', cleanupErr.message);
+      }
+    }
+
+    res.json({ success: true, message: 'Category and its associated products removed' });
   } catch (err) { res.status(400).json({ success: false, message: err.message }); }
 });
 

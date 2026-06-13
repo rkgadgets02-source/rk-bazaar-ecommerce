@@ -314,6 +314,15 @@ router.delete('/products/:id', async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ success: false, message: 'Product not found.' });
+
+    // Clean up references in Carts and Wishlists
+    try {
+      await Cart.updateMany({}, { $pull: { items: { product: req.params.id } } });
+      await Wishlist.updateMany({}, { $pull: { products: req.params.id } });
+    } catch (cleanupErr) {
+      console.error('Error cleaning up product references:', cleanupErr.message);
+    }
+
     res.json({ success: true, message: 'Product deleted successfully.' });
   } catch (err) {
     console.error('Delete product error:', err.message);

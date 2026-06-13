@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const Product = require('../models/Product');
+const { Cart, Wishlist } = require('../models/index');
 const { protect, adminOnly } = require('../middleware/auth');
 
 // Helper to escape regex special characters
@@ -156,6 +157,15 @@ router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
+
+    // Clean up references in Carts and Wishlists
+    try {
+      await Cart.updateMany({}, { $pull: { items: { product: req.params.id } } });
+      await Wishlist.updateMany({}, { $pull: { products: req.params.id } });
+    } catch (cleanupErr) {
+      console.error('Error cleaning up product references:', cleanupErr.message);
+    }
+
     res.json({ success: true, message: 'Product removed' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
