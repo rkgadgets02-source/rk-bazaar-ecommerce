@@ -374,7 +374,7 @@ router.post('/setup-master-admin', async (req, res) => {
       return res.status(403).json({ success: false, message: 'Forbidden: Invalid or missing setup token.' });
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'rkgadgets02@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'rkbazaarsupport@gmail.com';
     
     // Check if admin already exists
     let admin = await User.findOne({ email: adminEmail });

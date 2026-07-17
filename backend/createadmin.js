@@ -6,13 +6,13 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
   const User = require('./models/User');
 
   // Delete old admin
-  await User.deleteOne({ email: 'rkgadgets02@gmail.com' });
+  await User.deleteOne({ email: 'rkbazaarsupport@gmail.com' });
   console.log('🗑️  Old admin removed');
 
   // Let the MODEL hash the password (don't hash manually)
   const admin = new User({
     name: 'RK BAZAAR Admin',
-    email: 'rkgadgets02@gmail.com',
+    email: 'rkbazaarsupport@gmail.com',
     password: 'Admin@1234',
     phone: '9999999999',
     role: 'admin',
@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URI).then(async () => {
 
   await admin.save();
   console.log('✅ Admin created!');
-  console.log('📧 Email    : rkgadgets02@gmail.com');
+  console.log('📧 Email    : rkbazaarsupport@gmail.com');
   console.log('🔑 Password : Admin@1234');
   process.exit();
 

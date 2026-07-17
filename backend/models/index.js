@@ -141,8 +141,8 @@ const brandSchema = new mongoose.Schema({
   logo: { type: String, default: '' },
   themeColor: { type: String, default: '#00dbff' },
   description: { type: String, default: '' },
-  contactEmail: { type: String, default: 'support@rkbazaar.com' },
-  contactPhone: { type: String, default: '+91 8220748235' },
+  contactEmail: { type: String, default: 'rkbazaarsupport@gmail.com' },
+  contactPhone: { type: String, default: '+91 9994388235' },
 }, { timestamps: true });
 
 const heroSlideSchema = new mongoose.Schema({

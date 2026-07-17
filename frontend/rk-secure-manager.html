@@ -1237,7 +1237,7 @@
       <p>Enter your credentials to access the panel</p>
       <div class="auth-field">
         <label>Email Address</label>
-        <input type="email" id="admin-email" placeholder="rkgadgets02@gmail.com" autocomplete="off" />
+        <input type="email" id="admin-email" placeholder="rkbazaarsupport@gmail.com" autocomplete="off" />
       </div>
       <div class="auth-field">
         <label>Password</label>
@@ -1265,7 +1265,7 @@
       <p>Enter your email to receive a reset code</p>
       <div class="auth-field">
         <label>Admin Email Address</label>
-        <input type="email" id="admin-forgot-email" placeholder="rkgadgets02@gmail.com" autocomplete="off" />
+        <input type="email" id="admin-forgot-email" placeholder="rkbazaarsupport@gmail.com" autocomplete="off" />
       </div>
       <button class="auth-btn" id="forgot-btn" onclick="doAdminForgot()">
         <i class="fas fa-paper-plane"></i> Send Reset Code
@@ -1571,11 +1571,11 @@
             </div>
             <div class="modal-field">
               <label>Contact Email</label>
-              <input type="email" id="b-email" placeholder="rkgadgets02@gmail.com" />
+              <input type="email" id="b-email" placeholder="rkbazaarsupport@gmail.com" />
             </div>
             <div class="modal-field">
               <label>Contact Phone</label>
-              <input type="tel" id="b-phone" placeholder="+91 82207 48235" />
+              <input type="tel" id="b-phone" placeholder="+91 99943 88235" />
             </div>
           </div>
           
@@ -1950,7 +1950,7 @@
         const data = await res.json();
         if (data.success) {
           showToast(data.message, 'success');
-          document.getElementById('admin-email').value = 'rkgadgets02@gmail.com';
+          document.getElementById('admin-email').value = 'rkbazaarsupport@gmail.com';
           document.getElementById('admin-password').value = 'Admin@1234';
           showToast('Credentials filled! You can now login.', 'info');
         } else {
