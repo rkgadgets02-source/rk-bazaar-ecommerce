@@ -286,6 +286,12 @@ window.addEventListener('load', async () => {
   if (S.token && S.user) {
     showStore();
   }
+
+  // Show logout toast if we just reloaded after logout
+  if (sessionStorage.getItem('loggedOut')) {
+    sessionStorage.removeItem('loggedOut');
+    setTimeout(() => toast('Logged out successfully ✅'), 600);
+  }
 });
 
 
@@ -1587,10 +1593,17 @@ async function sendContact() {
 }
 
 function doLogout() {
+  // Clear auth state from memory and storage
   S.user = null; S.token = ''; S.isGuest = false;
-  localStorage.removeItem('btU'); localStorage.removeItem('btT');
-  showAuthScreen();
-  toast('Logged out successfully');
+  localStorage.removeItem('btU');
+  localStorage.removeItem('btT');
+
+  // Set a flag so we can show a toast after the clean page reload
+  sessionStorage.setItem('loggedOut', '1');
+
+  // Full page reload — the only guaranteed way to get a perfectly
+  // clean auth screen with no layout residue from the store
+  window.location.reload();
 }
 
 function go(id, btn, isBack = false) {
