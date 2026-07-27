@@ -171,9 +171,43 @@ function showStore() {
 }
 
 function showAuthScreen() {
+  // ── Hide store completely ──
   document.getElementById('store-screen').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'block';
+
+  // ── Deactivate all store pages so no residual layout bleeds through ──
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = '';
+  });
+
+  // ── Reset bottom nav active state ──
+  document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
+  const homeBtn = document.getElementById('bn-home');
+  if (homeBtn) homeBtn.classList.add('active');
+
+  // ── Reset back button ──
+  const dhBack = document.getElementById('dh-back');
+  if (dhBack) dhBack.style.display = 'none';
+
+  // ── Clear navigation history ──
+  S.history = [];
+
+  // ── Show auth screen (flex for proper centering) ──
+  const authEl = document.getElementById('auth-screen');
+  authEl.style.display = 'flex';
+  authEl.style.flexDirection = 'column';
+  authEl.style.alignItems = 'center';
+  authEl.scrollTop = 0;
+
+  // ── Reset to login tab ──
   backToAuth();
+  switchAuthTab('login');
+
+  // ── Clear input fields ──
+  const le = document.getElementById('le');
+  const lp = document.getElementById('lp');
+  if (le) le.value = '';
+  if (lp) lp.value = '';
 }
 
 // ── On page load ──
