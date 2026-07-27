@@ -555,13 +555,27 @@ async function loadCats() {
   ];
 }
 
-// Returns true if URL is a valid direct image link
+const SVG_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23181818'/><text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='%23FF4500' font-family='sans-serif' font-size='40'>📦</text><text x='50%' y='65%' dominant-baseline='middle' text-anchor='middle' fill='%23818181' font-family='sans-serif' font-size='14' font-weight='bold'>RK BAZAAR</text></svg>";
+
+function formatImgUrl(img) {
+  if (!img || typeof img !== 'string') return SVG_FALLBACK;
+  let clean = img.trim().replace(/\\/g, '/');
+  if (!clean) return SVG_FALLBACK;
+  const lower = clean.toLowerCase();
+  if (lower.includes('placeholder.com') || lower.includes('dummyimage')) return SVG_FALLBACK;
+  if (clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('data:')) return clean;
+  if (clean.startsWith('uploads/')) return '/' + clean;
+  if (clean.startsWith('/uploads/')) return clean;
+  if (clean.startsWith('./') || clean.startsWith('/')) return clean;
+  return '/' + clean;
+}
+
 function isValidImgUrl(img) {
   if (!img || typeof img !== 'string') return false;
-  const lower = img.toLowerCase();
-  // Ignore placeholders, generic perfume strings, or old local paths that don't exist
-  if (lower.includes('placeholder') || lower.includes('perfume') || lower.includes('dummy') || lower.includes('sample')) return false;
-  if (!img.startsWith('http') && !img.startsWith('/uploads') && !img.startsWith('data:')) return false;
+  const clean = img.trim();
+  if (!clean) return false;
+  const lower = clean.toLowerCase();
+  if (lower.includes('placeholder.com') || lower.includes('dummyimage')) return false;
   return true;
 }
 
@@ -569,8 +583,8 @@ async function loadProds() {
   const d = await req('/products?limit=50');
   if (d.success && d.products.length) {
     S.products = d.products.map((p, i) => {
-      const validImages = p.images?.filter(isValidImgUrl) || [];
-      return { ...p, images: validImages.length ? validImages : [CIMG[p.category?.name] || PIMG[i % PIMG.length]] };
+      const validImages = (p.images || []).filter(isValidImgUrl).map(formatImgUrl);
+      return { ...p, images: validImages.length ? validImages : [formatImgUrl(CIMG[p.category?.name] || PIMG[i % PIMG.length])] };
     });
   } else {
     S.products = [];
@@ -591,27 +605,54 @@ function getCatName(p) {
   return c ? c.name : 'Other';
 }
 
-function getImg(p, i) {
-  const ok = p.images?.filter(isValidImgUrl) || [];
-  if (ok.length) return ok[0];
-  return CIMG[getCatName(p)] || PIMG[i % PIMG.length];
+function getImg(p, i = 0) {
+  const raw = (p && p.images && Array.isArray(p.images)) ? p.images : [];
+  const ok = raw.filter(isValidImgUrl);
+  if (ok.length) return formatImgUrl(ok[0]);
+  return formatImgUrl(CIMG[getCatName(p)] || PIMG[i % PIMG.length]);
 }
-function disc(p) { if (!p.mrp || p.mrp <= p.price) return 0; return Math.round(((p.mrp - p.price) / p.mrp) * 100) }
+
+function disc(p) {
+  const mrp = Number(p?.mrp || 0);
+  const price = Number(p?.price || 0);
+  if (!mrp || mrp <= price) return 0;
+  return Math.round(((mrp - price) / mrp) * 100);
+}
+
+function calcSave(p) {
+  const mrp = Number(p?.mrp || 0);
+  const price = Number(p?.price || 0);
+  if (!mrp || mrp <= price) return 0;
+  return mrp - price;
+}
+
 function stars(r) { let s = ''; for (let i = 1; i <= 5; i++)s += `<i class="fa${i <= Math.round(r) ? 's' : 'r'} fa-star"></i>`; return s }
 
-function renderStrip() { document.getElementById('catStrip').innerHTML = S.categories.map(c => `<div class="csi" onclick="filterCat('${c._id || c.name}')"><div class="csi-img"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.parentElement.innerHTML='<span style=font-size:1.5rem>📦</span>'"></div><span>${c.name}</span></div>`).join('') }
-function pcsCard(p) { const d = disc(p); return `<div class="pcs" onclick="openProd('${p._id}')"><div class="pcs-img"><img src="${p.images[0]}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/148x132/181818/FF4500?text=📦'"><button class="wlb ${S.wish.has(p._id) ? 'on' : ''}" data-wid="${p._id}" onclick="event.stopPropagation();togWish('${p._id}')"><i class="fas fa-heart"></i></button>${d ? `<span class="dtag">${d}% OFF</span>` : ''}<button class="addbtn" onclick="event.stopPropagation();addById('${p._id}')"><i class="fas fa-plus"></i></button></div><div class="pcs-body"><h4>${p.name}</h4><div><span class="pcs-p">₹${p.price}</span><span class="pcs-m">₹${p.mrp || ''}</span></div></div></div>` }
+function renderStrip() { document.getElementById('catStrip').innerHTML = S.categories.map(c => `<div class="csi" onclick="filterCat('${c._id || c.name}')"><div class="csi-img"><img src="${formatImgUrl(c.image || CIMG[c.name] || PIMG[0])}" alt="${c.name}" loading="lazy" onerror="this.src='${SVG_FALLBACK}'"></div><span>${c.name}</span></div>`).join('') }
+
+function pcsCard(p) {
+  const d = disc(p);
+  const price = Number(p.price || 0);
+  const mrp = Number(p.mrp || 0);
+  const imgUrl = getImg(p);
+  return `<div class="pcs" onclick="openProd('${p._id}')"><div class="pcs-img"><img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.src='${SVG_FALLBACK}'"><button class="wlb ${S.wish.has(p._id) ? 'on' : ''}" data-wid="${p._id}" onclick="event.stopPropagation();togWish('${p._id}')"><i class="fas fa-heart"></i></button>${d > 0 ? `<span class="dtag">${d}% OFF</span>` : ''}<button class="addbtn" onclick="event.stopPropagation();addById('${p._id}')"><i class="fas fa-plus"></i></button></div><div class="pcs-body"><h4>${p.name}</h4><div><span class="pcs-p">₹${price.toLocaleString('en-IN')}</span><span class="pcs-m">${mrp > price ? '₹' + mrp.toLocaleString('en-IN') : ''}</span></div></div></div>`
+}
+
 function pgcCard(p) {
   const d = disc(p);
-  const sav = p.mrp ? (p.mrp - p.price) : 0;
-  return `<div class="pgc" onclick="openProd('${p._id}')"><div class="pgc-img"><img src="${p.images[0]}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140x140/181818/FF4500?text=📦'"><button class="wlb ${S.wish.has(p._id) ? 'on' : ''}" data-wid="${p._id}" onclick="event.stopPropagation();togWish('${p._id}')" style="position:absolute;top:7px;right:7px"><i class="fas fa-heart"></i></button>${d > 0 ? `<span class="dtag">${d}% OFF</span>` : ''}<button class="addbtn" onclick="event.stopPropagation();addById('${p._id}')"><i class="fas fa-plus"></i></button></div><div class="pgc-body"><h4>${p.name}</h4><div class="pgc-stars">${stars(p.rating || 0)} <span style="color:var(--g);font-size:.6rem">(${p.numReviews || 0})</span></div><div><span class="pgc-p">₹${p.price}</span><span class="pgc-m">${p.mrp && p.mrp > p.price ? '₹' + p.mrp : ''}</span></div>${sav > 0 ? `<span class="pgc-save">You save ₹${sav}</span>` : ''}</div></div>`
+  const sav = calcSave(p);
+  const price = Number(p.price || 0);
+  const mrp = Number(p.mrp || 0);
+  const imgUrl = getImg(p);
+  return `<div class="pgc" onclick="openProd('${p._id}')"><div class="pgc-img"><img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.src='${SVG_FALLBACK}'"><button class="wlb ${S.wish.has(p._id) ? 'on' : ''}" data-wid="${p._id}" onclick="event.stopPropagation();togWish('${p._id}')" style="position:absolute;top:7px;right:7px"><i class="fas fa-heart"></i></button>${d > 0 ? `<span class="dtag">${d}% OFF</span>` : ''}<button class="addbtn" onclick="event.stopPropagation();addById('${p._id}')"><i class="fas fa-plus"></i></button></div><div class="pgc-body"><h4>${p.name}</h4><div class="pgc-stars">${stars(p.rating || 0)} <span style="color:var(--g);font-size:.6rem">(${p.numReviews || 0})</span></div><div><span class="pgc-p">₹${price.toLocaleString('en-IN')}</span><span class="pgc-m">${mrp > price ? '₹' + mrp.toLocaleString('en-IN') : ''}</span></div>${sav > 0 ? `<span class="pgc-save">You save ₹${sav.toLocaleString('en-IN')}</span>` : ''}</div></div>`
 }
+
 function renderTrend() { document.getElementById('trendRow').innerHTML = S.products.slice(0, 8).map(pcsCard).join('') }
 function renderFeat() { const l = S.products.filter(p => p.isFeatured); document.getElementById('featRow').innerHTML = (l.length ? l : S.products.slice(4, 10)).map(pcsCard).join('') }
 function renderCatFull() {
   const el = document.getElementById('catFull');
   if (!el) return;
-  el.innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img"><img src="${c.image || CIMG[c.name] || PIMG[0]}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/140/181818/FF4500?text=📦'"></div><div class="pgc-body"><h4>${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse &rarr;</span></div></div>`).join('');
+  el.innerHTML = S.categories.map(c => `<div class="pgc" onclick="filterCat('${c._id || c.name}')"><div class="pgc-img"><img src="${formatImgUrl(c.image || CIMG[c.name] || PIMG[0])}" alt="${c.name}" loading="lazy" onerror="this.src='${SVG_FALLBACK}'"></div><div class="pgc-body"><h4>${c.name}</h4><span style="font-size:.63rem;color:var(--o)">Browse &rarr;</span></div></div>`).join('');
 }
 function filterCat(id) {
   // Clear text search when filtering by category
@@ -987,19 +1028,29 @@ async function openProd(id, isBack = false) {
   document.getElementById('pdtitle').textContent = p.name;
 
   const raw = p.images || [];
-  pdAllImgs = raw.filter(isValidImgUrl);
+  pdAllImgs = raw.map(formatImgUrl).filter(isValidImgUrl);
   if (!pdAllImgs.length) {
     const cn = getCatName(p);
-    pdAllImgs = [CIMG[cn] || PIMG[0]];
+    pdAllImgs = [formatImgUrl(CIMG[cn] || PIMG[0])];
   }
 
   const dsc = disc(p);
+  const sav = calcSave(p);
+  const price = Number(p.price || 0);
+  const mrp = Number(p.mrp || 0);
   const inWish = S.wish.has(p._id);
 
-  const slidesHtml = pdAllImgs.map((img, i) => `<div class="pd-slide"><img src="${img}" alt="${p.name} image ${i + 1}" onerror="this.src='https://via.placeholder.com/260/181818/FF4500?text=%F0%9F%93%A6'"></div>`).join('');
-  const thumbsHtml = pdAllImgs.length > 1 ? `<div class="pd-thumbs" id="pdThumbs">${pdAllImgs.map((img, i) => `<div class="pd-thumb${i === 0 ? ' on' : ''}" onclick="pdGoSlide(${i})"><img src="${img}" alt=""></div>`).join('')}</div>` : '';
+  const slidesHtml = pdAllImgs.map((img, i) => `<div class="pd-slide"><img src="${img}" alt="${p.name} image ${i + 1}" onerror="this.src='${SVG_FALLBACK}'"></div>`).join('');
+  const thumbsHtml = pdAllImgs.length > 1 ? `<div class="pd-thumbs" id="pdThumbs">${pdAllImgs.map((img, i) => `<div class="pd-thumb${i === 0 ? ' on' : ''}" onclick="pdGoSlide(${i})"><img src="${img}" alt="" onerror="this.src='${SVG_FALLBACK}'"></div>`).join('')}</div>` : '';
   const dotsHtml = pdAllImgs.length > 1 ? `<div class="pd-dots" id="pdDots">${pdAllImgs.map((_, i) => `<div class="pd-dot${i === 0 ? ' on' : ''}"></div>`).join('')}</div>` : '';
   const prevBtn = pdAllImgs.length > 1 ? `<button class="pd-carousel-btn prev" onclick="pdGoSlide(pdImgIdx-1)"><i class="fas fa-chevron-left"></i></button><button class="pd-carousel-btn next" onclick="pdGoSlide(pdImgIdx+1)"><i class="fas fa-chevron-right"></i></button>` : '';
+
+  // Update mobile action bar buy button disabled state
+  const mobileBuyBtn = document.getElementById('pdMobileBuyBtn');
+  if (mobileBuyBtn) {
+    mobileBuyBtn.disabled = p.stock === 0;
+    mobileBuyBtn.style.opacity = p.stock === 0 ? '.5' : '1';
+  }
 
   const specs = p.specifications || [];
   const stdSpecs = [
@@ -1042,7 +1093,7 @@ async function openProd(id, isBack = false) {
       <!-- Left Column: Carousel & Thumbs -->
       <div class="pd-col-img">
         <div class="pd-carousel" id="pdCarousel">
-          ${dsc ? `<div class="pd-badge-sale">${dsc}% OFF</div>` : ''}
+          ${dsc > 0 ? `<div class="pd-badge-sale">${dsc}% OFF</div>` : ''}
           <button class="pd-wl-float${inWish ? ' on' : ''}" id="pdwl" onclick="togWish('${p._id}');this.classList.toggle('on',S.wish.has('${p._id}'))"><i class="fas fa-heart"></i></button>
           <button class="pd-share-float" onclick="shareProd('${p._id}', '${p.name.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i></button>
           ${prevBtn}
@@ -1059,10 +1110,10 @@ async function openProd(id, isBack = false) {
           <div class="pd-name">${p.name}</div>
           <div class="pd-sr"><span class="s">${stars(p.rating || 0)}</span><span>${(p.rating || 0).toFixed(1)} (${p.numReviews || 0} reviews)</span></div>
           <div class="pd-pr">
-            <span class="p">₹${p.price.toLocaleString('en-IN')}</span>
-            ${p.mrp && p.mrp > p.price ? `<span class="m">₹${p.mrp.toLocaleString('en-IN')}</span>` : ''}${dsc ? `<span class="d">${dsc}% OFF</span>` : ''}
+            <span class="p">₹${price.toLocaleString('en-IN')}</span>
+            ${mrp > price ? `<span class="m">₹${mrp.toLocaleString('en-IN')}</span>` : ''}${dsc > 0 ? `<span class="d">${dsc}% OFF</span>` : ''}
           </div>
-          ${p.mrp && p.mrp > p.price ? `<div class="pd-save">💰 You save ₹${(p.mrp - p.price).toLocaleString('en-IN')}</div>` : ''}
+          ${sav > 0 ? `<div class="pd-save">💰 You save ₹${sav.toLocaleString('en-IN')}</div>` : ''}
           <div class="pd-st ${p.stock > 0 ? 'y' : 'n'}">${p.stock > 0 ? `<i class="fas fa-check-circle"></i> In Stock (${p.stock} available)` : '<i class="fas fa-times-circle"></i> Out of Stock'}</div>
           
           <!-- Quantity Row for Mobile -->

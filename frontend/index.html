@@ -381,6 +381,11 @@
         </div>
       </nav>
       <div class="pw" id="pdcontent"></div>
+      <!-- Fixed Sticky Bottom Action Bar for Mobile -->
+      <div class="pd-mobile-actions" id="pdMobileActions">
+        <button class="pd-ac" onclick="pdAddCart()"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        <button class="pd-by" id="pdMobileBuyBtn" onclick="buyNow(S.curP ? S.curP._id : '')"><i class="fas fa-bolt"></i> Buy Now</button>
+      </div>
     </div>
 
     <!-- CART -->

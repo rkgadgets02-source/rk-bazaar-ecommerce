@@ -2623,7 +2623,9 @@ img {
   position: relative;
   background: var(--s2);
   overflow: hidden;
-  border-bottom: 1px solid var(--bdr)
+  border-bottom: 1px solid var(--bdr);
+  /* Prevent black flash before first image loads */
+  min-height: 280px;
 }
 
 .pd-slides {
@@ -2639,7 +2641,8 @@ img {
   align-items: center;
   justify-content: center;
   padding: 18px;
-  flex-shrink: 0
+  flex-shrink: 0;
+  background: var(--s2);
 }
 
 .pd-slide img {
@@ -3257,8 +3260,11 @@ img {
   background: var(--s1);
   padding: 12px 14px;
   border-top: 1px solid var(--bdr);
-  z-index: 200;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, .6)
+  z-index: 1100;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, .6);
+  /* Guarantee buttons are always visible and side-by-side */
+  align-items: center;
+  min-height: 72px;
 }
 
 .pd-ac {
@@ -3670,6 +3676,10 @@ img {
     background: transparent !important
   }
 
+  .pd-mobile-actions {
+    display: none !important;
+  }
+
   .pd-qty-row {
     border: none;
     padding: 0 0 20px 0
@@ -3871,11 +3881,34 @@ img {
     padding: 14px !important;
   }
 
-  .pd-acts {
-    bottom: calc(var(--bot) + env(safe-area-inset-bottom, 0px)) !important;
-    padding: 10px !important;
-    background: #000 !important;
+  /* Dedicated Mobile Action Bar */
+  .pd-mobile-actions {
+    display: flex;
+    gap: 10px;
+    position: fixed;
+    bottom: calc(var(--bot) + env(safe-area-inset-bottom, 0px));
+    left: 0;
+    right: 0;
+    background: var(--s1);
+    padding: 10px 14px;
     border-top: 1px solid var(--bdr);
+    z-index: 2500 !important;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, .8);
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .pd-mobile-actions .pd-ac,
+  .pd-mobile-actions .pd-by {
+    flex: 1;
+    height: 48px;
+    border-radius: 12px;
+    font-size: .85rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
 
   #page-pd .pw {
