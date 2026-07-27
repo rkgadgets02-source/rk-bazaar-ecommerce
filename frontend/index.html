@@ -989,6 +989,53 @@
       </div>
     </div>
   </div>
+
+  <!-- ── AI CHATBOT FLOATING TRIGGER BUTTON ── -->
+  <button id="ai-chat-btn" onclick="toggleAiChat()" aria-label="Open AI Shopping Assistant">
+    <div class="ai-btn-pulse"></div>
+    <div class="ai-btn-icon"><i class="fas fa-robot"></i></div>
+    <span class="ai-btn-badge">AI</span>
+  </button>
+
+  <!-- ── AI CHATBOT DRAWER / MODAL ── -->
+  <div id="ai-chat-drawer">
+    <div class="ai-chat-header">
+      <div class="ai-chat-title">
+        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+        <div>
+          <h3>RK Assist <span class="ai-online-dot"></span></h3>
+          <p>AI Shopping Assistant</p>
+        </div>
+      </div>
+      <button class="ai-chat-close" onclick="closeAiChat()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Quick Suggestion Chips -->
+    <div class="ai-chips-scroll">
+      <button class="ai-chip" onclick="aiQuickReply('🔥 Best Sellers')">🔥 Best Sellers</button>
+      <button class="ai-chip" onclick="aiQuickReply('🎧 Top Earbuds')">🎧 Top Earbuds</button>
+      <button class="ai-chip" onclick="aiQuickReply('⚡ Fast Chargers')">⚡ Fast Chargers</button>
+      <button class="ai-chip" onclick="aiQuickReply('🚚 Shipping & Delivery')">🚚 Shipping & Delivery</button>
+      <button class="ai-chip" onclick="aiQuickReply('🎟️ Active Coupons')">🎟️ Active Coupons</button>
+    </div>
+
+    <!-- Chat Messages Container -->
+    <div class="ai-chat-body" id="ai-chat-msgs">
+      <div class="ai-msg bot">
+        <div class="ai-msg-avatar"><i class="fas fa-robot"></i></div>
+        <div class="ai-msg-content">
+          <p>Hi there! 👋 I'm <b>RK Assist</b>, your personal AI shopping assistant.</p>
+          <p>Ask me to find products, check prices, track orders, or get instant discount codes!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input Form -->
+    <form class="ai-chat-footer" id="ai-chat-form" onsubmit="event.preventDefault(); sendAiChatMsg();">
+      <input type="text" id="ai-chat-input" placeholder="Ask RK Assist anything..." autocomplete="off">
+      <button type="submit" id="ai-chat-send"><i class="fas fa-paper-plane"></i></button>
+    </form>
+  </div>
 </body>
 
 </html>

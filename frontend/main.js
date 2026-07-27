@@ -1801,3 +1801,209 @@ function showShareSheet(url, text) {
 function closeShareSheet() {
   document.getElementById('share-sheet-overlay').classList.remove('active');
 }
+
+/* ── 🤖 AI CHATBOT LOGIC (RK Assist) ── */
+function toggleAiChat() {
+  const drawer = document.getElementById('ai-chat-drawer');
+  if (!drawer) return;
+  drawer.classList.toggle('open');
+  if (drawer.classList.contains('open')) {
+    document.getElementById('ai-chat-input')?.focus();
+  }
+}
+
+function closeAiChat() {
+  const drawer = document.getElementById('ai-chat-drawer');
+  if (drawer) drawer.classList.remove('open');
+}
+
+function aiQuickReply(text) {
+  const input = document.getElementById('ai-chat-input');
+  if (input) {
+    input.value = text;
+    sendAiChatMsg();
+  }
+}
+
+function appendAiMessage(role, contentHtml) {
+  const msgs = document.getElementById('ai-chat-msgs');
+  if (!msgs) return;
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `ai-msg ${role}`;
+
+  const avatarIcon = role === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+
+  msgDiv.innerHTML = `
+    <div class="ai-msg-avatar">${avatarIcon}</div>
+    <div class="ai-msg-content">${contentHtml}</div>
+  `;
+
+  msgs.appendChild(msgDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  return msgDiv;
+}
+
+function showAiTyping() {
+  const msgs = document.getElementById('ai-chat-msgs');
+  if (!msgs) return null;
+
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ai-msg bot';
+  typingDiv.id = 'ai-typing-indicator';
+  typingDiv.innerHTML = `
+    <div class="ai-msg-avatar"><i class="fas fa-robot"></i></div>
+    <div class="ai-msg-content ai-typing">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  return typingDiv;
+}
+
+function removeAiTyping() {
+  const indicator = document.getElementById('ai-typing-indicator');
+  if (indicator) indicator.remove();
+}
+
+async function sendAiChatMsg() {
+  const input = document.getElementById('ai-chat-input');
+  if (!input) return;
+
+  const query = input.value.trim();
+  if (!query) return;
+
+  // Clear input
+  input.value = '';
+
+  // Append User Message
+  appendAiMessage('user', `<p>${escapeHtml(query)}</p>`);
+
+  // Show typing indicator
+  showAiTyping();
+
+  // Simulate AI delay for smooth feel
+  setTimeout(async () => {
+    removeAiTyping();
+    const replyHtml = await generateAiResponse(query);
+    appendAiMessage('bot', replyHtml);
+  }, 600);
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
+}
+
+async function generateAiResponse(query) {
+  const q = query.toLowerCase();
+
+  // Try calling backend AI Endpoint if exists
+  try {
+    const apiRes = await req('/ai-chat', 'POST', { query });
+    if (apiRes && apiRes.success && apiRes.reply) {
+      return apiRes.reply;
+    }
+  } catch (e) {
+    // Fallback to client-side smart NLP engine
+  }
+
+  // 1. Coupons / Discounts
+  if (q.includes('coupon') || q.includes('discount') || q.includes('offer') || q.includes('code') || q.includes('promo')) {
+    return `
+      <p>🎟️ <b>Active RK Bazaar Coupons:</b></p>
+      <p>• <b>WELCOME10</b> — Get 10% OFF on your order!</p>
+      <p>• <b>RKB15</b> — Flat 15% OFF for orders above ₹1,000.</p>
+      <p style="font-size:0.75rem;color:var(--g);margin-top:4px">You can apply these codes at checkout!</p>
+    `;
+  }
+
+  // 2. Shipping / Delivery / Tracking
+  if (q.includes('shipping') || q.includes('deliver') || q.includes('track') || q.includes('charge') || q.includes('time')) {
+    return `
+      <p>🚚 <b>Shipping & Delivery Info:</b></p>
+      <p>• <b>Standard Shipping:</b> 3 - 5 business days (Free over ₹499).</p>
+      <p>• <b>Express Delivery:</b> 1 - 2 days (₹99 extra).</p>
+      <p>You can track all active deliveries in your <a onclick="closeAiChat(); go('orders', null);" style="color:var(--o);font-weight:700;cursor:pointer">Orders Page</a>.</p>
+    `;
+  }
+
+  // 3. Best Sellers / Trending
+  if (q.includes('best') || q.includes('trend') || q.includes('popular') || q.includes('top')) {
+    const prods = (S.products || []).slice(0, 3);
+    if (!prods.length) return `<p>Explore our trending catalog on the home page!</p>`;
+    let html = `<p>🔥 Here are our current top-trending products on RK BAZAAR:</p>`;
+    prods.forEach(p => {
+      html += renderAiProdCard(p);
+    });
+    return html;
+  }
+
+  // 4. Category / Search matching (Earbuds, Headphones, Chargers, Power Banks, Watches)
+  const matchedProds = (S.products || []).filter(p => {
+    const name = p.name.toLowerCase();
+    const cat = (p.category?.name || getCatName(p)).toLowerCase();
+    const brand = (p.brand || '').toLowerCase();
+    const tags = (p.tags || []).join(' ').toLowerCase();
+
+    const terms = q.split(/\s+/);
+    return terms.some(t => t.length > 2 && (name.includes(t) || cat.includes(t) || brand.includes(t) || tags.includes(t)));
+  });
+
+  // Budget Filter e.g. "under 1000" or "under 500"
+  const priceMatch = q.match(/under\s*₹?\s*(\d+)/i) || q.match(/below\s*₹?\s*(\d+)/i) || q.match(/less than\s*₹?\s*(\d+)/i);
+  let finalProds = matchedProds;
+
+  if (priceMatch) {
+    const maxP = parseInt(priceMatch[1]);
+    finalProds = (S.products || []).filter(p => p.price <= maxP);
+    if (finalProds.length > 0) {
+      let html = `<p>🔎 Found ${finalProds.length} product(s) under ₹${maxP.toLocaleString('en-IN')}:</p>`;
+      finalProds.slice(0, 3).forEach(p => { html += renderAiProdCard(p); });
+      return html;
+    }
+  }
+
+  if (finalProds.length > 0) {
+    let html = `<p>🛒 Here are matching recommendations for you:</p>`;
+    finalProds.slice(0, 3).forEach(p => { html += renderAiProdCard(p); });
+    return html;
+  }
+
+  // 5. Help / Login / Guest Mode
+  if (q.includes('help') || q.includes('login') || q.includes('register') || q.includes('account') || q.includes('guest')) {
+    return `
+      <p>👤 <b>Need help with your account?</b></p>
+      <p>• You can browse as a guest or sign in for instant checkout & tracking.</p>
+      <p>Click <a onclick="closeAiChat(); showAuthScreen();" style="color:var(--o);font-weight:700;cursor:pointer">Login / Register</a> to access your account.</p>
+    `;
+  }
+
+  // 6. Generic Fallback with random catalog suggestions
+  const randomProds = (S.products || []).slice(0, 2);
+  let html = `<p>I'm here to help you shop! You can ask me about products, discounts, or delivery times.</p>`;
+  if (randomProds.length) {
+    html += `<p style="margin-top:6px;font-size:0.75rem;color:var(--g)">Check out these featured items:</p>`;
+    randomProds.forEach(p => { html += renderAiProdCard(p); });
+  }
+  return html;
+}
+
+function renderAiProdCard(p) {
+  const imgUrl = getImg(p);
+  const price = Number(p.price || 0);
+  const dsc = disc(p);
+
+  return `
+    <div class="ai-prod-card" onclick="closeAiChat(); openProd('${p._id}')">
+      <img src="${imgUrl}" class="ai-prod-img" alt="${escapeHtml(p.name)}" onerror="this.src='${SVG_FALLBACK}'">
+      <div class="ai-prod-info">
+        <div class="ai-prod-name">${escapeHtml(p.name)}</div>
+        <div class="ai-prod-price">₹${price.toLocaleString('en-IN')} ${dsc > 0 ? `<span style="font-size:0.65rem;color:#00E676">(${dsc}% OFF)</span>` : ''}</div>
+      </div>
+      <button class="ai-prod-btn" onclick="event.stopPropagation(); addById('${p._id}'); toast('Added to cart 🛒');">Add +</button>
+    </div>
+  `;
+}
