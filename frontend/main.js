@@ -165,16 +165,29 @@ function enterAsGuest() {
 }
 
 function showStore() {
+  // ── Restore fixed nav elements ──
+  const botnav = document.querySelector('.botnav');
+  const topbar = document.querySelector('.topbar');
+  if (botnav) botnav.style.visibility = '';
+  if (topbar) topbar.style.visibility = '';
+
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('store-screen').style.display = 'block';
   loadStoreData();
 }
 
 function showAuthScreen() {
-  // ── Hide store completely ──
-  document.getElementById('store-screen').style.display = 'none';
+  // ── Hide store screen ──
+  const storeEl = document.getElementById('store-screen');
+  storeEl.style.display = 'none';
 
-  // ── Deactivate all store pages so no residual layout bleeds through ──
+  // ── Explicitly hide fixed-position nav elements that escape parent display:none ──
+  const botnav = document.querySelector('.botnav');
+  const topbar = document.querySelector('.topbar');
+  if (botnav) botnav.style.visibility = 'hidden';
+  if (topbar) topbar.style.visibility = 'hidden';
+
+  // ── Deactivate all store pages ──
   document.querySelectorAll('.page').forEach(p => {
     p.classList.remove('active');
     p.style.display = '';
@@ -192,11 +205,9 @@ function showAuthScreen() {
   // ── Clear navigation history ──
   S.history = [];
 
-  // ── Show auth screen (flex for proper centering) ──
+  // ── Show auth screen ──
   const authEl = document.getElementById('auth-screen');
-  authEl.style.display = 'flex';
-  authEl.style.flexDirection = 'column';
-  authEl.style.alignItems = 'center';
+  authEl.style.display = 'block';
   authEl.scrollTop = 0;
 
   // ── Reset to login tab ──
