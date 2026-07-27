@@ -1898,96 +1898,122 @@ function escapeHtml(str) {
 }
 
 async function generateAiResponse(query) {
-  const q = query.toLowerCase();
+  const q = query.toLowerCase().trim();
 
-  // Try calling backend AI Endpoint if exists
+  // Try calling backend AI Endpoint first
   try {
     const apiRes = await req('/ai-chat', 'POST', { query });
     if (apiRes && apiRes.success && apiRes.reply) {
       return apiRes.reply;
     }
   } catch (e) {
-    // Fallback to client-side smart NLP engine
+    // Fallback to client-side Built-in Smart Engine
   }
 
-  // 1. Coupons / Discounts
-  if (q.includes('coupon') || q.includes('discount') || q.includes('offer') || q.includes('code') || q.includes('promo')) {
+  // 1. Greetings & Intros
+  if (/^(hi|hello|hey|greetings|namaste|good morning|good evening|who are you|what can you do)/i.test(q)) {
+    return `
+      <p>Hello! 👋 I'm <b>RK Assist</b>, the AI shopping assistant for <b>RK BAZAAR</b>.</p>
+      <p>I can help you with:</p>
+      <p>• Finding products & budget recommendations</p>
+      <p>• Active discount coupons & promos</p>
+      <p>• Shipping rates & order tracking</p>
+      <p>• Payment options & customer support</p>
+      <p style="margin-top:6px;font-size:0.75rem;color:var(--g)">Try typing: <i>"Best earbuds under 1000"</i> or <i>"Active coupons"</i></p>
+    `;
+  }
+
+  // 2. Coupons & Discounts
+  if (q.includes('coupon') || q.includes('discount') || q.includes('offer') || q.includes('code') || q.includes('promo') || q.includes('deal')) {
     return `
       <p>🎟️ <b>Active RK Bazaar Coupons:</b></p>
-      <p>• <b>WELCOME10</b> — Get 10% OFF on your order!</p>
-      <p>• <b>RKB15</b> — Flat 15% OFF for orders above ₹1,000.</p>
-      <p style="font-size:0.75rem;color:var(--g);margin-top:4px">You can apply these codes at checkout!</p>
+      <div style="background:rgba(255,69,0,0.1);border:1px dashed var(--o);padding:8px 12px;border-radius:10px;margin:6px 0">
+        <b style="color:var(--o)">WELCOME10</b> — 10% OFF on all orders
+      </div>
+      <div style="background:rgba(255,69,0,0.1);border:1px dashed var(--o);padding:8px 12px;border-radius:10px;margin:6px 0">
+        <b style="color:var(--o)">RKB15</b> — Flat 15% OFF on orders > ₹1,000
+      </div>
+      <p style="font-size:0.75rem;color:var(--g);margin-top:4px">Enter these codes during checkout to save!</p>
     `;
   }
 
-  // 2. Shipping / Delivery / Tracking
-  if (q.includes('shipping') || q.includes('deliver') || q.includes('track') || q.includes('charge') || q.includes('time')) {
+  // 3. Shipping, Delivery & Tracking
+  if (q.includes('shipping') || q.includes('deliver') || q.includes('track') || q.includes('charge') || q.includes('speed') || q.includes('time')) {
     return `
-      <p>🚚 <b>Shipping & Delivery Info:</b></p>
-      <p>• <b>Standard Shipping:</b> 3 - 5 business days (Free over ₹499).</p>
-      <p>• <b>Express Delivery:</b> 1 - 2 days (₹99 extra).</p>
-      <p>You can track all active deliveries in your <a onclick="closeAiChat(); go('orders', null);" style="color:var(--o);font-weight:700;cursor:pointer">Orders Page</a>.</p>
+      <p>🚚 <b>Shipping & Delivery Policies:</b></p>
+      <p>• <b>Standard Delivery:</b> 3 - 5 business days (FREE on orders over ₹499).</p>
+      <p>• <b>Express Delivery:</b> 1 - 2 business days (₹99 extra).</p>
+      <p>Check active order status in your <a onclick="closeAiChat(); go('orders', null);" style="color:var(--o);font-weight:700;cursor:pointer">Orders Page</a>.</p>
     `;
   }
 
-  // 3. Best Sellers / Trending
+  // 4. Payment Methods & COD
+  if (q.includes('pay') || q.includes('cod') || q.includes('cash') || q.includes('upi') || q.includes('gpay') || q.includes('card') || q.includes('razorpay')) {
+    return `
+      <p>💳 <b>Accepted Payment Methods:</b></p>
+      <p>• <b>Cash on Delivery (COD)</b> available nationwide.</p>
+      <p>• <b>UPI / GPay / PhonePe / Paytm</b> instant payments.</p>
+      <p>• Credit Cards, Debit Cards & Net Banking via Razorpay.</p>
+    `;
+  }
+
+  // 5. Returns, Refunds & Support Contact
+  if (q.includes('return') || q.includes('refund') || q.includes('replace') || q.includes('cancel') || q.includes('contact') || q.includes('support') || q.includes('phone') || q.includes('whatsapp')) {
+    return `
+      <p>📞 <b>Customer Support & Returns:</b></p>
+      <p>• <b>Easy 7-Day Replacement Policy</b> for defective items.</p>
+      <p>• Email Support: <b style="color:var(--o)">rkbazaarsupport@gmail.com</b></p>
+      <p>• Need direct assistance? Visit our <a onclick="closeAiChat(); go('contact', null);" style="color:var(--o);font-weight:700;cursor:pointer">Contact Us Page</a>.</p>
+    `;
+  }
+
+  // 6. Best Sellers / Trending
   if (q.includes('best') || q.includes('trend') || q.includes('popular') || q.includes('top')) {
     const prods = (S.products || []).slice(0, 3);
-    if (!prods.length) return `<p>Explore our trending catalog on the home page!</p>`;
-    let html = `<p>🔥 Here are our current top-trending products on RK BAZAAR:</p>`;
-    prods.forEach(p => {
-      html += renderAiProdCard(p);
-    });
+    if (!prods.length) return `<p>Explore our trending products on the store home page!</p>`;
+    let html = `<p>🔥 Here are our top trending items on RK BAZAAR:</p>`;
+    prods.forEach(p => { html += renderAiProdCard(p); });
     return html;
   }
 
-  // 4. Category / Search matching (Earbuds, Headphones, Chargers, Power Banks, Watches)
+  // 7. Smart Budget Filtering (e.g. "under 1000", "below 500")
+  const priceMatch = q.match(/under\s*₹?\s*(\d+)/i) || q.match(/below\s*₹?\s*(\d+)/i) || q.match(/less than\s*₹?\s*(\d+)/i);
+  if (priceMatch) {
+    const maxP = parseInt(priceMatch[1]);
+    const budgetProds = (S.products || []).filter(p => Number(p.price) <= maxP);
+    if (budgetProds.length > 0) {
+      let html = `<p>🔎 Found ${budgetProds.length} item(s) under ₹${maxP.toLocaleString('en-IN')}:</p>`;
+      budgetProds.slice(0, 3).forEach(p => { html += renderAiProdCard(p); });
+      return html;
+    } else {
+      return `<p>No items found strictly under ₹${maxP.toLocaleString('en-IN')}. Browse our full catalog on the shop page!</p>`;
+    }
+  }
+
+  // 8. Keyword / Category Matching Engine
   const matchedProds = (S.products || []).filter(p => {
-    const name = p.name.toLowerCase();
+    const name = (p.name || '').toLowerCase();
     const cat = (p.category?.name || getCatName(p)).toLowerCase();
     const brand = (p.brand || '').toLowerCase();
     const tags = (p.tags || []).join(' ').toLowerCase();
 
-    const terms = q.split(/\s+/);
-    return terms.some(t => t.length > 2 && (name.includes(t) || cat.includes(t) || brand.includes(t) || tags.includes(t)));
+    const terms = q.split(/\s+/).filter(t => t.length > 2);
+    if (!terms.length) return false;
+    return terms.some(t => name.includes(t) || cat.includes(t) || brand.includes(t) || tags.includes(t));
   });
 
-  // Budget Filter e.g. "under 1000" or "under 500"
-  const priceMatch = q.match(/under\s*₹?\s*(\d+)/i) || q.match(/below\s*₹?\s*(\d+)/i) || q.match(/less than\s*₹?\s*(\d+)/i);
-  let finalProds = matchedProds;
-
-  if (priceMatch) {
-    const maxP = parseInt(priceMatch[1]);
-    finalProds = (S.products || []).filter(p => p.price <= maxP);
-    if (finalProds.length > 0) {
-      let html = `<p>🔎 Found ${finalProds.length} product(s) under ₹${maxP.toLocaleString('en-IN')}:</p>`;
-      finalProds.slice(0, 3).forEach(p => { html += renderAiProdCard(p); });
-      return html;
-    }
-  }
-
-  if (finalProds.length > 0) {
-    let html = `<p>🛒 Here are matching recommendations for you:</p>`;
-    finalProds.slice(0, 3).forEach(p => { html += renderAiProdCard(p); });
+  if (matchedProds.length > 0) {
+    let html = `<p>🛒 Found ${matchedProds.length} product(s) for your search:</p>`;
+    matchedProds.slice(0, 3).forEach(p => { html += renderAiProdCard(p); });
     return html;
   }
 
-  // 5. Help / Login / Guest Mode
-  if (q.includes('help') || q.includes('login') || q.includes('register') || q.includes('account') || q.includes('guest')) {
-    return `
-      <p>👤 <b>Need help with your account?</b></p>
-      <p>• You can browse as a guest or sign in for instant checkout & tracking.</p>
-      <p>Click <a onclick="closeAiChat(); showAuthScreen();" style="color:var(--o);font-weight:700;cursor:pointer">Login / Register</a> to access your account.</p>
-    `;
-  }
-
-  // 6. Generic Fallback with random catalog suggestions
+  // 9. Conversational Fallback with random catalog suggestions
   const randomProds = (S.products || []).slice(0, 2);
-  let html = `<p>I'm here to help you shop! You can ask me about products, discounts, or delivery times.</p>`;
+  let html = `<p>I'm here to assist you! Try asking about product names, categories, budget limits (e.g. <i>"under ₹1,000"</i>), or coupons.</p>`;
   if (randomProds.length) {
     html += `<p style="margin-top:6px;font-size:0.75rem;color:var(--g)">Check out these featured items:</p>`;
     randomProds.forEach(p => { html += renderAiProdCard(p); });
-  }
   return html;
 }
 

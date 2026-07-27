@@ -20,15 +20,21 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // 2. Search products from DB
-    const searchTerms = q.split(/\s+/).filter(t => t.length > 2);
+    // 2. Budget Queries
+    const priceMatch = q.match(/under\s*₹?\s*(\d+)/i) || q.match(/below\s*₹?\s*(\d+)/i);
     let products = [];
-    if (searchTerms.length > 0) {
-      const regex = new RegExp(searchTerms.join('|'), 'i');
-      products = await Product.find({
-        isActive: true,
-        $or: [{ name: regex }, { brand: regex }, { tags: regex }]
-      }).limit(3);
+    if (priceMatch) {
+      const maxP = parseInt(priceMatch[1]);
+      products = await Product.find({ isActive: true, price: { $lte: maxP } }).limit(3);
+    } else {
+      const searchTerms = q.split(/\s+/).filter(t => t.length > 2);
+      if (searchTerms.length > 0) {
+        const regex = new RegExp(searchTerms.join('|'), 'i');
+        products = await Product.find({
+          isActive: true,
+          $or: [{ name: regex }, { brand: regex }, { tags: regex }]
+        }).limit(3);
+      }
     }
 
     if (products.length > 0) {
