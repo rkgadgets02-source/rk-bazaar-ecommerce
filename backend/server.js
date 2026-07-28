@@ -373,7 +373,6 @@ app.use('/api/payment', require('./routes/payment'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/coupons', require('./routes/coupons'));
-app.use('/api/ai-chat', require('./routes/aiChat'));
 
 // ─── SERVE FRONTEND ───────────────────────────────────────────
 // Never cache HTML files — always serve fresh so product updates show instantly
