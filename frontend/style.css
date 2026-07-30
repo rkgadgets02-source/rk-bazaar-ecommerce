@@ -260,20 +260,9 @@ img {
   pointer-events: none;
 }
 
-/* Smooth gradient fade at the bottom — blends into body bg */
+/* Bottom gradient removed — background image covers full screen */
 .auth-bg::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 45%;
-  background: linear-gradient(to bottom,
-      transparent 0%,
-      rgba(255, 255, 255, 0.35) 60%,
-      #ffffff 100%);
-  z-index: 3;
-  pointer-events: none;
+  display: none;
 }
 
 .auth-logo {
