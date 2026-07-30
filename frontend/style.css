@@ -132,7 +132,10 @@ img {
   position: fixed;
   inset: 0;
   z-index: 8000;
-  background: transparent;
+  background-image: url('rk_bazaar_login_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   perspective: 1200px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -149,6 +152,7 @@ img {
   padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px;
   font-family: 'Outfit', 'Inter', sans-serif;
   box-sizing: border-box;
+  background: transparent;
 }
 
 /* ── BRAND 3D PROFILE (Replaces Model Viewer) ── */
@@ -237,7 +241,7 @@ img {
   border-radius: 50%;
 }
 
-/* ── AUTH BACKGROUND — full-screen cover, no black cutoff ── */
+/* ── AUTH BACKGROUND — full-screen cover ── */
 .auth-bg {
   position: fixed;
   inset: 0;
@@ -245,7 +249,7 @@ img {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  z-index: 1;
+  z-index: -1;
   filter: brightness(1.16) contrast(1.1) saturate(1.15);
   pointer-events: none;
 }
